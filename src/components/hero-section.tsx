@@ -1,22 +1,20 @@
-/* eslint-disable @next/next/no-img-element */
+import { ArrowRight, BadgeCheck, Flame, Star } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 const HERO_PIZZA_SRC = "/images/hero-pizza.jpg";
 
-const STAR_STYLE = { fontVariationSettings: '"FILL" 1' } as const;
-
 export function HeroSection() {
   return (
-    <section className="relative w-full bg-dough-surface overflow-hidden pt-space-xl pb-space-xl">
+    <section className="relative w-full bg-dough-surface overflow-hidden  pb-space-xl">
       <div className="absolute -top-32 -left-20 w-96 h-96 rounded-full bg-secondary-container/10 blur-3xl pointer-events-none" />
-      <div className="absolute top-1/2 -right-32 w-[500px] h-[500px] rounded-full bg-primary-container/10 blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 -right-32 w-125 h-125 rounded-full bg-primary-container/10 blur-3xl pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-margin relative z-10 pt-space-md pb-space-lg">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-center">
+      <div className="max-w-7xl mx-auto px-margin relative z-10 pt-space-md pb-space-lg ">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-center h-[70vh]">
           <div className="lg:col-span-7 space-y-space-md">
             <div className="inline-flex items-center gap-space-xs px-space-md py-space-xs rounded-full bg-primary-fixed text-primary font-label-md text-label-md">
-              <span className="material-symbols-outlined text-base">
-                local_fire_department
-              </span>
+              <Flame size={16} />
               <span>Authentic 450°C Wood-Fired Neapolitan Pies</span>
             </div>
 
@@ -29,20 +27,18 @@ export function HeroSection() {
 
             <p className="font-body-lg text-body-lg text-on-surface-variant max-w-xl">
               Handcrafted artisan dough, simmered San Marzano tomato sauce, and
-              100% whole-milk mozzarella stone-baked to crisp perfection in under
-              30 minutes.
+              100% whole-milk mozzarella stone-baked to crisp perfection in
+              under 30 minutes.
             </p>
 
             <div className="flex flex-wrap items-center gap-space-md pt-space-xs">
-              <a
+              <Link
                 className="inline-flex items-center gap-space-xs px-space-lg py-space-md bg-primary-container hover:bg-primary text-on-primary-container font-label-lg text-label-lg rounded-xl shadow-lg shadow-primary-container/25 transition-all transform hover:-translate-y-0.5"
                 href="#featured-menu"
               >
                 <span>Explore Pizza Menu</span>
-                <span className="material-symbols-outlined text-lg">
-                  arrow_forward
-                </span>
-              </a>
+                <ArrowRight size={18} />
+              </Link>
             </div>
 
             <div className="pt-space-md flex flex-wrap items-center gap-space-lg">
@@ -61,13 +57,12 @@ export function HeroSection() {
                 <div>
                   <div className="flex items-center text-crust-gold">
                     {Array.from({ length: 5 }).map((_, index) => (
-                      <span
+                      <Star
                         key={index}
-                        className="material-symbols-outlined text-sm"
-                        style={STAR_STYLE}
-                      >
-                        star
-                      </span>
+                        fill="currentColor"
+                        size={14}
+                        strokeWidth={0}
+                      />
                     ))}
                     <span className="ml-1 font-bold text-on-surface text-label-sm font-label-sm">
                       4.9/5
@@ -82,9 +77,7 @@ export function HeroSection() {
               <div className="h-8 w-px bg-surface-container-high hidden sm:block" />
 
               <div className="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm">
-                <span className="material-symbols-outlined text-tertiary text-lg">
-                  verified
-                </span>
+                <BadgeCheck className="text-tertiary" size={18} />
                 <span>100% Organic Sourdough • Zero Trans Fats</span>
               </div>
             </div>
@@ -94,26 +87,15 @@ export function HeroSection() {
             <div className="relative w-full max-w-md">
               <div className="absolute inset-0 m-auto w-80 h-80 rounded-full bg-crust-gold/20 filter blur-2xl" />
 
-              <div className="relative z-10 w-full aspect-square rounded-full overflow-hidden shadow-2xl p-2 bg-gradient-to-tr from-secondary-container/40 via-transparent to-primary-container/30">
-                <img
+              <div className="relative z-10 w-full aspect-square rounded-full overflow-hidden shadow-2xl bg-linear-to-tr from-secondary-container/40 via-transparent to-primary-container/30">
+                <Image
                   alt="Steaming artisan Neapolitan wood-fired pizza with bubbling buffalo mozzarella, blistered leopard-spotted crust, fresh basil leaves and rich red tomato sauce on a rustic stone board."
-                  className="w-full h-full object-cover rounded-full transform hover:rotate-6 transition-transform duration-700"
+                  className="object-cover rounded-full p-2 "
+                  fill
+                  priority
+                  sizes="(min-width: 1024px) 448px, 90vw"
                   src={HERO_PIZZA_SRC}
                 />
-              </div>
-
-              <div className="absolute bottom-6 -left-4 z-20 bg-surface-container-lowest/95 backdrop-blur-md px-space-md py-space-xs rounded-full shadow-lg flex items-center gap-space-xs text-charcoal-dark font-label-md text-label-md">
-                <span className="material-symbols-outlined text-primary-container text-base">
-                  local_fire_department
-                </span>
-                <span>Wood-fired 450°C Volcano Stone</span>
-              </div>
-
-              <div className="absolute -bottom-3 right-0 z-20 bg-charcoal-dark text-on-primary px-space-md py-space-xs rounded-full shadow-xl flex items-center gap-space-xs font-label-md text-label-md">
-                <span className="material-symbols-outlined text-crust-gold text-base">
-                  electric_moped
-                </span>
-                <span>30 Min Express Delivery Guarantee</span>
               </div>
             </div>
           </div>

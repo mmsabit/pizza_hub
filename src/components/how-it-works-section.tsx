@@ -1,20 +1,22 @@
+import { Flame, MapPin, SlidersHorizontal } from "lucide-react";
+
 const STEPS = [
   {
-    icon: "tune",
+    icon: SlidersHorizontal,
     iconClassName: "bg-primary-fixed text-primary",
     title: "Select Craft Crust & Toppings",
     description:
       "Pick your dough fermentation style, size, artisanal cheeses, and farm-sourced toppings from local hubs.",
   },
   {
-    icon: "outdoor_grill",
+    icon: Flame,
     iconClassName: "bg-secondary-fixed text-secondary",
     title: "Stone-Baked In 3 Minutes Flat",
     description:
       "Hand-stretched and baked in authentic 450°C wood-fired ovens creating that signature leopard-spotted crust.",
   },
   {
-    icon: "fmd_good",
+    icon: MapPin,
     iconClassName: "bg-tertiary-fixed text-tertiary",
     title: "Real-Time GPS Thermal Track",
     description:
@@ -25,7 +27,7 @@ const STEPS = [
 export function HowItWorksSection() {
   return (
     <section className="w-full py-space-xl bg-dough-surface">
-      <div className="max-w-7xl mx-auto px-margin">
+      <div className="max-w-7xl mx-auto px-margin py-20">
         <div className="text-center max-w-xl mx-auto mb-space-xl">
           <span className="text-primary font-label-sm text-label-sm uppercase tracking-wider font-bold">
             Fast • Artisanal • Seamless
@@ -48,9 +50,7 @@ export function HowItWorksSection() {
               <div
                 className={`w-16 h-16 rounded-full flex items-center justify-center mb-space-sm ${step.iconClassName}`}
               >
-                <span className="material-symbols-outlined text-3xl">
-                  {step.icon}
-                </span>
+                <step.icon size={30} />
               </div>
               <h3 className="font-headline-sm text-headline-sm font-bold text-charcoal-dark mb-space-xs">
                 {step.title}

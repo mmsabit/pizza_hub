@@ -1,31 +1,32 @@
-/* eslint-disable @next/next/no-img-element */
+import { Medal, Timer, Tractor, Upload, Wheat } from "lucide-react";
+import Image from "next/image";
 
 const OVEN_IMAGE_SRC = "/images/oven.jpg";
 
 const PILLARS = [
   {
-    icon: "bakery_dining",
+    icon: Wheat,
     iconClassName: "bg-primary-fixed text-primary",
     title: "Authentic Slow-Fermented Dough",
     description:
       "48-hour cold fermentation process for maximum digestibility, airy crust, and crispy honeycomb texture.",
   },
   {
-    icon: "agriculture",
+    icon: Tractor,
     iconClassName: "bg-tertiary-fixed text-tertiary",
     title: "Farm-to-Oven Fresh Ingredients",
     description:
       "D.O.P San Marzano tomatoes, local pasture-raised dairy, and authentic imported Italian cured meats.",
   },
   {
-    icon: "publish",
+    icon: Upload,
     iconClassName: "bg-secondary-fixed text-secondary",
     title: "30-Min Heat-Insulated Express",
     description:
       "Custom thermal chamber backpacks ensuring your pie arrives at scorching 75°C oven temperature.",
   },
   {
-    icon: "military_tech",
+    icon: Medal,
     iconClassName: "bg-crust-gold/20 text-charcoal-dark",
     title: "Master Artisan Pizzaiolos",
     description:
@@ -55,16 +56,18 @@ const METRICS = [
 export function WhyChooseSection() {
   return (
     <section className="w-full py-space-xl bg-dough-canvas">
-      <div className="max-w-7xl mx-auto px-margin">
+      <div className="max-w-7xl mx-auto px-margin py-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-center">
           <div className="lg:col-span-5 relative">
-            <div className="rounded-3xl overflow-hidden shadow-2xl relative">
-              <img
+            <div className="rounded-3xl overflow-hidden shadow-2xl relative h-120">
+              <Image
                 alt="Pizzaiolo in a white apron sliding an artisanal dough pizza on a long wooden peel into a blazing brick wood-fired dome oven glowing with yellow and red embers."
-                className="w-full h-[480px] object-cover"
+                className="object-cover"
+                fill
+                sizes="(min-width: 1024px) 480px, 100vw"
                 src={OVEN_IMAGE_SRC}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-charcoal-dark/70 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-charcoal-dark/70 via-transparent to-transparent" />
               <div className="absolute bottom-6 left-6 right-6 text-on-primary">
                 <span className="font-label-sm text-label-sm uppercase tracking-widest text-crust-gold font-bold">
                   The Heritage Kitchen
@@ -75,9 +78,9 @@ export function WhyChooseSection() {
               </div>
             </div>
 
-            <div className="absolute -bottom-6 -right-4 bg-surface-container-lowest rounded-2xl p-space-md shadow-xl max-w-[210px] hidden sm:block">
+            <div className="absolute -bottom-6 -right-4 bg-surface-container-lowest rounded-2xl p-space-md shadow-xl max-w-52.5 hidden sm:block">
               <div className="flex items-center gap-space-xs text-primary font-headline-md text-headline-md font-bold">
-                <span className="material-symbols-outlined text-2xl">timer</span>
+                <Timer size={24} />
                 <span>48 Hours</span>
               </div>
               <span className="font-label-sm text-label-sm text-on-surface-variant">
@@ -110,9 +113,7 @@ export function WhyChooseSection() {
                   <div
                     className={`w-10 h-10 rounded-xl flex items-center justify-center mb-space-xs ${pillar.iconClassName}`}
                   >
-                    <span className="material-symbols-outlined text-xl">
-                      {pillar.icon}
-                    </span>
+                    <pillar.icon size={20} />
                   </div>
                   <h3 className="font-title-md text-title-md font-bold text-charcoal-dark">
                     {pillar.title}

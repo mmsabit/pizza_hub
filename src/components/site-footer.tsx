@@ -1,3 +1,6 @@
+import { Globe, Leaf, MessageCircle, Navigation, Pizza, ThumbsUp } from "lucide-react";
+import Link from "next/link";
+
 const CRUST_MENU = [
   "Classic Margherita",
   "Double Pepperoni Picante",
@@ -15,48 +18,21 @@ const PIZZERIA_HUBS = [
 ];
 
 const SOCIALS = [
-  { icon: "public", label: "Website" },
-  { icon: "chat", label: "Chat with us" },
-  { icon: "thumb_up", label: "Like us" },
+  { icon: Globe, label: "Website" },
+  { icon: MessageCircle, label: "Chat with us" },
+  { icon: ThumbsUp, label: "Like us" },
 ];
 
 export function SiteFooter() {
   return (
     <footer className="w-full bg-charcoal-dark text-surface-container-high pt-space-xl pb-space-lg">
       <div className="max-w-7xl mx-auto px-margin">
-        <div className="bg-surface-container-high/10 rounded-xl p-space-lg mb-space-xl flex flex-col md:flex-row items-center justify-between gap-space-md">
-          <div className="space-y-space-xs">
-            <span className="text-crust-gold font-label-sm text-label-sm uppercase tracking-wider">
-              Wood-Fired Insider Club
-            </span>
-            <h3 className="font-headline-sm text-headline-sm text-surface-container-lowest font-bold">
-              Get $10 off your first artisanal bake
-            </h3>
-            <p className="font-body-md text-body-md text-surface-dim">
-              Weekly secret recipes, VIP chef drops, and flash coupon perks.
-            </p>
-          </div>
-          <div className="w-full md:w-auto flex flex-col sm:flex-row items-center gap-space-sm">
-            <input
-              className="w-full sm:w-80 px-space-md py-space-sm rounded-lg bg-surface-container-lowest text-on-surface text-body-md focus:outline-none focus:ring-2 focus:ring-secondary-container"
-              placeholder="Enter your email address"
-              type="email"
-            />
-            <button
-              className="w-full sm:w-auto px-space-lg py-space-sm rounded-lg bg-primary-container hover:bg-primary text-on-primary-container font-label-lg text-label-lg transition-colors whitespace-nowrap"
-              type="button"
-            >
-              Claim $10 Voucher
-            </button>
-          </div>
-        </div>
+        
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-space-xl mb-space-xl">
           <div className="lg:col-span-2 space-y-space-md">
             <div className="flex items-center gap-space-sm">
-              <span className="material-symbols-outlined text-primary-container text-2xl">
-                local_pizza
-              </span>
+              <Pizza className="text-primary-container" size={24} />
               <span className="font-headline-md text-headline-md font-bold text-surface-container-lowest">
                 PizzaHub
               </span>
@@ -67,16 +43,14 @@ export function SiteFooter() {
             </p>
             <div className="flex items-center gap-space-sm pt-space-xs">
               {SOCIALS.map((social) => (
-                <a
-                  key={social.icon}
+                <Link
+                  key={social.label}
                   aria-label={social.label}
                   className="w-10 h-10 rounded-full bg-surface-container-high/10 hover:bg-primary-container hover:text-on-primary-container flex items-center justify-center text-surface-container-lowest transition-colors"
                   href="#"
                 >
-                  <span className="material-symbols-outlined text-lg">
-                    {social.icon}
-                  </span>
-                </a>
+                  <social.icon size={18} />
+                </Link>
               ))}
             </div>
           </div>
@@ -91,9 +65,9 @@ export function SiteFooter() {
                   key={item}
                   className="hover:text-crust-gold transition-colors"
                 >
-                  <a data-path="explore-menu" href="#">
+                  <Link data-path="explore-menu" href="#">
                     {item}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -106,9 +80,9 @@ export function SiteFooter() {
             <ul className="space-y-space-xs text-body-md font-body-md">
               {PIZZERIA_HUBS.map((hub) => (
                 <li key={hub} className="hover:text-crust-gold transition-colors">
-                  <a data-path="branch-locations" href="#">
+                  <Link data-path="branch-locations" href="#">
                     {hub}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -122,16 +96,14 @@ export function SiteFooter() {
               <p className="font-body-md text-body-md text-surface-dim">
                 Waiting on your steaming oven delivery?
               </p>
-              <a
+              <Link
                 className="inline-flex items-center gap-space-xs px-space-md py-space-xs rounded-lg bg-secondary-container hover:bg-crust-gold text-charcoal-dark font-label-lg text-label-lg transition-colors"
                 data-path="delivery-tracking"
                 href="#"
               >
-                <span className="material-symbols-outlined text-base">
-                  near_me
-                </span>
+                <Navigation size={16} />
                 <span>Live Delivery Map</span>
-              </a>
+              </Link>
               <div className="pt-space-xs">
                 <span className="text-label-sm font-label-sm text-surface-dim block">
                   Direct Kitchen Line:
@@ -146,9 +118,7 @@ export function SiteFooter() {
 
         <div className="pt-space-lg flex flex-col md:flex-row items-center justify-between text-surface-dim text-body-md gap-space-md">
           <div className="flex items-center gap-space-xs">
-            <span className="material-symbols-outlined text-basil-fresh text-base">
-              eco
-            </span>
+            <Leaf className="text-basil-fresh" size={16} />
             <span>Artisanal Ingredients Verified • Zero Artificial Preservatives</span>
           </div>
           <div className="text-label-sm font-label-sm">

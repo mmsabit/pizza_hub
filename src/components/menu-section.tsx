@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-img-element */
+import Image from "next/image";
 
 const CATEGORIES = [
   "ALL",
@@ -26,7 +26,7 @@ const MENU_ITEMS = [
       "Handcrafted craft rum served chilled over crushed ice with fresh lime wedges.",
     price: "$20.50",
     image: "/images/menu-rum.jpg",
-    imageClassName: "h-52 w-auto object-contain p-2",
+    imageClassName: "object-contain p-2",
     frameClassName: "bg-surface-container-high/10",
   },
   {
@@ -55,7 +55,7 @@ export function MenuSection() {
       className="w-full py-space-xl bg-charcoal-dark text-surface-container-lowest"
       id="featured-menu"
     >
-      <div className="max-w-7xl mx-auto px-margin">
+      <div className="max-w-7xl mx-auto px-margin py-20">
         <div className="text-center max-w-2xl mx-auto mb-space-xl">
           <span className="text-secondary-container font-bold text-headline-sm italic tracking-wide block mb-1">
             Fresh From PizzaHub
@@ -86,18 +86,20 @@ export function MenuSection() {
           {MENU_ITEMS.map((item) => (
             <div key={item.name} className="flex flex-col items-center group">
               <div
-                className={`w-56 h-56 rounded-full overflow-hidden mb-space-md shadow-2xl transition-transform duration-500 group-hover:scale-105 flex items-center justify-center ${item.frameClassName}`}
+                className={`relative w-56 h-56 rounded-full overflow-hidden mb-space-md shadow-2xl transition-transform duration-500 group-hover:scale-105 flex items-center justify-center ${item.frameClassName}`}
               >
-                <img
+                <Image
                   alt={item.name}
                   className={item.imageClassName}
+                  fill
+                  sizes="224px"
                   src={item.image}
                 />
               </div>
               <h3 className="font-title-md font-bold text-surface-container-lowest uppercase tracking-wider text-base">
                 {item.name}
               </h3>
-              <p className="font-body-md text-surface-dim text-xs mt-2 max-w-[220px] leading-relaxed">
+              <p className="font-body-md text-surface-dim text-xs mt-2 max-w-55 leading-relaxed">
                 {item.description}
               </p>
               <span className="text-secondary-container font-bold text-headline-sm font-headline-sm mt-3">

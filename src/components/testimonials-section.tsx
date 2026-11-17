@@ -1,4 +1,4 @@
-const STAR_STYLE = { fontVariationSettings: '"FILL" 1' } as const;
+import { BadgeCheck, Star } from "lucide-react";
 
 const REVIEWS = [
   {
@@ -30,7 +30,7 @@ const REVIEWS = [
 export function TestimonialsSection() {
   return (
     <section className="w-full py-space-xl bg-dough-surface">
-      <div className="max-w-7xl mx-auto px-margin">
+      <div className="max-w-7xl mx-auto px-margin py-20">
         <div className="text-center max-w-xl mx-auto mb-space-lg">
           <span className="text-primary font-label-sm text-label-sm uppercase tracking-wider font-bold">
             Pizza Addict Praise
@@ -54,19 +54,16 @@ export function TestimonialsSection() {
                 <div className="flex items-center justify-between mb-space-sm">
                   <div className="flex text-crust-gold">
                     {Array.from({ length: 5 }).map((_, index) => (
-                      <span
+                      <Star
                         key={index}
-                        className="material-symbols-outlined text-base"
-                        style={STAR_STYLE}
-                      >
-                        star
-                      </span>
+                        fill="currentColor"
+                        size={16}
+                        strokeWidth={0}
+                      />
                     ))}
                   </div>
                   <span className="px-2 py-0.5 rounded-full bg-tertiary-fixed text-tertiary font-label-sm text-label-sm font-bold flex items-center gap-1">
-                    <span className="material-symbols-outlined text-xs">
-                      verified
-                    </span>
+                    <BadgeCheck size={12} />
                     <span>Verified Order</span>
                   </span>
                 </div>

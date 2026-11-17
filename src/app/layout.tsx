@@ -28,20 +28,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${epilogue.variable} ${jakarta.variable} h-full antialiased`}
     >
-      <head>
-        <link href="https://fonts.googleapis.com" rel="preconnect" />
-        <link
-          crossOrigin="anonymous"
-          href="https://fonts.gstatic.com"
-          rel="preconnect"
-        />
-        {/* Icon font for the Material Symbols used across the page. */}
-        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
-        <link
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
-          rel="stylesheet"
-        />
-      </head>
       <body className="min-h-full bg-dough-canvas font-body-md text-body-md text-on-surface antialiased">
         {children}
       </body>

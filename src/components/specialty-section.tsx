@@ -1,4 +1,5 @@
-/* eslint-disable @next/next/no-img-element */
+import Image from "next/image";
+import Link from "next/link";
 
 const SPECIALITIES = [
   {
@@ -18,7 +19,7 @@ const SPECIALITIES = [
 export function SpecialtySection() {
   return (
     <section
-      className="w-full py-space-xl bg-surface-container-lowest border-b border-surface-container-high relative overflow-hidden"
+      className="w-full py-space-xl bg-surface-container-lowest  relative overflow-hidden "
       id="featured-specials"
     >
       <div className="absolute top-0 left-0 right-0 w-full pointer-events-none z-10 select-none overflow-hidden leading-none">
@@ -55,7 +56,7 @@ export function SpecialtySection() {
         </svg>
       </div>
 
-      <div className="max-w-7xl mx-auto px-margin relative z-20">
+      <div className="max-w-7xl mx-auto px-margin relative z-20 h-[70vh] flex flex-col justify-center ">
         <div className="text-center mb-space-xl">
           <span className="text-secondary-container font-headline-sm italic font-bold tracking-wide block mb-1">
             Fresh From PizzaHub
@@ -65,13 +66,15 @@ export function SpecialtySection() {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-space-xl max-w-5xl mx-auto text-center items-center justify-center">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-space-xl max-w-5xl mx-auto text-center items-center justify-center w-full">
           {SPECIALITIES.map((item) => (
             <div key={item.name} className="flex flex-col items-center group">
-              <div className="w-56 h-56 rounded-full overflow-hidden shadow-lg mb-space-md bg-dough-surface transition-transform duration-300 group-hover:scale-105">
-                <img
+              <div className="relative w-58 h-58 rounded-full overflow-hidden shadow-lg mb-space-md bg-dough-surface transition-transform duration-300 group-hover:scale-105">
+                <Image
                   alt={item.name}
-                  className="w-full h-full object-cover rounded-full"
+                  className="object-cover rounded-full"
+                  fill
+                  sizes="2000px"
                   src={item.image}
                 />
               </div>
@@ -83,12 +86,12 @@ export function SpecialtySection() {
         </div>
 
         <div className="mt-space-xl flex justify-center">
-          <a
+          <Link
             className="px-space-xl py-2.5 rounded-full bg-secondary-container hover:bg-crust-gold text-on-secondary font-label-md font-bold text-xs uppercase tracking-widest shadow-md transition-all hover:shadow-lg inline-flex items-center justify-center"
             href="#featured-menu"
           >
             VIEW MORE
-          </a>
+          </Link>
         </div>
       </div>
 
