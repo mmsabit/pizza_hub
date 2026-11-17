@@ -1,0 +1,149 @@
+/* eslint-disable @next/next/no-img-element */
+
+const OVEN_IMAGE_SRC = "/images/oven.jpg";
+
+const PILLARS = [
+  {
+    icon: "bakery_dining",
+    iconClassName: "bg-primary-fixed text-primary",
+    title: "Authentic Slow-Fermented Dough",
+    description:
+      "48-hour cold fermentation process for maximum digestibility, airy crust, and crispy honeycomb texture.",
+  },
+  {
+    icon: "agriculture",
+    iconClassName: "bg-tertiary-fixed text-tertiary",
+    title: "Farm-to-Oven Fresh Ingredients",
+    description:
+      "D.O.P San Marzano tomatoes, local pasture-raised dairy, and authentic imported Italian cured meats.",
+  },
+  {
+    icon: "publish",
+    iconClassName: "bg-secondary-fixed text-secondary",
+    title: "30-Min Heat-Insulated Express",
+    description:
+      "Custom thermal chamber backpacks ensuring your pie arrives at scorching 75°C oven temperature.",
+  },
+  {
+    icon: "military_tech",
+    iconClassName: "bg-crust-gold/20 text-charcoal-dark",
+    title: "Master Artisan Pizzaiolos",
+    description:
+      "Certified regional pizzaiolos hand-stretching every pie on volcanic stone decks with real firewood.",
+  },
+];
+
+const METRICS = [
+  { value: "99.8%", label: "On-Time Delivery", valueClassName: "text-primary" },
+  {
+    value: "50k+",
+    label: "Monthly Happy Foodies",
+    valueClassName: "text-secondary",
+  },
+  {
+    value: "450°C",
+    label: "Stone Deck Baking",
+    valueClassName: "text-crust-gold",
+  },
+  {
+    value: "100%",
+    label: "Natural Fresh Produce",
+    valueClassName: "text-tertiary",
+  },
+];
+
+export function WhyChooseSection() {
+  return (
+    <section className="w-full py-space-xl bg-dough-canvas">
+      <div className="max-w-7xl mx-auto px-margin">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-center">
+          <div className="lg:col-span-5 relative">
+            <div className="rounded-3xl overflow-hidden shadow-2xl relative">
+              <img
+                alt="Pizzaiolo in a white apron sliding an artisanal dough pizza on a long wooden peel into a blazing brick wood-fired dome oven glowing with yellow and red embers."
+                className="w-full h-[480px] object-cover"
+                src={OVEN_IMAGE_SRC}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-charcoal-dark/70 via-transparent to-transparent" />
+              <div className="absolute bottom-6 left-6 right-6 text-on-primary">
+                <span className="font-label-sm text-label-sm uppercase tracking-widest text-crust-gold font-bold">
+                  The Heritage Kitchen
+                </span>
+                <h4 className="font-headline-sm text-headline-sm font-bold text-surface-container-lowest">
+                  Volcanic Stone Deck Baking at 450°C
+                </h4>
+              </div>
+            </div>
+
+            <div className="absolute -bottom-6 -right-4 bg-surface-container-lowest rounded-2xl p-space-md shadow-xl max-w-[210px] hidden sm:block">
+              <div className="flex items-center gap-space-xs text-primary font-headline-md text-headline-md font-bold">
+                <span className="material-symbols-outlined text-2xl">timer</span>
+                <span>48 Hours</span>
+              </div>
+              <span className="font-label-sm text-label-sm text-on-surface-variant">
+                Cold Sourdough Fermentation for Crisp &amp; Light Crust
+              </span>
+            </div>
+          </div>
+
+          <div className="lg:col-span-7 space-y-space-lg">
+            <div>
+              <span className="text-primary font-label-sm text-label-sm uppercase tracking-wider font-bold">
+                The Neapolitan Standard
+              </span>
+              <h2 className="font-headline-lg text-headline-lg font-extrabold text-charcoal-dark mt-1">
+                Why Choose PizzaHub?
+              </h2>
+              <p className="font-body-lg text-body-lg text-on-surface-variant mt-2">
+                We reject frozen industrial commissary dough. Every PizzaHub
+                partner oven upholds strict Neapolitan culinary principles with
+                uncompromising ingredient integrity.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+              {PILLARS.map((pillar) => (
+                <div
+                  key={pillar.title}
+                  className="bg-surface-container-lowest p-space-md rounded-2xl shadow-sm"
+                >
+                  <div
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center mb-space-xs ${pillar.iconClassName}`}
+                  >
+                    <span className="material-symbols-outlined text-xl">
+                      {pillar.icon}
+                    </span>
+                  </div>
+                  <h3 className="font-title-md text-title-md font-bold text-charcoal-dark">
+                    {pillar.title}
+                  </h3>
+                  <p className="font-body-md text-body-md text-on-surface-variant mt-1">
+                    {pillar.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-space-sm pt-space-xs">
+              {METRICS.map((metric) => (
+                <div
+                  key={metric.label}
+                  className="bg-surface-container-low rounded-xl p-space-sm text-center"
+                >
+                  <span
+                    className={`font-headline-md text-headline-md font-extrabold block ${metric.valueClassName}`}
+                  >
+                    {metric.value}
+                  </span>
+                  <span className="font-label-sm text-label-sm text-on-surface-variant">
+                    {metric.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
