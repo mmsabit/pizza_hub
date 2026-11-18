@@ -79,7 +79,11 @@ export function SiteHeader() {
               </span>
             </div>
           </Link>
-          <div className="flex items-center gap-space-xs cursor-pointer">
+          <Link
+            aria-label="Open dashboard"
+            className="flex items-center gap-space-xs cursor-pointer"
+            href="/dashboard"
+          >
             <Image
               alt="Profile"
               className="w-8 h-8 rounded-full object-cover"
@@ -91,7 +95,7 @@ export function SiteHeader() {
               className="text-on-surface-variant hidden sm:block"
               size={14}
             />
-          </div>
+          </Link>
           <div className="flex items-center gap-space-xs">
             <Link
               aria-label="Sign in"
