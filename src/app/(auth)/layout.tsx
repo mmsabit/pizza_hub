@@ -6,8 +6,8 @@ import { ToastContainer } from "react-toastify";
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-charcoal-dark">
-      <div className="pointer-events-none absolute -top-40 -left-32 h-[30rem] w-[30rem] rounded-full bg-primary-container/25 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-40 -right-32 h-[32rem] w-[32rem] rounded-full bg-secondary-container/20 blur-3xl" />
+      <div className="pointer-events-none absolute -top-40 -left-32 h-120 w-120 rounded-full bg-primary-container/25 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-40 -right-32 h-128 w-lg rounded-full bg-secondary-container/20 blur-3xl" />
       <div className="pointer-events-none absolute top-1/3 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-crust-gold/10 blur-3xl" />
 
       <div className="relative z-10 flex min-h-screen flex-col">

@@ -1,6 +1,6 @@
-import { ChevronDown, LogIn, Pizza, Search, UserPlus } from "lucide-react";
-import Image from "next/image";
+import { Pizza, Search } from "lucide-react";
 import Link from "next/link";
+import SiteHeaderBtn from "./site-headerBtn";
 
 const NAV_LINKS = [
   { label: "Home", href: "#", active: true },
@@ -9,9 +9,7 @@ const NAV_LINKS = [
   { label: "Combos", href: "#", active: false },
 ];
 
-const PROFILE_SRC = "/images/avatar.jpg";
-
-export function SiteHeader() {
+export function SiteHeader() {  
   return (
     <header className="sticky  top-0 z-50 bg-dough-surface/95 backdrop-blur-md shadow-[0_4px_20px_rgba(253,157,62,0.08)]">
       <div className="h-20 max-w-7xl mx-auto px-margin flex items-center justify-between gap-space-sm md:gap-space-md">
@@ -79,41 +77,7 @@ export function SiteHeader() {
               </span>
             </div>
           </Link>
-          <Link
-            aria-label="Open dashboard"
-            className="flex items-center gap-space-xs cursor-pointer"
-            href="/dashboard"
-          >
-            <Image
-              alt="Profile"
-              className="w-8 h-8 rounded-full object-cover"
-              height={32}
-              src={PROFILE_SRC}
-              width={32}
-            />
-            <ChevronDown
-              className="text-on-surface-variant hidden sm:block"
-              size={14}
-            />
-          </Link>
-          <div className="flex items-center gap-space-xs">
-            <Link
-              aria-label="Sign in"
-              className="inline-flex items-center gap-space-xs whitespace-nowrap rounded-full bg-primary-container px-space-xs py-space-xs font-label-md text-label-md text-on-primary-container shadow-[0_4px_16px_rgba(211,47,47,0.18)] transition-all hover:bg-primary sm:px-space-sm"
-              href="/sign-in"
-            >
-              <LogIn size={14} />
-              <span className="hidden xl:inline">Sign In</span>
-            </Link>
-            <Link
-              aria-label="Sign up"
-              className="inline-flex items-center gap-space-xs whitespace-nowrap rounded-full border border-outline-variant px-space-xs py-space-xs font-label-md text-label-md text-on-surface-variant transition-colors hover:border-primary hover:text-primary sm:px-space-sm"
-              href="/sign-up"
-            >
-              <UserPlus size={14} />
-              <span className="hidden xl:inline">Sign Up</span>
-            </Link>
-          </div>
+          <SiteHeaderBtn/>
         </div>
       </div>
     </header>

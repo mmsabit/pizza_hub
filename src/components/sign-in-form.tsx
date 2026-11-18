@@ -7,7 +7,7 @@ import { toast, Bounce } from "react-toastify";
 
 export function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
-const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formData = new FormData(e.target);
@@ -55,10 +55,7 @@ const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
   };
 
   return (
-    <form
-      className="space-y-space-md"
-      onSubmit={handleSubmit}
-    >
+    <form className="space-y-space-md" onSubmit={handleSubmit}>
       <div className="space-y-space-xs">
         <label
           className="block font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-bold"
@@ -139,7 +136,6 @@ const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         <span>Sign in to PizzaHub</span>
         <ArrowRight size={18} />
       </button>
-
     </form>
   );
 }

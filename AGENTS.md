@@ -35,7 +35,8 @@ Put new pages inside one of these groups (e.g. `(site)/menu/page.tsx`). Do **not
 
 ## Images and icons
 
-- Every image goes through `next/image`, from local files in `public/images/` (`hero-pizza.jpg`, `oven.jpg`, `avatar.jpg`, `menu-*.jpg`). There is no `images.remotePatterns`, so remote URLs fail — download assets locally instead.
+- Every image goes through `next/image`. Bundled assets live in `public/images/` (`hero-pizza.jpg`, `oven.jpg`, `avatar.jpg`, `menu-*.jpg`).
+- `next.config.ts` sets `images.remotePatterns` to `hostname: "**"` for both `http` and `https`, so any remote URL (e.g. a user's avatar CDN) is accepted by the optimizer. Don't remove it — signed-in avatars come from arbitrary external hosts.
 - `fill` needs a positioned, sized parent (`relative h-*` or an aspect ratio), plus `sizes`.
 - Icons are `lucide-react` only. The Material Symbols font was removed — do not reintroduce `material-symbols-outlined` spans or icon-font `<link>` tags.
 - Lists of features hold component references (`icon: Flame`, rendered as `<item.icon size={20} />`) rather than icon-name strings; keep that pattern.

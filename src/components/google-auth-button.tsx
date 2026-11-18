@@ -1,33 +1,45 @@
 "use client";
 
-import { useState } from "react";
+import { authClient } from "@/lib/auth-client";
+import { toast, Bounce } from "react-toastify";
 
 type GoogleAuthButtonProps = {
   label: string;
 };
 
 export function GoogleAuthButton({ label }: GoogleAuthButtonProps) {
-  const [clicked, setClicked] = useState(false);
+  const submitGoogle = async() =>{
+    const data = await authClient.signIn.social({
+      provider: "google",
+    });
+
+     if (data) {
+      toast.success("Successfully signed in with google", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+  }
+}
 
   return (
     <div className="space-y-space-sm">
       <button
         className="inline-flex w-full items-center justify-center gap-space-sm rounded-xl border border-outline-variant bg-surface-container-lowest px-space-lg py-space-md font-label-lg text-label-lg text-charcoal-dark transition-all hover:border-outline hover:bg-surface-container-low"
-        onClick={() => setClicked(true)}
+        onClick={submitGoogle}
         type="button"
       >
         <GoogleMark />
         <span>{label}</span>
       </button>
 
-      {clicked ? (
-        <p
-          aria-live="polite"
-          className="rounded-xl bg-secondary-fixed px-space-md py-space-sm font-body-md text-body-md text-on-secondary-fixed-variant"
-        >
-          Demo only — Google sign-in isn&apos;t connected yet.
-        </p>
-      ) : null}
+      
     </div>
   );
 }
@@ -36,7 +48,7 @@ function GoogleMark() {
   return (
     <svg
       aria-hidden="true"
-      className="h-[18px] w-[18px] shrink-0"
+      className="h-4.5 w-4.5 shrink-0"
       viewBox="0 0 48 48"
       xmlns="http://www.w3.org/2000/svg"
     >

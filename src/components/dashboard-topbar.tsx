@@ -39,20 +39,7 @@ export function DashboardTopbar() {
           >
             <Bell size={18} />
             <span className="absolute right-2.5 top-2.5 h-1.5 w-1.5 rounded-full bg-primary-container" />
-          </button>
-
-          <div className="flex items-center gap-space-sm rounded-full border border-surface-container-high py-1 pl-1 pr-space-sm">
-            <Image
-              alt="Profile"
-              className="h-8 w-8 rounded-full object-cover"
-              height={32}
-              src={PROFILE_SRC}
-              width={32}
-            />
-            <span className="hidden font-label-lg text-label-lg text-charcoal-dark sm:inline">
-              Elena
-            </span>
-          </div>
+          </button>         
         </div>
       </div>
     </header>
