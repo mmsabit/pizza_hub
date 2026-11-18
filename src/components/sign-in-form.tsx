@@ -1,19 +1,63 @@
 "use client";
 
+import { authClient } from "@/lib/auth-client";
 import { ArrowRight, Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { useState } from "react";
+import { toast, Bounce } from "react-toastify";
 
 export function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const user = Object.fromEntries(formData.entries()) as Record<
+      string,
+      string
+    >;
+
+    console.log(user.remember);
+
+    const { data, error } = await authClient.signIn.email({
+      email: user.email,
+      password: user.password,
+      callbackURL: "/",
+      rememberMe: user.remember === "on",
+    });
+
+    if (data) {
+      toast.success("Successfully signed in", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    }
+
+    if (error) {
+      toast.error(error.message, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    }
+  };
 
   return (
     <form
       className="space-y-space-md"
-      onSubmit={(event) => {
-        event.preventDefault();
-        setSubmitted(true);
-      }}
+      onSubmit={handleSubmit}
     >
       <div className="space-y-space-xs">
         <label
@@ -96,14 +140,6 @@ export function SignInForm() {
         <ArrowRight size={18} />
       </button>
 
-      {submitted ? (
-        <p
-          aria-live="polite"
-          className="rounded-xl bg-secondary-fixed px-space-md py-space-sm font-body-md text-body-md text-on-secondary-fixed-variant"
-        >
-          Demo only — no authentication backend is connected yet.
-        </p>
-      ) : null}
     </form>
   );
 }

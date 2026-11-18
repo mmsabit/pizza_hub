@@ -1,6 +1,7 @@
 import { Pizza } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { ToastContainer } from "react-toastify";
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
@@ -38,6 +39,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
           © 2025 PizzaHub Crust Co. • Artisanal Ingredients Verified
         </footer>
       </div>
+      <ToastContainer />
     </div>
   );
 }

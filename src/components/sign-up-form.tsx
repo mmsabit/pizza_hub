@@ -13,7 +13,9 @@ import {
   User,
   UserPlus,
 } from "lucide-react";
+import { redirect } from "next/navigation";
 import { useState } from "react";
+import { Bounce, toast } from "react-toastify";
 
 const FIELD_CLASS =
   "w-full rounded-xl border border-outline-variant/60 bg-surface-container-low py-space-sm text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary-container focus:border-primary-container transition-shadow";
@@ -55,7 +57,6 @@ const PASSWORD_RULES = [
 export function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
-  const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
@@ -68,10 +69,9 @@ export function SignUpForm() {
 
     if (userData.password !== userData.confirmPassword) {
       setError("Those passwords don't match. Please try again.");
-      setSubmitted(false);
+
       return;
     }
-
     const { data, error } = await authClient.signUp.email({
       name: userData.name,
       email: userData.email,
@@ -83,13 +83,23 @@ export function SignUpForm() {
 
     if (data) {
       setError("");
-      setSubmitted(true);
-      return;
+      toast.success("Successfully signed up", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+
+      redirect("/");
     }
 
     if (error) {
       setError(error?.message as string);
-      setSubmitted(false);
       return;
     }
   };
@@ -300,15 +310,6 @@ export function SignUpForm() {
         <UserPlus size={18} />
         <span>Create my account</span>
       </button>
-
-      {submitted ? (
-        <p
-          aria-live="polite"
-          className="rounded-xl bg-secondary-fixed px-space-md py-space-sm font-body-md text-body-md text-on-secondary-fixed-variant"
-        >
-          Demo only — no authentication backend is connected yet.
-        </p>
-      ) : null}
     </form>
   );
 }
