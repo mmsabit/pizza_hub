@@ -84,20 +84,12 @@ export function MenuFormModal({
       vendor: {
         id: String(data.get("vendorId") ?? ""),
         name: String(data.get("vendorName") ?? ""),
-        email: String(data.get("vendorEmail") ?? ""),
+        image: String(data.get("vendorImage") ?? ""),
       },
       image: imageUrl,
     };
 
     if (!menu.name || Number.isNaN(menu.price)) return;
-
-    if (imageFile instanceof File && imageFile.size > 0) {
-      console.log("Selected image", {
-        name: imageFile.name,
-        type: imageFile.type,
-        size: imageFile.size,
-      });
-    }
 
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/menus`, {
       method: "POST",

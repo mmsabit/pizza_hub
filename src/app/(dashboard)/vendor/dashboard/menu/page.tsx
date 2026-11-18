@@ -14,5 +14,9 @@ export default async function MenuPage() {
     headers: await headers() 
 })
 const user = session?.user
-  return <MenuManager userName={user?.name ?? ""} userImage={user?.image ?? ""} userId={user?.id??""}/>;
+
+const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/menus/${user?.id}`);
+const data = await res.json();
+
+  return <MenuManager userName={user?.name ?? ""} userImage={user?.image ?? ""} userId={user?.id??""} ITEMS = {data}/>;
 }

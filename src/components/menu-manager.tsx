@@ -4,46 +4,10 @@ import { Plus } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { MenuFormModal } from "./menu-form-modal";
-import type { MenuItem } from "@/lib/menu";
+import { PizzaType } from "@/app/type/type";
 
-const ITEMS: MenuItem[] = [
-  {
-    id: "margherita",
-    name: "Margherita",
-    category: "Classic Pizzas",
-    description: "San Marzano tomato, fior di latte and torn basil on a 48-hour dough.",
-    price: 14.5,
-    image: "/images/menu-margherita.jpg",
-    available: true,
-  },
-  {
-    id: "pepperoni",
-    name: "Double Pepperoni Picante",
-    category: "Meat Lovers",
-    description: "Cup-and-char pepperoni, chilli honey and smoked mozzarella.",
-    price: 16,
-    image: "/images/menu-seafood.jpg",
-    available: true,
-  },
-  {
-    id: "mushroom",
-    name: "Truffle Wild Mushroom",
-    category: "Vegetarian Pizzas",
-    description: "Wild mushrooms, truffle cream and thyme on a garlic-white base.",
-    price: 18.75,
-    image: "/images/menu-caesar.jpg",
-    available: true,
-  },
-  {
-    id: "brisket",
-    name: "Smoky BBQ Brisket",
-    category: "Gourmet Pizzas",
-    description: "Slow-braised brisket, red onion and a bourbon BBQ drizzle.",
-    price: 19.5,
-    image: "/images/menu-rum.jpg",
-    available: false,
-  },
-];
+
+
 
 const formatPrice = (price: number) => `$${price.toFixed(2)}`;
 
@@ -78,9 +42,10 @@ interface MenuManagerProps {
   userName: string;
   userImage: string;
   userId:string;
+  ITEMS: PizzaType[];
 }
 
-export function MenuManager({userName, userImage,userId}:MenuManagerProps) {
+export function MenuManager({userName, userImage,userId, ITEMS}:MenuManagerProps) {
   const [formOpen, setFormOpen] = useState(false);
   const availableCount = ITEMS.filter((item) => item.available).length;
 
@@ -122,7 +87,7 @@ export function MenuManager({userName, userImage,userId}:MenuManagerProps) {
         <ul className="divide-y divide-surface-container-high">
           {ITEMS.map((item) => (
             <li
-              key={item.id}
+              key={item._id}
               className="flex flex-wrap items-center gap-space-sm px-space-md py-space-md transition-colors hover:bg-surface-container-low"
             >
               <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl bg-surface-container-low">
@@ -139,9 +104,9 @@ export function MenuManager({userName, userImage,userId}:MenuManagerProps) {
                 <p className="truncate font-label-lg text-label-lg font-bold text-charcoal-dark">
                   {item.name}
                 </p>
-                <p className="truncate font-label-sm text-label-sm text-on-surface-variant">
+                {/* <p className="truncate font-label-sm text-label-sm text-on-surface-variant">
                   {item.description || "No description yet."}
-                </p>
+                </p> */}
               </div>
 
               <span className="hidden w-44 shrink-0 sm:block">
