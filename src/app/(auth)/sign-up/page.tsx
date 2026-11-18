@@ -12,41 +12,80 @@ export const metadata: Metadata = {
 };
 
 const PERKS = [
-  { icon: Gift, label: "$10 off your first order" },
-  { icon: Truck, label: "Free delivery over $25" },
-  { icon: Flame, label: "Members-only oven specials" },
+  {
+    icon: Gift,
+    title: "$10 off your first order",
+    description: "A welcome credit lands in your account the moment you join.",
+  },
+  {
+    icon: Truck,
+    title: "Free delivery over $25",
+    description: "Every basket above $25 ships free across all boroughs.",
+  },
+  {
+    icon: Flame,
+    title: "Members-only oven specials",
+    description: "Early access to seasonal pies and stone-oven experiments.",
+  },
 ];
 
 export default function SignUpPage() {
   return (
-    <div className="w-full max-w-2xl overflow-hidden rounded-3xl bg-surface-container-lowest shadow-2xl shadow-black/40">
-      <div className="relative h-44 sm:h-52">
+    <div className="grid w-full max-w-5xl overflow-hidden rounded-3xl bg-surface-container-lowest shadow-2xl shadow-black/40 lg:grid-cols-2">
+      <div className="relative hidden flex-col justify-between overflow-hidden bg-charcoal-dark p-space-xl lg:flex">
         <Image
           alt="Rustic wood-fired pizza fresh from the stone oven"
           className="object-cover"
           fill
           priority
-          sizes="(min-width: 672px) 42rem, 100vw"
+          sizes="(min-width: 1024px) 32rem, 0px"
           src="/images/hero-pizza.jpg"
         />
-        <div className="absolute inset-0 bg-linear-to-r from-charcoal-dark via-charcoal-dark/85 to-charcoal-dark/25" />
+        <div className="absolute inset-0 bg-linear-to-t from-charcoal-dark via-charcoal-dark/85 to-charcoal-dark/40" />
 
-        <div className="relative z-10 flex h-full flex-col justify-center p-space-lg sm:p-space-xl">
-          <span className="inline-flex w-fit items-center gap-space-xs rounded-full bg-crust-gold/15 px-space-sm py-space-xs font-label-sm text-label-sm uppercase tracking-widest text-crust-gold">
+        <div className="relative z-10">
+          <span className="inline-flex items-center gap-space-xs rounded-full bg-crust-gold/15 px-space-sm py-space-xs font-label-sm text-label-sm uppercase tracking-widest text-crust-gold">
             <Gift size={14} />
             Join the crust club
           </span>
-          <h1 className="mt-space-sm font-headline-lg text-headline-lg-mobile text-surface-container-lowest sm:text-headline-lg">
-            Create your PizzaHub account
-          </h1>
+          <h2 className="mt-space-md font-headline-lg text-headline-lg text-surface-container-lowest">
+            Your first pie is <span className="text-crust-gold">on us</span>.
+          </h2>
           <p className="mt-space-xs font-body-md text-body-md text-surface-container-high/80">
-            Save your favourite crusts, track deliveries live and start
-            collecting rewards from your very first pie.
+            Create an account to save your favourite crusts, track deliveries
+            live and turn every order into rewards.
           </p>
         </div>
+
+        <ul className="relative z-10 mt-space-xl space-y-space-md">
+          {PERKS.map((perk) => (
+            <li key={perk.title} className="flex items-start gap-space-sm">
+              <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-surface-container-lowest/10 text-crust-gold">
+                <perk.icon size={18} />
+              </span>
+              <div>
+                <p className="font-label-lg text-label-lg text-surface-container-lowest">
+                  {perk.title}
+                </p>
+                <p className="font-label-sm text-label-sm text-surface-container-high/70">
+                  {perk.description}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
 
-      <div className="p-space-lg sm:p-space-xl">
+      <div className="flex flex-col justify-center p-space-lg sm:p-space-xl">
+        <div className="mb-space-md space-y-space-xs">
+          <h1 className="font-headline-lg text-headline-lg text-charcoal-dark">
+            Create your account
+          </h1>
+          <p className="font-body-md text-body-md text-on-surface-variant">
+            Join 40,000+ crust lovers ordering from the oven.
+          </p>
+        </div>
+
         <GoogleAuthButton label="Sign up with Google" />
 
         <div className="my-space-md flex items-center gap-space-sm">
@@ -70,18 +109,6 @@ export default function SignUpPage() {
             Sign in instead
           </Link>
         </p>
-
-        <ul className="mt-space-md flex flex-wrap gap-space-sm">
-          {PERKS.map((perk) => (
-            <li
-              key={perk.label}
-              className="inline-flex items-center gap-space-xs rounded-full bg-surface-container-low px-space-sm py-space-xs font-label-sm text-label-sm text-on-surface-variant"
-            >
-              <perk.icon className="text-secondary" size={14} />
-              {perk.label}
-            </li>
-          ))}
-        </ul>
       </div>
     </div>
   );
