@@ -10,8 +10,11 @@ import {
   TrendingUp,
 } from "lucide-react";
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
+
+import { auth } from "@/lib/auth";
 
 export const metadata: Metadata = {
   title: "Dashboard — PizzaHub",
@@ -95,7 +98,10 @@ const REWARDS_HISTORY = [
   { label: "Order #PH-4795", points: "+18" },
 ];
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const session = await auth.api.getSession({ headers: await headers() });
+  const firstName = session?.user?.name?.split(" ")[0];
+
   return (
     <div className="space-y-space-lg">
       <header className="flex flex-wrap items-end justify-between gap-space-md">
@@ -104,7 +110,7 @@ export default function DashboardPage() {
             Tuesday, 17 November
           </p>
           <h1 className="mt-space-xs font-headline-lg text-headline-lg-mobile font-bold text-charcoal-dark sm:text-headline-lg">
-            Good evening, Elena
+            {firstName ? `Good evening, ${firstName}` : "Good evening"}
           </h1>
           <p className="font-body-md text-body-md text-on-surface-variant">
             Here&apos;s what&apos;s been cooking across your last 30 days.

@@ -1,10 +1,15 @@
 import { Bell, Pizza, Search } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 
-const PROFILE_SRC = "/images/avatar.jpg";
+import type { Role } from "@/lib/roles";
 
-export function DashboardTopbar() {
+const SEARCH_PLACEHOLDER: Record<Role, string> = {
+  user: "Search orders, crusts, riders...",
+  vendor: "Search dishes, orders, payouts...",
+  admin: "Search vendors, users, orders...",
+};
+
+export function DashboardTopbar({ role = "user" }: { role?: Role }) {
   return (
     <header className="sticky top-0 z-30 border-b border-surface-container-high bg-surface-container-lowest/90 backdrop-blur-md">
       <div className="flex h-16 items-center gap-space-md px-margin">
@@ -26,7 +31,7 @@ export function DashboardTopbar() {
           />
           <input
             className="w-full rounded-full bg-surface-container-low py-space-sm pl-10 pr-space-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary-container"
-            placeholder="Search orders, crusts, riders..."
+            placeholder={SEARCH_PLACEHOLDER[role]}
             type="text"
           />
         </div>
@@ -39,7 +44,7 @@ export function DashboardTopbar() {
           >
             <Bell size={18} />
             <span className="absolute right-2.5 top-2.5 h-1.5 w-1.5 rounded-full bg-primary-container" />
-          </button>         
+          </button>
         </div>
       </div>
     </header>

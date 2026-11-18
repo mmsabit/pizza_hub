@@ -14,10 +14,24 @@ export const auth = betterAuth({
         additionalFields: {
             role: {
                 type: ["admin", "user", "vendor"],
-                input: false,
+                // The sign-up form sends "user" or "vendor", so the field has
+                // to be writable by the client. `databaseHooks` below keeps
+                // anyone from registering as an admin.
+                input: true,
                 defaultValue: "user",
             }
         }
+    },
+    databaseHooks: {
+        user: {
+            create: {
+                before: async (user) => {
+                    const role = user.role === "vendor" ? "vendor" : "user";
+
+                    return { data: { ...user, role } };
+                },
+            },
+        },
     },
     emailAndPassword: {
         enabled: true,

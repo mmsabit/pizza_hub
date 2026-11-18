@@ -19,7 +19,7 @@ There is no test runner, no CI workflow, and no formatter config. `README.md` is
 
 - `src/app/(site)/` — storefront. `layout.tsx` adds `SiteHeader` + `SiteFooter`; `page.tsx` composes the marketing sections and owns `/`.
 - `src/app/(auth)/` — `/sign-in`, `/sign-up`. Standalone dark shell, no site header/footer.
-- `src/app/(dashboard)/` — `/dashboard`. Sidebar + topbar shell (`dashboard-sidebar.tsx`, `dashboard-topbar.tsx`).
+- `src/app/(dashboard)/` — role-gated dashboard areas. `dashboard/` (`/dashboard`, `/dashboard/menu`) is the customer area, `vendor/` (`/vendor/dashboard`, `/vendor/dashboard/menu`) the vendor area, `admin/` (`/admin/dashboard`, `/admin/dashboard/menu`) the admin area. Each area's `layout.tsx` wraps `DashboardRoleLayout` from `src/components/dashboard-role-layout.tsx`, which reads the session, redirects signed-out visitors to `/sign-in`, and redirects a mismatched role to `homeForRole()`.
 - `src/app/api/auth/[...all]/route.ts` — better-auth handler.
 
 Put new pages inside one of these groups (e.g. `(site)/menu/page.tsx`). Do **not** create `src/app/page.tsx` — `/` is owned by `(site)` and a second root page is a route conflict.
@@ -41,12 +41,15 @@ Put new pages inside one of these groups (e.g. `(site)/menu/page.tsx`). Do **not
 - Icons are `lucide-react` only. The Material Symbols font was removed — do not reintroduce `material-symbols-outlined` spans or icon-font `<link>` tags.
 - Lists of features hold component references (`icon: Flame`, rendered as `<item.icon size={20} />`) rather than icon-name strings; keep that pattern.
 
-## Auth is only half wired (better-auth)
+## Auth and roles (better-auth)
 
 - `src/lib/auth.ts` builds the better-auth instance (MongoDB adapter, DB name hardcoded as `pizza_hub`, `emailAndPassword` enabled). `src/lib/auth-client.ts` is the React client.
-- `.env` (gitignored via `.env*`) supplies `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` (`http://localhost:3000`) and `DB_URI`.
-- The UI does not use it yet: `sign-in-form.tsx`, `sign-up-form.tsx` and `google-auth-button.tsx` only display "Demo only" notices, and `socialProviders` in `auth.ts` is empty, so the Google buttons do nothing. Treat this as unfinished work, not a broken feature.
-- `auth-client.ts` reads `process.env.BETTER_AUTH_URL`, which Next does not expose to the browser (server-only var). When wiring it up, either drop `baseURL` (better-auth defaults to the current origin) or move to a `NEXT_PUBLIC_*` variable.
+- `.env` (gitignored via `.env*`) supplies `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` (`http://localhost:3000`), `DB_URI` and the Google OAuth credentials used by `socialProviders.google`.
+- `src/lib/roles.ts` is the single source of truth for `user | vendor | admin`: `normalizeRole`, `roleLabel` and `homeForRole`. The better-auth `user.additionalFields.role` field is client-writable (`input: true`) so the sign-up radio choice persists, but `databaseHooks.user.create.before` downgrades any `admin` signup to `user` — never remove that hook without a server-side check.
+- Guards live in the server layouts, not middleware: `DashboardRoleLayout` calls `auth.api.getSession({ headers: await headers() })` and `redirect()`s. Missing/unknown roles normalize to `user` to avoid redirect loops.
+- The sidebar/nav (`dashboard-nav.tsx`) is keyed by role via `NAV_BY_ROLE`, and sign-in/sign-up/header links land on `homeForRole()`.
+- `auth-client.ts` reads `process.env.BETTER_AUTH_URL`, which Next does not expose to the browser (server-only var); the value is `undefined` client-side, so better-auth falls back to the current origin. Moving to a `NEXT_PUBLIC_*` variable would make it explicit.
+- Google sign-in uses `callbackURL: "/"` from `google-auth-button.tsx`, so OAuth accounts always land on the storefront rather than a role dashboard.
 
 ## Conventions
 

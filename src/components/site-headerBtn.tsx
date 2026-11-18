@@ -12,6 +12,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { authClient } from "@/lib/auth-client";
+import { homeForRole } from "@/lib/roles";
 
 const MENU_ITEM_CLASS =
   "flex w-full items-center gap-space-xs rounded-xl px-space-sm py-space-xs font-label-md text-label-md text-on-surface-variant transition-colors hover:bg-surface-container-low hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-container";
@@ -23,6 +24,7 @@ const SiteHeaderBtn = () => {
   const [signingOut, setSigningOut] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const user = session?.user;
+  const dashboardHref = homeForRole(user?.role);
 
   useEffect(() => {
     if (!open) return;
@@ -69,7 +71,7 @@ const SiteHeaderBtn = () => {
         ref={menuRef}
       >
         <div className="flex items-center gap-space-xs rounded-full py-space-xs pl-space-xs pr-space-xs transition-colors hover:bg-surface-container-low sm:pr-space-sm">
-          <Link aria-label="Open dashboard" className="flex items-center" href="/dashboard">
+          <Link aria-label="Open dashboard" className="flex items-center" href={dashboardHref}>
             {user.image ? (
               <Image
                 alt="Profile"
@@ -117,7 +119,7 @@ const SiteHeaderBtn = () => {
           >
             <Link
               className={MENU_ITEM_CLASS}
-              href="/dashboard"
+              href={dashboardHref}
               onClick={() => setOpen(false)}
             >
               <LayoutDashboard size={16} />
