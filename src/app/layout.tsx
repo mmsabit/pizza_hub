@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Epilogue, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import { ToastContainer } from "react-toastify";
 
 const epilogue = Epilogue({
   variable: "--font-epilogue",
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full bg-dough-canvas font-body-md text-body-md text-on-surface antialiased">
         {children}
+        <ToastContainer />
       </body>
     </html>
   );

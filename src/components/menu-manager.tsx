@@ -10,7 +10,11 @@ import Link from "next/link";
 
 
 
-const formatPrice = (price: number) => `$${price.toFixed(2)}`;
+const formatPrice = (price: PizzaType["price"]) => {
+  const amount = typeof price === "number" ? price : Number(price);
+
+  return Number.isFinite(amount) ? `$${amount.toFixed(2)}` : "Price unavailable";
+};
 
 function TypeChip({ category }: { category: string }) {
   return (

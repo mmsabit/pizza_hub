@@ -1,5 +1,6 @@
 import Image from "next/image";
 import React from "react";
+import EditAndDelete from "./_comp/EditAndDelete";
 
 const MenuDetailespage = async ({
   params,
@@ -33,12 +34,12 @@ const MenuDetailespage = async ({
             </li>
           </ul>
         </li>
-        <li><Image
-                src={menu.image}
-                width={60}
-                height={60}
-                alt={menu.name}
-              /></li>
+        <li>
+          <Image src={menu.image} width={60} height={60} alt={menu.name} />
+        </li>
+        <li>
+            <EditAndDelete menu={menu}/>
+        </li>
       </ul>
     </div>
   );
