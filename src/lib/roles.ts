@@ -26,6 +26,6 @@ export function homeForRole(value: unknown): string {
     case "admin":
       return "/admin/dashboard";
     default:
-      return "/dashboard";
+      return "/user/dashboard";
   }
 }

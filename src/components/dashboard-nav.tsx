@@ -26,8 +26,8 @@ type NavItem = {
 
 const NAV_BY_ROLE: Record<Role, NavItem[]> = {
   user: [
-    { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { label: "Orders", href: "/dashboard#recent-orders", icon: ReceiptText },
+    { label: "Dashboard", href: "/user/dashboard", icon: LayoutDashboard },
+    { label: "Orders", href: "/user/dashboard#recent-orders", icon: ReceiptText },
     { label: "Addresses", href: "#", icon: MapPin },
     { label: "Rewards", href: "#", icon: Gift },
     { label: "Settings", href: "#", icon: Settings },
@@ -55,9 +55,8 @@ const SECTION_LABEL: Record<Role, string> = {
 };
 
 /**
- * Exact matches only: `/dashboard` must not light up while the customer is on
- * `/dashboard/menu`. Hash links only scroll, so they never claim the active
- * state.
+ * Exact matches only, so a parent route never lights up for its children.
+ * Hash links only scroll, so they never claim the active state.
  */
 function isActive(pathname: string, href: string) {
   return !href.includes("#") && href === pathname;

@@ -1,24 +1,38 @@
 "use client";
 
-import { Save, UtensilsCrossed, X } from "lucide-react";
+import {
+  CheckCircle2,
+  ImagePlus,
+  UtensilsCrossed,
+  X,
+  XCircle,
+} from "lucide-react";
 import type { FormEvent } from "react";
 import { useEffect, useId } from "react";
-import { MENU_CATEGORIES, type MenuDraft, type MenuItem } from "@/lib/menu";
+import { MENU_CATEGORIES } from "@/lib/menu";
+import { Bounce, toast } from "react-toastify";
 
 const FIELD_CLASS =
   "w-full rounded-xl border border-outline-variant/60 bg-surface-container-low px-space-md py-space-sm text-body-md text-on-surface placeholder:text-outline transition-shadow focus:border-primary-container focus:outline-none focus:ring-2 focus:ring-primary-container";
 const LABEL_CLASS =
   "block font-label-sm text-label-sm font-bold uppercase tracking-wider text-on-surface-variant";
+const RADIO_CARD_CLASS =
+  "flex cursor-pointer items-center gap-space-xs rounded-xl border border-outline-variant/60 bg-surface-container-low px-space-md py-space-sm font-label-lg text-label-lg text-on-surface-variant transition-colors has-checked:border-primary-container has-checked:bg-primary-fixed/40 has-checked:text-charcoal-dark";
 
 type MenuFormModalProps = {
-  item?: MenuItem | null;
   onClose: () => void;
-  onSave: (draft: MenuDraft, id?: string) => void;
+  userName: string;
+  userImage: string;
+  userId: string;
 };
 
-export function MenuFormModal({ item, onClose, onSave }: MenuFormModalProps) {
+export function MenuFormModal({
+  onClose,
+  userName,
+  userImage,
+  userId,
+}: MenuFormModalProps) {
   const fieldId = useId();
-  const isEdit = Boolean(item);
 
   useEffect(() => {
     const closeOnEscape = (event: KeyboardEvent) => {
@@ -35,25 +49,88 @@ export function MenuFormModal({ item, onClose, onSave }: MenuFormModalProps) {
     };
   }, [onClose]);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     const data = new FormData(event.currentTarget);
-    const name = String(data.get("name") ?? "").trim();
-    const price = Number(data.get("price"));
+    const imageFile = data.get("imageFile");
+    let imageUrl: string | null = null;
 
-    if (!name || Number.isNaN(price)) return;
+    if (imageFile instanceof File && imageFile.size > 0) {
+      const uploadFormData = new FormData();
+      uploadFormData.append("image", imageFile);
 
-    onSave(
-      {
-        name,
-        category: String(data.get("category") ?? MENU_CATEGORIES[0]),
-        description: String(data.get("description") ?? "").trim(),
-        price,
-        image: String(data.get("image") ?? "").trim() || "/images/placeholder.png",
-        available: data.get("available") === "on",
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: uploadFormData,
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Image upload failed");
+      }
+
+      imageUrl = result.imageUrl as string;
+    }
+
+    const menu = {
+      name: String(data.get("name") ?? "").trim(),
+      category: String(data.get("category") ?? MENU_CATEGORIES[0]),
+      price: Number(data.get("price")),
+      description: String(data.get("description") ?? "").trim(),
+      available: data.get("available") === "available",
+      status: String(data.get("status") ?? ""),
+      vendor: {
+        id: String(data.get("vendorId") ?? ""),
+        name: String(data.get("vendorName") ?? ""),
+        email: String(data.get("vendorEmail") ?? ""),
       },
-      item?.id,
-    );
+      image: imageUrl,
+    };
+
+    if (!menu.name || Number.isNaN(menu.price)) return;
+
+    if (imageFile instanceof File && imageFile.size > 0) {
+      console.log("Selected image", {
+        name: imageFile.name,
+        type: imageFile.type,
+        size: imageFile.size,
+      });
+    }
+
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/menus`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(menu),
+    });
+
+    if (res.ok) {
+      toast.success("Your menu added successfully wait for admin aproveal", {
+        position: "bottom-right",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+        transition: Bounce,
+      });
+      onClose();
+    } else {
+      toast.error("Failed to create event. Please try again.", {
+        position: "bottom-right",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+        transition: Bounce,
+      });
+    }
   };
 
   return (
@@ -74,12 +151,10 @@ export function MenuFormModal({ item, onClose, onSave }: MenuFormModalProps) {
               className="font-title-md text-title-md text-charcoal-dark"
               id={`${fieldId}-title`}
             >
-              {isEdit ? "Edit menu" : "Add new menu"}
+              Add new menu
             </h2>
             <p className="font-label-sm text-label-sm text-outline">
-              {isEdit
-                ? "Changes go live on the storefront right away."
-                : "New dishes go live on the storefront right away."}
+              The form data is logged to the console.
             </p>
           </div>
           <button
@@ -93,15 +168,15 @@ export function MenuFormModal({ item, onClose, onSave }: MenuFormModalProps) {
         </div>
 
         <form className="mt-space-md space-y-space-md" onSubmit={handleSubmit}>
+          {/* 1. Menu name */}
           <div className="space-y-space-xs">
             <label className={LABEL_CLASS} htmlFor={`${fieldId}-name`}>
-              Dish name
+              Menu name
             </label>
             <input
               required
               autoFocus
               className={FIELD_CLASS}
-              defaultValue={item?.name}
               id={`${fieldId}-name`}
               name="name"
               placeholder="Truffle Wild Mushroom"
@@ -110,13 +185,14 @@ export function MenuFormModal({ item, onClose, onSave }: MenuFormModalProps) {
           </div>
 
           <div className="grid gap-space-md sm:grid-cols-2">
+            {/* 2. Menu category */}
             <div className="space-y-space-xs">
               <label className={LABEL_CLASS} htmlFor={`${fieldId}-category`}>
-                Category
+                Menu category
               </label>
               <select
                 className={FIELD_CLASS}
-                defaultValue={item?.category ?? MENU_CATEGORIES[0]}
+                defaultValue={MENU_CATEGORIES[0]}
                 id={`${fieldId}-category`}
                 name="category"
               >
@@ -128,31 +204,36 @@ export function MenuFormModal({ item, onClose, onSave }: MenuFormModalProps) {
               </select>
             </div>
 
+            {/* 3. Price in BDT */}
             <div className="space-y-space-xs">
               <label className={LABEL_CLASS} htmlFor={`${fieldId}-price`}>
-                Price (USD)
+                Price (BDT)
               </label>
-              <input
-                required
-                className={FIELD_CLASS}
-                defaultValue={item?.price}
-                id={`${fieldId}-price`}
-                min="0"
-                name="price"
-                placeholder="16.00"
-                step="0.01"
-                type="number"
-              />
+              <div className="relative">
+                <span className="pointer-events-none absolute left-space-md top-1/2 -translate-y-1/2 font-label-lg text-label-lg text-on-surface-variant">
+                  ৳
+                </span>
+                <input
+                  required
+                  className={`${FIELD_CLASS} pl-9`}
+                  id={`${fieldId}-price`}
+                  min="0"
+                  name="price"
+                  placeholder="1200.00"
+                  step="0.01"
+                  type="number"
+                />
+              </div>
             </div>
           </div>
 
+          {/* 4. Description */}
           <div className="space-y-space-xs">
             <label className={LABEL_CLASS} htmlFor={`${fieldId}-description`}>
               Description
             </label>
             <textarea
               className={FIELD_CLASS}
-              defaultValue={item?.description}
               id={`${fieldId}-description`}
               name="description"
               placeholder="Ingredients, crust and what makes it special."
@@ -160,29 +241,67 @@ export function MenuFormModal({ item, onClose, onSave }: MenuFormModalProps) {
             />
           </div>
 
+          {/* 5. Image file */}
           <div className="space-y-space-xs">
             <label className={LABEL_CLASS} htmlFor={`${fieldId}-image`}>
-              Image URL
+              Menu image
             </label>
-            <input
-              className={FIELD_CLASS}
-              defaultValue={item?.image}
-              id={`${fieldId}-image`}
-              name="image"
-              placeholder="https://example.com/dish.jpg"
-              type="text"
-            />
+            <label
+              className="flex cursor-pointer flex-col items-center justify-center gap-space-xs rounded-xl border border-dashed border-outline-variant/60 bg-surface-container-low px-space-md py-space-lg text-center transition-colors hover:border-primary-container hover:bg-surface-container-low/70"
+              htmlFor={`${fieldId}-image`}
+            >
+              <ImagePlus className="text-outline" size={22} />
+              <span className="font-label-lg text-label-lg font-bold text-charcoal-dark">
+                Choose an image
+              </span>
+              <span className="font-label-sm text-label-sm text-outline">
+                PNG, JPG or WebP
+              </span>
+              <input
+                accept="image/*"
+                className="sr-only"
+                id={`${fieldId}-image`}
+                name="imageFile"
+                type="file"
+              />
+            </label>
           </div>
 
-          <label className="flex items-center gap-space-sm font-body-md text-body-md text-on-surface-variant">
-            <input
-              defaultChecked={item?.available ?? true}
-              className="h-4 w-4 shrink-0 rounded border-outline-variant accent-primary-container"
-              name="available"
-              type="checkbox"
-            />
-            Available on the storefront today
-          </label>
+          {/* 6. Availability radio */}
+          <fieldset className="space-y-space-xs">
+            <legend className={`${LABEL_CLASS} mb-space-xs`}>
+              Availability
+            </legend>
+            <div className="grid grid-cols-2 gap-space-sm">
+              <label className={RADIO_CARD_CLASS}>
+                <input
+                  defaultChecked
+                  className="h-4 w-4 shrink-0 accent-primary-container"
+                  name="available"
+                  type="radio"
+                  value="available"
+                />
+                <CheckCircle2 size={16} />
+                Available
+              </label>
+              <label className={RADIO_CARD_CLASS}>
+                <input
+                  className="h-4 w-4 shrink-0 accent-primary-container"
+                  name="available"
+                  type="radio"
+                  value="unavailable"
+                />
+                <XCircle size={16} />
+                Unavailable
+              </label>
+            </div>
+          </fieldset>
+
+          
+          <input name="status" type="hidden" value="pending" />
+          <input name="vendorId" type="hidden" value={userId} />
+          <input name="vendorName" type="hidden" value={userName} />
+          <input name="vendorImage" type="hidden" value={userImage} />
 
           <div className="flex flex-wrap justify-end gap-space-sm border-t border-surface-container-high pt-space-md">
             <button
@@ -196,8 +315,8 @@ export function MenuFormModal({ item, onClose, onSave }: MenuFormModalProps) {
               className="inline-flex items-center justify-center gap-space-xs rounded-xl bg-primary-container px-space-md py-space-sm font-label-lg text-label-lg text-on-primary-container shadow-lg shadow-primary-container/25 transition-all hover:bg-primary hover:-translate-y-0.5"
               type="submit"
             >
-              {isEdit ? <Save size={16} /> : <UtensilsCrossed size={16} />}
-              {isEdit ? "Save changes" : "Add to menu"}
+              <UtensilsCrossed size={16} />
+              Submit
             </button>
           </div>
         </form>

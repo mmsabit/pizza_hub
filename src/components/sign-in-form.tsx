@@ -16,7 +16,6 @@ export function SignInForm() {
       string
     >;
 
-    console.log(user.remember);
 
     const { data, error } = await authClient.signIn.email({
       email: user.email,

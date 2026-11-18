@@ -8,6 +8,11 @@ export type MenuItem = {
   available: boolean;
 };
 
-export type MenuDraft = Omit<MenuItem, "id">;
-
-export const MENU_CATEGORIES = ["Pizza", "Sides", "Drinks", "Desserts"];
+export const MENU_CATEGORIES = [
+  "Classic Pizzas",
+  "Vegetarian Pizzas",
+  "Meat Lovers",
+  "Gourmet Pizzas",
+  "Sides & Appetizers",
+  "Beverages & Desserts",
+];

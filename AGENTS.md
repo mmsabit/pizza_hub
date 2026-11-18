@@ -1,6 +1,6 @@
 # AGENTS.md
 
-PizzaHub — Next.js 16 App Router storefront + account dashboard, originally ported from a single Tailwind-CDN HTML page. Styling now comes from Tailwind v4 theme tokens in CSS.
+PizzaHub — Next.js 16 App Router storefront + role-based dashboards (`user` / `vendor` / `admin`), originally ported from a single Tailwind-CDN HTML page. Styling now comes from Tailwind v4 theme tokens in CSS.
 
 ## Commands
 
@@ -19,10 +19,16 @@ There is no test runner, no CI workflow, and no formatter config. `README.md` is
 
 - `src/app/(site)/` — storefront. `layout.tsx` adds `SiteHeader` + `SiteFooter`; `page.tsx` composes the marketing sections and owns `/`.
 - `src/app/(auth)/` — `/sign-in`, `/sign-up`. Standalone dark shell, no site header/footer.
-- `src/app/(dashboard)/` — role-gated dashboard areas. `dashboard/` (`/dashboard`, `/dashboard/menu`) is the customer area, `vendor/` (`/vendor/dashboard`, `/vendor/dashboard/menu`) the vendor area, `admin/` (`/admin/dashboard`, `/admin/dashboard/menu`) the admin area. Each area's `layout.tsx` wraps `DashboardRoleLayout` from `src/components/dashboard-role-layout.tsx`, which reads the session, redirects signed-out visitors to `/sign-in`, and redirects a mismatched role to `homeForRole()`.
+- `src/app/(dashboard)/` — role-gated dashboard areas. `user/` (`/user/dashboard`) is the customer area, `vendor/` (`/vendor/dashboard`, `/vendor/dashboard/menu`) the vendor area, `admin/` (`/admin/dashboard`, `/admin/dashboard/menu`) the admin area. Each area's `layout.tsx` wraps `DashboardRoleLayout` from `src/components/dashboard-role-layout.tsx`, which reads the session, redirects signed-out visitors to `/sign-in`, and redirects a mismatched role to `homeForRole()`. There is no `/dashboard` route — don't add one.
 - `src/app/api/auth/[...all]/route.ts` — better-auth handler.
 
 Put new pages inside one of these groups (e.g. `(site)/menu/page.tsx`). Do **not** create `src/app/page.tsx` — `/` is owned by `(site)` and a second root page is a route conflict.
+
+## Menu form is intentionally frontend-only
+
+- `menu-manager.tsx` renders a hardcoded demo table (`ITEMS`) — no fetch, no persistence. Save, delete and edit were deliberately removed; don't reintroduce them without an explicit request.
+- `MenuFormModal` collects name, category, price, description, image file, availability and hidden status/vendor fields, logs the selected file metadata and `Menu form data`, then closes. There is no upload or persistence — a selected image is only logged (`image` stays `null`).
+- Categories are canonical in `MENU_CATEGORIES` (`src/lib/menu.ts`). The form takes price in BDT (`৳`); the demo table still formats `$`.
 
 ## Styling
 
@@ -35,7 +41,7 @@ Put new pages inside one of these groups (e.g. `(site)/menu/page.tsx`). Do **not
 
 ## Images and icons
 
-- Every image goes through `next/image`. Bundled assets live in `public/images/` (`hero-pizza.jpg`, `oven.jpg`, `avatar.jpg`, `menu-*.jpg`).
+- Every image goes through `next/image`. Bundled assets live in `public/images/` (`hero-pizza.jpg`, `oven.jpg`, `avatar.jpg`, `placeholder.png`, `menu-*.jpg`).
 - `next.config.ts` sets `images.remotePatterns` to `hostname: "**"` for both `http` and `https`, so any remote URL (e.g. a user's avatar CDN) is accepted by the optimizer. Don't remove it — signed-in avatars come from arbitrary external hosts.
 - `fill` needs a positioned, sized parent (`relative h-*` or an aspect ratio), plus `sizes`.
 - Icons are `lucide-react` only. The Material Symbols font was removed — do not reintroduce `material-symbols-outlined` spans or icon-font `<link>` tags.
@@ -50,6 +56,12 @@ Put new pages inside one of these groups (e.g. `(site)/menu/page.tsx`). Do **not
 - The sidebar/nav (`dashboard-nav.tsx`) is keyed by role via `NAV_BY_ROLE`, and sign-in/sign-up/header links land on `homeForRole()`.
 - `auth-client.ts` reads `process.env.BETTER_AUTH_URL`, which Next does not expose to the browser (server-only var); the value is `undefined` client-side, so better-auth falls back to the current origin. Moving to a `NEXT_PUBLIC_*` variable would make it explicit.
 - Google sign-in uses `callbackURL: "/"` from `google-auth-button.tsx`, so OAuth accounts always land on the storefront rather than a role dashboard.
+- Auth feedback uses `react-toastify`; the only `ToastContainer` is mounted in `(auth)/layout.tsx`, so toasts elsewhere need their own container.
+
+## Verification gotchas
+
+- `BETTER_AUTH_URL` is pinned to `http://localhost:3000`, so sign-up/sign-in POSTs need `Origin: http://localhost:3000` even when the app is served on another port.
+- In headless-browser checks, scope form selectors to `[role="dialog"]`: `document.querySelector('[name="description"]')` matches Next's `<meta name="description">` in `<head>`, not the modal textarea.
 
 ## Conventions
 
