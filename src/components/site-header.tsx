@@ -3,8 +3,8 @@ import Link from "next/link";
 import SiteHeaderBtn from "./site-headerBtn";
 
 const NAV_LINKS = [
-  { label: "Home", href: "#", active: true },
-  { label: "Explore Menu", href: "#", active: false },
+  { label: "Home", href: "/", active: true },
+  { label: "Menu", href: "/menu", active: false },
   { label: "Categories", href: "#", active: false },
   { label: "Combos", href: "#", active: false },
 ];

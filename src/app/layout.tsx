@@ -26,6 +26,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
+      data-theme="light"
       className={`${epilogue.variable} ${jakarta.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-dough-canvas font-body-md text-body-md text-on-surface antialiased">

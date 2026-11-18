@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { MenuFormModal } from "./menu-form-modal";
 import { PizzaType } from "@/app/type/type";
+import Link from "next/link";
 
 
 
@@ -37,6 +38,35 @@ function AvailabilityBadge({ available }: { available: boolean }) {
     </span>
   );
 }
+
+export interface StatusType {
+  status: "pending" | "approved" | "rejected";
+}
+
+const StatusBadge = ({ status }: StatusType) => {
+  return (
+    <span
+      className={`inline-flex w-fit items-center gap-space-xs rounded-full px-space-sm py-space-xs font-label-sm text-label-sm font-bold ${
+        status === "pending"
+          ? "bg-yellow-100 text-on-tertiary-fixed"
+          : status === "rejected"
+            ? "bg-red-300 text-on-tertiary-fixed"
+            : "bg-tertiary-fixed text-on-tertiary-fixed"
+      }`}
+    >
+      <span
+        className={`h-1.5 w-1.5 rounded-full ${
+          status === "pending"
+            ? "bg-yellow-500"
+            : status === "rejected"
+              ? "bg-error"
+              : "bg-tertiary"
+        }`}
+      />
+      {status}
+    </span>
+  );
+};
 
 interface MenuManagerProps {
   userName: string;
@@ -82,6 +112,8 @@ export function MenuManager({userName, userImage,userId, ITEMS}:MenuManagerProps
           <span className="w-44 shrink-0">Type</span>
           <span className="w-20 shrink-0 text-right">Price</span>
           <span className="w-28 shrink-0 text-right">Availability</span>
+          <span className="w-28 shrink-0 text-right">Status</span>
+          <span className="w-28 shrink-0 text-right"> </span>
         </div>
 
         <ul className="divide-y divide-surface-container-high">
@@ -118,6 +150,15 @@ export function MenuManager({userName, userImage,userId, ITEMS}:MenuManagerProps
               <span className="hidden w-28 shrink-0 justify-end sm:flex">
                 <AvailabilityBadge available={item.available} />
               </span>
+              <span className="hidden w-28 shrink-0 justify-end sm:flex">
+                <StatusBadge status={item.status} />
+              </span>
+              <span className="hidden w-28 shrink-0 justify-end sm:flex">
+                <Link
+                href={`/menu/${item._id}`}
+                className="btn btn-sm btn-soft btn-primary"
+                >View Details</Link>
+              </span>
 
               <div className="flex w-full flex-wrap items-center justify-between gap-space-sm pl-14 sm:hidden">
                 <TypeChip category={item.category} />
@@ -125,6 +166,11 @@ export function MenuManager({userName, userImage,userId, ITEMS}:MenuManagerProps
                   {formatPrice(item.price)}
                 </p>
                 <AvailabilityBadge available={item.available} />
+                <StatusBadge status={item.status}/>
+                <Link
+                href={"/"}
+                className="btn btn-ghost"
+                >View Details</Link>
               </div>
             </li>
           ))}
