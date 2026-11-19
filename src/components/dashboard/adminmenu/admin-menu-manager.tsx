@@ -6,6 +6,8 @@ import Image from "next/image";
 
 import { PizzaType } from "@/app/type/type";
 import Link from "next/link";
+import AdminStatusBadge from "./adminstatusbadge";
+import { useState } from "react";
 
 
 
@@ -45,42 +47,77 @@ function AvailabilityBadge({ available }: { available: boolean }) {
   );
 }
 
-export interface StatusType {
-  status: "pending" | "approved" | "rejected";
-}
 
-const StatusBadge = ({ status }: StatusType) => {
-  return (
-    <span
-      className={`inline-flex w-fit items-center gap-space-xs rounded-full px-space-sm py-space-xs font-label-sm text-label-sm font-bold ${
-        status === "pending"
-          ? "bg-yellow-100 text-on-tertiary-fixed"
-          : status === "rejected"
-            ? "bg-red-300 text-on-tertiary-fixed"
-            : "bg-tertiary-fixed text-on-tertiary-fixed"
-      }`}
-    >
-      <span
-        className={`h-1.5 w-1.5 rounded-full ${
-          status === "pending"
-            ? "bg-yellow-500"
-            : status === "rejected"
-              ? "bg-error"
-              : "bg-tertiary"
-        }`}
-      />
-      {status}
-    </span>
-  );
-};
 
-interface MenuManagerProps {
-  
+interface MenuManagerProps { 
   ITEMS: PizzaType[];
 }
 
 export function AdminMenuManager({ITEMS}:MenuManagerProps) {
-  const availableCount = ITEMS.filter((item) => item.available).length;
+  const [items, setItems] = useState(ITEMS);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [error, setError] = useState("");
+  const availableCount = items.filter((item) => item.available).length;
+
+  async function updateStatus(item: PizzaType, status: "approved" | "rejected") {
+    setUpdatingId(item._id);
+    setError("");
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/adminmenu/${item._id}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status }),
+        },
+      );
+
+      if (!response.ok) {
+        const result = await response.json();
+        throw new Error(result.message || "Could not update menu status.");
+      }
+
+      setItems((currentItems) =>
+        currentItems.map((currentItem) =>
+          currentItem._id === item._id ? { ...currentItem, status } : currentItem,
+        ),
+      );
+    } catch (updateError) {
+      setError(
+        updateError instanceof Error
+          ? updateError.message
+          : "Could not update menu status.",
+      );
+    } finally {
+      setUpdatingId(null);
+    }
+  }
+
+  function StatusActions({ item }: { item: PizzaType }) {
+    if (item.status !== "pending") return null;
+
+    return (
+      <div className="flex items-center gap-space-xs">
+        <button
+          className="btn btn-sm btn-success text-white"
+          disabled={updatingId === item._id}
+          onClick={() => updateStatus(item, "approved")}
+          type="button"
+        >
+          Approve
+        </button>
+        <button
+          className="btn btn-sm btn-error text-white"
+          disabled={updatingId === item._id}
+          onClick={() => updateStatus(item, "rejected")}
+          type="button"
+        >
+          Reject
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-space-lg">
@@ -93,13 +130,19 @@ export function AdminMenuManager({ITEMS}:MenuManagerProps) {
             Menu
           </h1>
           <p className="font-body-md text-body-md text-on-surface-variant">
-            {ITEMS.length} {ITEMS.length === 1 ? "dish" : "dishes"} on the board •{" "}
+            {items.length} {items.length === 1 ? "dish" : "dishes"} on the board •{" "}
             {availableCount} available tonight
           </p>
         </div>
 
         
       </header>
+
+      {error ? (
+        <p className="rounded-xl bg-error-container px-space-md py-space-sm text-on-error-container" role="alert">
+          {error}
+        </p>
+      ) : null}
 
       <section className="overflow-hidden rounded-2xl border border-surface-container-high bg-surface-container-lowest shadow-sm">
         <div className="hidden items-center gap-space-sm border-b border-surface-container-high px-space-md py-space-sm font-label-sm text-label-sm uppercase tracking-wider text-outline sm:flex">
@@ -113,7 +156,7 @@ export function AdminMenuManager({ITEMS}:MenuManagerProps) {
         </div>
 
         <ul className="divide-y divide-surface-container-high">
-          {ITEMS.map((item) => (
+          {items.map((item) => (
             <li
               key={item._id}
               className="flex flex-wrap items-center gap-space-sm px-space-md py-space-md transition-colors hover:bg-surface-container-low"
@@ -145,13 +188,16 @@ export function AdminMenuManager({ITEMS}:MenuManagerProps) {
                 <AvailabilityBadge available={item.available} />
               </span>
               <span className="hidden w-28 shrink-0 justify-end sm:flex">
-                <StatusBadge status={item.status} />
+                <AdminStatusBadge status={item.status} />
               </span>
               <span className="hidden w-28 shrink-0 justify-end sm:flex">
                 <Link
                 href={`/menu/${item._id}`}
                 className="btn btn-sm btn-soft btn-primary"
                 >View Details</Link>
+              </span>
+              <span className="hidden shrink-0 items-center gap-space-xs sm:flex">
+                <StatusActions item={item} />
               </span>
 
               <div className="flex w-full flex-wrap items-center justify-between gap-space-sm pl-14 sm:hidden">
@@ -160,11 +206,12 @@ export function AdminMenuManager({ITEMS}:MenuManagerProps) {
                   {formatPrice(item.price)}
                 </p>
                 <AvailabilityBadge available={item.available} />
-                <StatusBadge status={item.status}/>
+                <AdminStatusBadge status={item.status}/>
                 <Link
                 href={`/menu/${item._id}`}
                 className="btn btn-ghost"
                 >View Details</Link>
+                <StatusActions item={item} />
               </div>
             </li>
           ))}

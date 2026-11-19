@@ -16,6 +16,8 @@ export interface Vendor {
   image: string;
 }
 
-export interface statusType {
-    status: 'pending' | 'approved' | 'rejected';
+
+
+export interface StatusType {
+  status: "pending" | "approved" | "rejected";
 }
