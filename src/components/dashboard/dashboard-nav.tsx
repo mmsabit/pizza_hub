@@ -27,7 +27,7 @@ type NavItem = {
 const NAV_BY_ROLE: Record<Role, NavItem[]> = {
   user: [
     { label: "Dashboard", href: "/user/dashboard", icon: LayoutDashboard },
-    { label: "Orders", href: "/user/dashboard#recent-orders", icon: ReceiptText },
+    { label: "Orders", href: "/user/dashboard/order", icon: ReceiptText },
     { label: "Addresses", href: "#", icon: MapPin },
     { label: "Rewards", href: "#", icon: Gift },
     { label: "Settings", href: "#", icon: Settings },

@@ -21,12 +21,38 @@ export interface StatusType {
   status: "pending" | "approved" | "rejected";
 }
 
-export interface OrderType{
-  orderstate: | 'PENDING'
+export type OrderStateType =
+  | 'PENDING'
   | 'CONFIRMED'
   | 'PREPARING'
   | 'READY'
   | 'OUT_FOR_DELIVERY'
   | 'DELIVERED'
   | 'CANCELLED'
+
+
+export interface OrderVendor {
+  id: string;
+  name: string;
+}
+
+export interface OrderCustomer {
+  name: string;
+  phone: string;
+  address: string;
+  note: string;
+  id: string;
+}
+
+export interface OrderType {
+  _id: string;
+  menuId: string;
+  menuName: string;
+  vendor: OrderVendor;
+  quantity: number;
+  unitPrice: number;
+  subtotal: number;
+  payment: string ;
+  order_status: OrderStateType;
+  customer: OrderCustomer;
 }

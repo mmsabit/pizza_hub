@@ -79,11 +79,13 @@ const OrderForm = ({ menu, user }: { menu: PizzaType; user: usertype }) => {
       unitPrice,
       subtotal,
       payment: String(formData.get("payment") ?? "cash"),
+      order_status:String(formData.get("order_status") ?? "cash"),
       customer: {
         name: String(formData.get("customerName") ?? "").trim(),
         phone: String(formData.get("phone") ?? "").trim(),
         address: String(formData.get("address") ?? "").trim(),
         note: String(formData.get("note") ?? "").trim(),
+        id:user?.id
       },
     };
 
@@ -354,7 +356,8 @@ const OrderForm = ({ menu, user }: { menu: PizzaType; user: usertype }) => {
                 Delivery fee is confirmed by the kitchen when they call you.
               </p>
             </div>
-            <input name="Orderstatus" type="hidden" value={"PENDING"} />
+            <input name="order_status" type="hidden" value={"PENDING"} />
+            
             <div className="modal-action">
               <button
                 className="btn btn-ghost"
