@@ -141,9 +141,7 @@ export function MenuManager({userName, userImage,userId, ITEMS}:MenuManagerProps
                 <p className="truncate font-label-lg text-label-lg font-bold text-charcoal-dark">
                   {item.name}
                 </p>
-                {/* <p className="truncate font-label-sm text-label-sm text-on-surface-variant">
-                  {item.description || "No description yet."}
-                </p> */}
+                
               </div>
 
               <span className="hidden w-44 shrink-0 sm:block">

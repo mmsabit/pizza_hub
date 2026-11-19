@@ -5,36 +5,20 @@ import {
   ArrowLeft,
   BadgeCheck,
   CheckCircle2,
-  Clock3,
   Store,
   Tag,
   XCircle,
 } from "lucide-react";
-import EditAndDelete from "./_comp/EditAndDelete";
 import type { PizzaType } from "@/app/type/type";
+import MenuEdit from "./_comp/menuedit";
+import MenuDelete from "./_comp/menudelete";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import MenuStatusEdit from "./_comp/menustatusedit";
 
 const PLACEHOLDER = "/images/placeholder.png";
 
-const STATUS_STYLES: Record<
-  PizzaType["status"],
-  { label: string; className: string; Icon: typeof BadgeCheck }
-> = {
-  approved: {
-    label: "Approved",
-    className: "bg-tertiary-fixed text-on-tertiary-fixed",
-    Icon: BadgeCheck,
-  },
-  pending: {
-    label: "Pending review",
-    className: "bg-secondary-fixed text-on-secondary-fixed",
-    Icon: Clock3,
-  },
-  rejected: {
-    label: "Rejected",
-    className: "bg-error-container text-on-error-container",
-    Icon: XCircle,
-  },
-};
+
 
 const MenuDetailespage = async ({
   params,
@@ -61,6 +45,7 @@ const MenuDetailespage = async ({
   const vendorName = menu.vendor?.name ?? "PizzaHub kitchen";
   const vendorImage = menu.vendor?.image || PLACEHOLDER;
   const imageSrc = menu.image || PLACEHOLDER;
+  const vendorId = menu.vendor?.id ?? "PizzaHub"
 
   const numericPrice = Number(menu.price);
   const priceLabel = Number.isFinite(numericPrice)
@@ -69,8 +54,11 @@ const MenuDetailespage = async ({
       })
     : String(menu.price);
 
-  const status = STATUS_STYLES[menu.status] ?? STATUS_STYLES.pending;
-  const StatusIcon = status.Icon;
+const session = await auth.api.getSession({
+    headers: await headers() 
+})
+
+const user =session?.user;
 
   return (
     <section className="relative w-full overflow-hidden bg-dough-surface">
@@ -100,7 +88,7 @@ const MenuDetailespage = async ({
             <div className="relative">
               <div className="absolute -inset-3 rounded-[2.5rem] bg-linear-to-tr from-secondary-container/30 via-transparent to-primary-container/25 blur-xl" />
 
-              <div className="relative aspect-square w-full overflow-hidden rounded-[2rem] border border-surface-container-high bg-dough-canvas shadow-2xl">
+              <div className="relative aspect-square w-full overflow-hidden rounded-4xl border border-surface-container-high bg-dough-canvas shadow-2xl">
                 <Image
                   alt={`${menu.name} — ${menu.category} by ${vendorName}`}
                   className="object-cover"
@@ -137,14 +125,7 @@ const MenuDetailespage = async ({
 
           {/* Details */}
           <div className="space-y-space-lg lg:col-span-6">
-            <div className="flex flex-wrap items-center gap-space-sm">
-              <span
-                className={`inline-flex items-center gap-space-xs rounded-full px-space-md py-space-xs font-label-md text-label-md font-bold uppercase tracking-widest ${status.className}`}
-              >
-                <StatusIcon size={14} />
-                {status.label}
-              </span>
-            </div>
+            
 
             <div className="space-y-space-sm">
               <h1 className="font-headline-lg text-headline-lg-mobile font-extrabold uppercase tracking-tight text-charcoal-dark sm:text-headline-lg">
@@ -190,15 +171,7 @@ const MenuDetailespage = async ({
                 </p>
               </div>
 
-              <div className="rounded-2xl border border-surface-container-high bg-surface-container-lowest p-space-md">
-                <span className="flex items-center gap-space-xs font-label-sm text-label-sm font-bold uppercase tracking-wider text-outline">
-                  <StatusIcon size={14} />
-                  Listing status
-                </span>
-                <p className="mt-space-xs font-title-md text-title-md text-charcoal-dark">
-                  {status.label}
-                </p>
-              </div>
+              
             </div>
 
             {/* Vendor */}
@@ -230,7 +203,20 @@ const MenuDetailespage = async ({
 
             {/* Actions */}
             <div className="flex flex-wrap items-center gap-space-sm border-t border-surface-container-high pt-space-lg">
-              <EditAndDelete menu={menu} />
+              {user?.id === vendorId && user?.role == 'vendor'?(
+                <>
+                <MenuDelete menu={menu} />
+              <MenuEdit menu={menu} />
+              </>
+              ): user?.role == "admin"?(
+                <>
+                <MenuDelete menu={menu} />
+                <MenuStatusEdit item={menu} />
+                </>
+              ):(
+                "user form here"
+              )}
+              
 
               <Link
                 className="inline-flex items-center justify-center gap-space-xs rounded-xl border border-outline-variant/60 px-space-md py-space-sm font-label-lg text-label-lg text-on-surface-variant transition-colors hover:border-primary hover:text-primary"
