@@ -5,6 +5,7 @@ _id: string;
   price: number | string;
   description: string;
   available: boolean;
+  featured?: boolean;
   status: 'pending' | 'approved' | 'rejected';
   vendor: Vendor;
   image: string;
