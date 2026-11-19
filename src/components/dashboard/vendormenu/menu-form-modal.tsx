@@ -8,7 +8,7 @@ import {
   XCircle,
 } from "lucide-react";
 import type { FormEvent } from "react";
-import { useEffect, useId } from "react";
+import { useEffect, useId, useRef } from "react";
 import { MENU_CATEGORIES } from "@/lib/menu";
 import { Bounce, toast } from "react-toastify";
 
@@ -33,20 +33,17 @@ export function MenuFormModal({
   userId,
 }: MenuFormModalProps) {
   const fieldId = useId();
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
-    };
-    const previousOverflow = document.body.style.overflow;
+    const dialog = dialogRef.current;
+    if (!dialog) return;
 
-    document.body.style.overflow = "hidden";
-    document.addEventListener("keydown", closeOnEscape);
+    if (!dialog.open) dialog.showModal();
+    const handleClose = () => onClose();
+    dialog.addEventListener("close", handleClose);
 
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      document.removeEventListener("keydown", closeOnEscape);
-    };
+    return () => dialog.removeEventListener("close", handleClose);
   }, [onClose]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -126,37 +123,32 @@ export function MenuFormModal({
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-charcoal-dark/60 p-space-sm backdrop-blur-sm sm:items-center sm:p-space-md"
-      onClick={onClose}
+    <dialog
+      aria-labelledby={`${fieldId}-title`}
+      className="modal"
+      ref={dialogRef}
     >
-      <div
-        aria-labelledby={`${fieldId}-title`}
-        aria-modal="true"
-        className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-surface-container-lowest p-space-lg shadow-2xl"
-        onClick={(event) => event.stopPropagation()}
-        role="dialog"
-      >
-        <div className="flex items-start justify-between gap-space-md">
-          <div>
-            <h2
-              className="font-title-md text-title-md text-charcoal-dark"
-              id={`${fieldId}-title`}
-            >
-              Add new menu
-            </h2>
-            <p className="font-label-sm text-label-sm text-outline">
-              The form data is logged to the console.
-            </p>
-          </div>
+      <div className="modal-box max-w-lg">
+        <form method="dialog">
           <button
             aria-label="Close dialog"
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-surface-container-high text-on-surface-variant transition-colors hover:border-primary hover:text-primary"
-            onClick={onClose}
-            type="button"
+            className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+            type="submit"
           >
             <X size={16} />
           </button>
+        </form>
+
+        <div className="pr-8">
+          <h2
+            className="font-title-md text-title-md text-charcoal-dark"
+            id={`${fieldId}-title`}
+          >
+            Add new menu
+          </h2>
+          <p className="font-label-sm text-label-sm text-outline">
+            The form data is logged to the console.
+          </p>
         </div>
 
         <form className="mt-space-md space-y-space-md" onSubmit={handleSubmit}>
@@ -295,24 +287,25 @@ export function MenuFormModal({
           <input name="vendorName" type="hidden" value={userName} />
           <input name="vendorImage" type="hidden" value={userImage} />
 
-          <div className="flex flex-wrap justify-end gap-space-sm border-t border-surface-container-high pt-space-md">
+          <div className="modal-action">
             <button
-              className="inline-flex items-center justify-center rounded-xl border border-outline-variant px-space-md py-space-sm font-label-lg text-label-lg text-on-surface-variant transition-colors hover:border-primary hover:text-primary"
-              onClick={onClose}
+              className="btn btn-ghost"
+              onClick={() => dialogRef.current?.close()}
               type="button"
             >
               Cancel
             </button>
-            <button
-              className="inline-flex items-center justify-center gap-space-xs rounded-xl bg-primary-container px-space-md py-space-sm font-label-lg text-label-lg text-on-primary-container shadow-lg shadow-primary-container/25 transition-all hover:bg-primary hover:-translate-y-0.5"
-              type="submit"
-            >
+            <button className="btn btn-primary" type="submit">
               <UtensilsCrossed size={16} />
               Submit
             </button>
           </div>
         </form>
       </div>
-    </div>
+
+      <form className="modal-backdrop" method="dialog">
+        <button>close</button>
+      </form>
+    </dialog>
   );
 }

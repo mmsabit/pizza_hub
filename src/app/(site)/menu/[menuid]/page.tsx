@@ -15,6 +15,7 @@ import MenuDelete from "./_comp/menudelete";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import MenuStatusEdit from "./_comp/menustatusedit";
+import OrderForm from "./_comp/orderform";
 
 const PLACEHOLDER = "/images/placeholder.png";
 
@@ -59,6 +60,9 @@ const session = await auth.api.getSession({
 })
 
 const user =session?.user;
+const userData = user?.id
+  ? { id: user.id, name: user.name ?? "" }
+  : null;
 
   return (
     <section className="relative w-full overflow-hidden bg-dough-surface">
@@ -114,7 +118,7 @@ const user =session?.user;
                     {menu.available ? (
                       <CheckCircle2 size={14} />
                     ) : (
-                      <XCircle size={14} />
+                      userData ? <OrderForm menu={menu} user={userData} /> : null
                     )}
                     {menu.available ? "Available" : "Sold out"}
                   </span>
@@ -214,7 +218,7 @@ const user =session?.user;
                 <MenuStatusEdit item={menu} />
                 </>
               ):(
-                "user form here"
+                userData ? <OrderForm menu={menu} user={userData} /> : null
               )}
               
 

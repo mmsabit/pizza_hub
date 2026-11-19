@@ -9,6 +9,7 @@ import {
   XCircle,
   UtensilsCrossed,
   Pencil,
+  X,
 } from "lucide-react";
 import type { FormEvent } from "react";
 import { useRouter } from "next/navigation";
@@ -144,7 +145,17 @@ const MenuEdit= ({ menu }: { menu: PizzaType }) => {
       {/* Edit modal */}
 
       <dialog id="editModal" className="modal">
-        <div className="max-h-[90vh] w-11/12 max-w-2xl overflow-y-auto rounded-3xl border border-surface-container-high bg-dough-canvas p-space-lg shadow-2xl">
+        <div className="modal-box max-w-2xl">
+          <form method="dialog">
+            <button
+              aria-label="Close dialog"
+              className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+              type="submit"
+            >
+              <X size={16} />
+            </button>
+          </form>
+
           <h3 className="font-headline-sm text-headline-sm font-bold text-charcoal-dark">
             Edit menu
           </h3>
@@ -302,9 +313,9 @@ const MenuEdit= ({ menu }: { menu: PizzaType }) => {
             <input name="vendorImage" type="hidden" value={menu.vendor.image} />
             <input name="image" type="hidden" value={menu.image} />
 
-            <div className="flex flex-wrap justify-end gap-space-sm border-t border-surface-container-high pt-space-md">
+            <div className="modal-action">
               <button
-                className="inline-flex items-center justify-center rounded-xl border border-outline-variant px-space-md py-space-sm font-label-lg text-label-lg text-on-surface-variant transition-colors hover:border-primary hover:text-primary"
+                className="btn btn-ghost"
                 onClick={() =>
                   (
                     document.getElementById("editModal") as HTMLDialogElement
@@ -314,16 +325,17 @@ const MenuEdit= ({ menu }: { menu: PizzaType }) => {
               >
                 Cancel
               </button>
-              <button
-                className="inline-flex items-center justify-center gap-space-xs rounded-xl bg-primary-container px-space-md py-space-sm font-label-lg text-label-lg text-on-primary-container shadow-lg shadow-primary-container/25 transition-all hover:bg-primary hover:-translate-y-0.5"
-                type="submit"
-              >
+              <button className="btn btn-primary" type="submit">
                 <UtensilsCrossed size={16} />
                 Submit
               </button>
             </div>
           </form>
         </div>
+
+        <form className="modal-backdrop" method="dialog">
+          <button>close</button>
+        </form>
       </dialog>
     </>
   );

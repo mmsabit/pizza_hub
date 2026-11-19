@@ -1,7 +1,7 @@
 'use client'
 
 import { PizzaType } from '@/app/type/type';
-import { Trash2 } from 'lucide-react';
+import { Trash2, X } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import { toast, Bounce } from 'react-toastify';
 
@@ -49,7 +49,17 @@ const MenuDelete = ({ menu }: { menu: PizzaType }) => {
 
 
       <dialog id="deleteModal" className="modal">
-        <div className="w-11/12 max-w-md rounded-3xl border border-surface-container-high bg-dough-canvas p-space-lg shadow-2xl">
+        <div className="modal-box max-w-md">
+          <form method="dialog">
+            <button
+              aria-label="Close dialog"
+              className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+              type="submit"
+            >
+              <X size={16} />
+            </button>
+          </form>
+
           <h3 className="font-headline-sm text-headline-sm font-bold text-charcoal-dark">
             Delete item?
           </h3>
@@ -58,20 +68,13 @@ const MenuDelete = ({ menu }: { menu: PizzaType }) => {
             and cannot be undone. All associated data will be permanently
             removed from the system.
           </p>
-          <div className="flex flex-wrap justify-end gap-space-sm border-t border-surface-container-high pt-space-md">
+
+          <div className="modal-action">
+            <form method="dialog">
+              <button className="btn btn-ghost">Close</button>
+            </form>
             <button
-              className="inline-flex items-center justify-center rounded-xl border border-outline-variant px-space-md py-space-sm font-label-lg text-label-lg text-on-surface-variant transition-colors hover:border-primary hover:text-primary"
-              onClick={() =>
-                (
-                  document.getElementById("deleteModal") as HTMLDialogElement
-                )?.close()
-              }
-              type="button"
-            >
-              Close
-            </button>
-            <button
-              className="inline-flex items-center justify-center gap-space-xs rounded-xl bg-primary-container px-space-md py-space-sm font-label-lg text-label-lg text-on-primary-container shadow-lg shadow-primary-container/25 transition-all hover:bg-primary hover:-translate-y-0.5"
+              className="btn btn-error"
               onClick={handleDelete}
               type="button"
             >
@@ -80,6 +83,10 @@ const MenuDelete = ({ menu }: { menu: PizzaType }) => {
             </button>
           </div>
         </div>
+
+        <form className="modal-backdrop" method="dialog">
+          <button>close</button>
+        </form>
       </dialog>
         </>
     );
