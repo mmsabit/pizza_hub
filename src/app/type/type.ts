@@ -17,8 +17,16 @@ export interface Vendor {
   image: string;
 }
 
-
-
 export interface StatusType {
   status: "pending" | "approved" | "rejected";
+}
+
+export interface OrderType{
+  orderstate: | 'PENDING'
+  | 'CONFIRMED'
+  | 'PREPARING'
+  | 'READY'
+  | 'OUT_FOR_DELIVERY'
+  | 'DELIVERED'
+  | 'CANCELLED'
 }
