@@ -172,7 +172,7 @@ export function MenuManager({userName, userImage,userId, ITEMS}:MenuManagerProps
                 <AvailabilityBadge available={item.available} />
                 <StatusBadge status={item.status}/>
                 <Link
-                href={"/"}
+                href={`/menu/${item._id}`}
                 className="btn btn-ghost"
                 >View Details</Link>
               </div>

@@ -8,6 +8,8 @@ import {
   CheckCircle2,
   XCircle,
   UtensilsCrossed,
+  Pencil,
+  Trash2,
 } from "lucide-react";
 import type { FormEvent } from "react";
 import { redirect, useRouter } from "next/navigation";
@@ -143,51 +145,63 @@ const EditAndDelete = ({ menu }: { menu: PizzaType }) => {
     <>
       {/* Delete Button */}
       <button
-        className="btn btn-primary"
+        className="inline-flex items-center justify-center gap-space-xs rounded-xl border border-error/30 bg-error-container/40 px-space-md py-space-sm font-label-lg text-label-lg text-error transition-colors hover:bg-error-container"
         onClick={() =>
           (
             document.getElementById("deleteModal") as HTMLDialogElement
           )?.showModal()
         }
+        type="button"
       >
+        <Trash2 size={16} />
         Delete
       </button>
 
       {/* Edit button */}
 
       <button
-        className="btn btn-primary"
+        className="inline-flex items-center justify-center gap-space-xs rounded-xl bg-primary-container px-space-md py-space-sm font-label-lg text-label-lg text-on-primary-container shadow-lg shadow-primary-container/25 transition-all hover:bg-primary hover:-translate-y-0.5"
         onClick={() =>
           (
             document.getElementById("editModal") as HTMLDialogElement
           )?.showModal()
         }
+        type="button"
       >
+        <Pencil size={16} />
         Edit
       </button>
 
       {/* Delete Modal */}
 
       <dialog id="deleteModal" className="modal">
-        <div className="modal-box">
-          <h3 className="font-bold text-lg">Delete Item?</h3>
-          <p className="py-4">
+        <div className="w-11/12 max-w-md rounded-3xl border border-surface-container-high bg-dough-canvas p-space-lg shadow-2xl">
+          <h3 className="font-headline-sm text-headline-sm font-bold text-charcoal-dark">
+            Delete item?
+          </h3>
+          <p className="py-space-md font-body-md text-body-md text-on-surface-variant">
             Are you sure you want to delete this item? This action is permanent
             and cannot be undone. All associated data will be permanently
             removed from the system.
           </p>
-          <div className="modal-action">
+          <div className="flex flex-wrap justify-end gap-space-sm border-t border-surface-container-high pt-space-md">
             <button
-              className="btn btn-ghost"
+              className="inline-flex items-center justify-center rounded-xl border border-outline-variant px-space-md py-space-sm font-label-lg text-label-lg text-on-surface-variant transition-colors hover:border-primary hover:text-primary"
               onClick={() =>
                 (
                   document.getElementById("deleteModal") as HTMLDialogElement
                 )?.close()
               }
+              type="button"
             >
               Close
             </button>
-            <button className="btn btn-primary" onClick={handleDelete}>
+            <button
+              className="inline-flex items-center justify-center gap-space-xs rounded-xl bg-primary-container px-space-md py-space-sm font-label-lg text-label-lg text-on-primary-container shadow-lg shadow-primary-container/25 transition-all hover:bg-primary hover:-translate-y-0.5"
+              onClick={handleDelete}
+              type="button"
+            >
+              <Trash2 size={16} />
               Are you sure?
             </button>
           </div>
@@ -197,8 +211,10 @@ const EditAndDelete = ({ menu }: { menu: PizzaType }) => {
       {/* Edit modal */}
 
       <dialog id="editModal" className="modal">
-        <div className="modal-box">
-          <h3 className="font-bold text-lg">Edit menu</h3>
+        <div className="max-h-[90vh] w-11/12 max-w-2xl overflow-y-auto rounded-3xl border border-surface-container-high bg-dough-canvas p-space-lg shadow-2xl">
+          <h3 className="font-headline-sm text-headline-sm font-bold text-charcoal-dark">
+            Edit menu
+          </h3>
           <form className="mt-space-md space-y-space-md" onSubmit={handleEdit}>
             {/* 1. Menu name */}
             <div className="space-y-space-xs">

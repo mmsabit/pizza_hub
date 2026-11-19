@@ -64,19 +64,6 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-space-sm sm:gap-space-md">
-          <Link
-            className="flex items-center gap-space-xs bg-primary-container hover:bg-primary text-on-primary-container px-space-sm py-space-xs rounded-full shadow-[0_4px_16px_rgba(211,47,47,0.18)] transition-all sm:px-space-md"
-            data-path="cart-and-checkout"
-            href="#"
-          >
-            <Pizza size={18} />
-            <div className="flex items-center gap-space-xs text-label-lg font-label-lg">
-              <span className="hidden sm:inline">$28.50</span>
-              <span className="bg-surface-container-lowest text-primary rounded-full px-space-xs text-label-sm font-label-sm">
-                2
-              </span>
-            </div>
-          </Link>
           <SiteHeaderBtn/>
         </div>
       </div>
