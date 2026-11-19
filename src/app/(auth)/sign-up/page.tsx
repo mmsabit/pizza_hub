@@ -2,8 +2,8 @@ import { Flame, Gift, Truck } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { GoogleAuthButton } from "@/components/google-auth-button";
-import { SignUpForm } from "@/components/sign-up-form";
+import { GoogleAuthButton } from "@/components/auth/google-auth-button";
+import { SignUpForm } from "@/components/auth/sign-up-form";
 
 export const metadata: Metadata = {
   title: "Sign Up — PizzaHub",

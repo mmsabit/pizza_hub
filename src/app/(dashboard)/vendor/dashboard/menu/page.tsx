@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { MenuManager } from "@/components/menu-manager";
+
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { MenuManager } from "@/components/dashboard/vendormenu/menu-manager";
 
 export const metadata: Metadata = {
   title: "Menu — PizzaHub",

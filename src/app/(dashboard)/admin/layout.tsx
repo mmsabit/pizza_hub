@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { DashboardRoleLayout } from "@/components/dashboard-role-layout";
+import { DashboardRoleLayout } from "@/components/dashboard/dashboard-role-layout";
 
 export default function AdminDashboardLayout({
   children,

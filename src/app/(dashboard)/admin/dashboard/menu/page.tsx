@@ -1,5 +1,6 @@
+import { AdminMenuManager } from "@/components/dashboard/adminmenu/admin-menu-manager";
 import type { Metadata } from "next";
-import { MenuManager } from "@/components/menu-manager";
+
 
 export const metadata: Metadata = {
   title: "Menu — PizzaHub",
@@ -7,6 +8,9 @@ export const metadata: Metadata = {
     "Manage the wood-fired dishes on your PizzaHub storefront and add new pies, sides and drinks.",
 };
 
-export default function MenuPage() {
-  return <MenuManager />;
+export default async function MenuPage() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/adminmenu`);
+  const menu = await res.json();
+
+  return <AdminMenuManager ITEMS={menu} />;
 }

@@ -19,7 +19,7 @@ There is no test runner, no CI workflow, and no formatter config. `README.md` is
 
 - `src/app/(site)/` — storefront. `layout.tsx` adds `SiteHeader` + `SiteFooter`; `page.tsx` composes the marketing sections and owns `/`.
 - `src/app/(auth)/` — `/sign-in`, `/sign-up`. Standalone dark shell, no site header/footer.
-- `src/app/(dashboard)/` — role-gated dashboard areas. `user/` (`/user/dashboard`) is the customer area, `vendor/` (`/vendor/dashboard`, `/vendor/dashboard/menu`) the vendor area, `admin/` (`/admin/dashboard`, `/admin/dashboard/menu`) the admin area. Each area's `layout.tsx` wraps `DashboardRoleLayout` from `src/components/dashboard-role-layout.tsx`, which reads the session, redirects signed-out visitors to `/sign-in`, and redirects a mismatched role to `homeForRole()`. There is no `/dashboard` route — don't add one.
+- `src/app/(dashboard)/` — role-gated dashboard areas. `user/` (`/user/dashboard`) is the customer area, `vendor/` (`/vendor/dashboard`, `/vendor/dashboard/menu`) the vendor area, `admin/` (`/admin/dashboard`, `/admin/dashboard/menu`) the admin area. Each area's `layout.tsx` wraps `DashboardRoleLayout` from `src/components/dashboard/dashboard-role-layout.tsx`, which reads the session, redirects signed-out visitors to `/sign-in`, and redirects a mismatched role to `homeForRole()`. There is no `/dashboard` route — don't add one.
 - `src/app/api/auth/[...all]/route.ts` — better-auth handler.
 
 Put new pages inside one of these groups (e.g. `(site)/menu/page.tsx`). Do **not** create `src/app/page.tsx` — `/` is owned by `(site)` and a second root page is a route conflict.
@@ -66,5 +66,5 @@ Put new pages inside one of these groups (e.g. `(site)/menu/page.tsx`). Do **not
 ## Conventions
 
 - Package/project name `pizza_hub`; user-facing brand "PizzaHub".
-- Components are flat in `src/components/`, marketing sections named `*-section.tsx`, PascalCase exports, `@/` alias → `src/`.
+- Components live in feature folders under `src/components/`: `layout/` (site header, footer, header account menu), `marketing/` (homepage sections, named `*-section.tsx`), `auth/` (sign-in/sign-up forms and the Google button) and `dashboard/` (role shell, sidebar/topbar/nav, menu manager and its modal). PascalCase exports, `@/` alias → `src/`.
 - Page copy, order rows and dashboard stats are hardcoded in the components; there is no data layer or DB read behind them.

@@ -2,8 +2,8 @@ import { BadgeCheck, Bike, Flame } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { GoogleAuthButton } from "@/components/google-auth-button";
-import { SignInForm } from "@/components/sign-in-form";
+import { GoogleAuthButton } from "@/components/auth/google-auth-button";
+import { SignInForm } from "@/components/auth/sign-in-form";
 
 export const metadata: Metadata = {
   title: "Sign In — PizzaHub",
