@@ -94,7 +94,7 @@ export function CancelOrderButton({
 
       {error ? (
         <p
-          className="max-w-[14rem] font-label-sm text-label-sm text-error"
+          className="max-w-56 font-label-sm text-label-sm text-error"
           role="alert"
         >
           {error}

@@ -35,7 +35,7 @@ const NAV_BY_ROLE: Record<Role, NavItem[]> = {
   vendor: [
     { label: "Dashboard", href: "/vendor/dashboard", icon: LayoutDashboard },
     { label: "Menu", href: "/vendor/dashboard/menu", icon: UtensilsCrossed },
-    { label: "Orders", href: "#", icon: ReceiptText },
+    { label: "Orders", href: "/vendor/dashboard/order", icon: ReceiptText },
     { label: "Payouts", href: "#", icon: Wallet },
     { label: "Store profile", href: "#", icon: Store },
   ],
