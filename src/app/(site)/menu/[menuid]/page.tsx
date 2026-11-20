@@ -115,12 +115,7 @@ const userData = user?.id
                         : "bg-charcoal-dark/90 text-surface-container-lowest"
                     }`}
                   >
-                    {menu.available ? (
-                      <CheckCircle2 size={14} />
-                    ) : (
-                      userData ? <OrderForm menu={menu} user={userData} /> : null
-                    )}
-                    {menu.available ? "Available" : "Sold out"}
+                    {menu.available ? "Available" : "Sold Out"}
                   </span>
                 </div>
               </div>
