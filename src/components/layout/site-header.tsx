@@ -1,12 +1,12 @@
-import { Pizza, Search } from "lucide-react";
+import { Pizza } from "lucide-react";
 import Link from "next/link";
 import SiteHeaderBtn from "./site-headerBtn";
+import { SiteHeaderSearch } from "./site-header-search";
 
 const NAV_LINKS = [
   { label: "Home", href: "/", active: true },
   { label: "Menu", href: "/menu", active: false },
-  { label: "Categories", href: "#", active: false },
-  { label: "Combos", href: "#", active: false },
+
 ];
 
 export function SiteHeader() {  
@@ -18,7 +18,7 @@ export function SiteHeader() {
             aria-label="PizzaHub home"
             className="flex items-center gap-space-xs sm:gap-space-sm"
             data-path="home"
-            href="#"
+            href="/"
           >
             <Pizza
               className="h-8 w-8 shrink-0 text-primary-container sm:h-9 sm:w-9"
@@ -32,17 +32,7 @@ export function SiteHeader() {
         </div>
 
         <div className="hidden lg:flex flex-1 max-w-md mx-space-md">
-          <div className="relative w-full">
-            <Search
-              className="absolute left-space-md top-1/2 -translate-y-1/2 text-outline pointer-events-none"
-              size={18}
-            />
-            <input
-              className="w-full pl-10 pr-space-md py-space-sm rounded-full bg-surface-container-lowest text-on-surface placeholder:text-outline text-body-md focus:outline-none focus:ring-2 focus:ring-primary-container shadow-[0_2px_8px_rgba(253,157,62,0.06)]"
-              placeholder="Search wood-fired pies, dips, drinks..."
-              type="text"
-            />
-          </div>
+          <SiteHeaderSearch />
         </div>
 
         <nav className="hidden lg:flex items-center gap-space-lg overflow-x-auto py-space-xs">
