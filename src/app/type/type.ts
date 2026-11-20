@@ -34,6 +34,7 @@ export type OrderStateType =
 export interface OrderVendor {
   id: string;
   name: string;
+  image:string
 }
 
 export interface OrderCustomer {
@@ -48,6 +49,7 @@ export interface OrderType {
   _id: string;
   menuId: string;
   menuName: string;
+  menuImage:string;
   vendor: OrderVendor;
   quantity: number;
   unitPrice: number;

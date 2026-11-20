@@ -71,9 +71,11 @@ const OrderForm = ({ menu, user }: { menu: PizzaType; user: usertype }) => {
     const order = {
       menuId: menu._id,
       menuName: menu.name,
+      menuImage: menu.image || PLACEHOLDER,
       vendor: {
         id: menu.vendor?.id ?? "",
         name: menu.vendor?.name ?? "",
+        image: menu.vendor?.image ??"",
       },
       quantity,
       unitPrice,
@@ -357,6 +359,7 @@ const OrderForm = ({ menu, user }: { menu: PizzaType; user: usertype }) => {
               </p>
             </div>
             <input name="order_status" type="hidden" value={"PENDING"} />
+            
             
             <div className="modal-action">
               <button
