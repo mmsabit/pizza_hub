@@ -2,7 +2,7 @@ import "server-only";
 
 import { ObjectId } from "mongodb";
 
-
+import { db } from "@/lib/db";
 
 type PremiumState = {
   premium?: boolean | null;
