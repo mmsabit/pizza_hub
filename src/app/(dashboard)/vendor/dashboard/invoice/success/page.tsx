@@ -11,6 +11,7 @@ import Link from "next/link";
 import type Stripe from "stripe";
 
 import { stripe } from "@/lib/stripe";
+import { checkoutVerify } from "@/lib/menu";
 
 export const metadata: Metadata = {
   title: "Premium checkout — PizzaHub",
@@ -41,6 +42,8 @@ export default async function CheckoutSuccessPage({
   } else {
     try {
       session = await stripe.checkout.sessions.retrieve(sessionId);
+      const result = await checkoutVerify(sessionId);
+      console.log({ result })
     } catch {
       error = "We could not find that checkout session. It may have expired.";
     }
