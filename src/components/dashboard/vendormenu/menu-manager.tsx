@@ -6,6 +6,8 @@ import { useState } from "react";
 
 import { PizzaType } from "@/app/type/type";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { FREE_MENU_LIMIT } from "@/lib/menu";
 import { MenuFormModal } from "./menu-form-modal";
 
 
@@ -78,9 +80,11 @@ interface MenuManagerProps {
   userImage: string;
   userId:string;
   ITEMS: PizzaType[];
+  activeItems: number;
 }
 
-export function MenuManager({userName, userImage,userId, ITEMS}:MenuManagerProps) {
+export function MenuManager({userName, userImage,userId, ITEMS, activeItems}:MenuManagerProps) {
+  const router = useRouter();
   const [formOpen, setFormOpen] = useState(false);
   const availableCount = ITEMS.filter((item) => item.available).length;
 
@@ -102,7 +106,14 @@ export function MenuManager({userName, userImage,userId, ITEMS}:MenuManagerProps
 
         <button
           className="inline-flex items-center gap-space-xs rounded-xl bg-primary-container px-space-md py-space-sm font-label-lg text-label-lg text-on-primary-container shadow-lg shadow-primary-container/25 transition-all hover:bg-primary hover:-translate-y-0.5"
-          onClick={() => setFormOpen(true)}
+          onClick={() => {
+            if (activeItems >= FREE_MENU_LIMIT) {
+              router.push("/vendor/dashboard/plan");
+              return;
+            }
+
+            setFormOpen(true);
+          }}
           type="button"
         >
           <Plus size={16} />

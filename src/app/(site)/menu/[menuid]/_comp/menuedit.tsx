@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import type { PizzaType } from "@/app/type/type";
-import { MENU_CATEGORIES } from "@/lib/menu";
+import { FREE_MENU_LIMIT, MENU_CATEGORIES } from "@/lib/menu";
 import {
   ImagePlus,
   CheckCircle2,
@@ -22,10 +22,16 @@ const LABEL_CLASS =
 const RADIO_CARD_CLASS =
   "flex cursor-pointer items-center gap-space-xs rounded-xl border border-outline-variant/60 bg-surface-container-low px-space-md py-space-sm font-label-lg text-label-lg text-on-surface-variant transition-colors has-checked:border-primary-container has-checked:bg-primary-fixed/40 has-checked:text-charcoal-dark";
 
-const MenuEdit= ({ menu }: { menu: PizzaType }) => {
+const MenuEdit= ({
+  activeItems,
+  menu,
+}: {
+  activeItems: number;
+  menu: PizzaType;
+}) => {
   const router = useRouter();
-
-  
+  const availabilityLocked =
+    activeItems >= FREE_MENU_LIMIT && !menu.available;
 
   const handleEdit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -64,7 +70,9 @@ const MenuEdit= ({ menu }: { menu: PizzaType }) => {
         category: String(formData.get("category") ?? menu.category),
         price,
         description: String(formData.get("description") ?? "").trim(),
-        available: formData.get("available") === "available",
+        available: availabilityLocked
+          ? menu.available
+          : formData.get("available") === "available",
         status: String(formData.get("status") ?? menu.status),
         vendor: {
           id: String(formData.get("vendorId") ?? menu.vendor.id),
@@ -277,7 +285,12 @@ const MenuEdit= ({ menu }: { menu: PizzaType }) => {
             </div>
 
             {/* 6. Availability radio */}
-            <fieldset className="space-y-space-xs">
+            <fieldset
+              className={`space-y-space-xs ${
+                availabilityLocked ? "opacity-60" : ""
+              }`}
+              disabled={availabilityLocked}
+            >
               <legend className={`${LABEL_CLASS} mb-space-xs`}>
                 Availability
               </legend>
@@ -306,6 +319,12 @@ const MenuEdit= ({ menu }: { menu: PizzaType }) => {
                 </label>
               </div>
             </fieldset>
+            {availabilityLocked && (
+              <p className="font-body-md text-body-md text-on-surface-variant">
+                Availability changes are disabled while you have more than{" "}
+                {FREE_MENU_LIMIT} active menu items.
+              </p>
+            )}
 
             <input name="status" type="hidden" value={menu.status} />
             <input name="vendorId" type="hidden" value={menu.vendor.id} />

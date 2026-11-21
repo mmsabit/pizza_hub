@@ -16,6 +16,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import MenuStatusEdit from "./_comp/menustatusedit";
 import OrderForm from "./_comp/orderform";
+import { getMenuUsage } from "@/lib/menu-usage";
 
 const PLACEHOLDER = "/images/placeholder.png";
 
@@ -63,6 +64,10 @@ const user =session?.user;
 const userData = user?.id
   ? { id: user.id, name: user.name ?? "" }
   : null;
+const activeItems =
+  user?.id === menu.vendor?.id && user.role === "vendor"
+    ? (await getMenuUsage(menu.vendor.id)).active
+    : 0;
 
   return (
     <section className="relative w-full overflow-hidden bg-dough-surface">
@@ -205,7 +210,7 @@ const userData = user?.id
               {user?.id === vendorId && user?.role == 'vendor'?(
                 <>
                 <MenuDelete menu={menu} />
-              <MenuEdit menu={menu} />
+              <MenuEdit activeItems={activeItems} menu={menu} />
               </>
               ): user?.role == "admin"?(
                 <>

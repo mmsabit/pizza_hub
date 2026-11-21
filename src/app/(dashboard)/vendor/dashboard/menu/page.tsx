@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { MenuManager } from "@/components/dashboard/vendormenu/menu-manager";
+import type { PizzaType } from "@/app/type/type";
 
 export const metadata: Metadata = {
   title: "Menu — PizzaHub",
@@ -17,7 +18,8 @@ export default async function MenuPage() {
 const user = session?.user
 
 const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/menus/${user?.id}`);
-const data = await res.json();
+const data: PizzaType[] = await res.json();
+const activeItems = data.filter((item) => item.available).length;
 
-  return <MenuManager userName={user?.name ?? ""} userImage={user?.image ?? ""} userId={user?.id??""} ITEMS = {data}/>;
+  return <MenuManager userName={user?.name ?? ""} userImage={user?.image ?? ""} userId={user?.id??""} ITEMS={data} activeItems={activeItems} />;
 }
