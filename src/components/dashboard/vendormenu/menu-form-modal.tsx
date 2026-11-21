@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import type { FormEvent } from "react";
 import { useEffect, useId, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { MENU_CATEGORIES } from "@/lib/menu";
 import { Bounce, toast } from "react-toastify";
 
@@ -34,6 +35,7 @@ export function MenuFormModal({
 }: MenuFormModalProps) {
   const fieldId = useId();
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -96,8 +98,9 @@ export function MenuFormModal({
       body: JSON.stringify(menu),
     });
 
-    if (res.ok) {
-      toast.success("Your menu added successfully wait for admin aproveal", {
+    const result = await res.json();
+    if (!res.ok) {
+      toast.error(result.message || "Failed to add menu. Please try again.", {
         position: "bottom-right",
         autoClose: 4000,
         hideProgressBar: false,
@@ -107,19 +110,21 @@ export function MenuFormModal({
         theme: "light",
         transition: Bounce,
       });
-      onClose();
-    } else {
-      toast.error("Failed to create event. Please try again.", {
-        position: "bottom-right",
-        autoClose: 4000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "light",
-        transition: Bounce,
-      });
+      return;
     }
+
+    toast.success("Your menu added successfully wait for admin aproveal", {
+      position: "bottom-right",
+      autoClose: 4000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "light",
+      transition: Bounce,
+    });
+    onClose();
+    router.refresh();
   };
 
   return (

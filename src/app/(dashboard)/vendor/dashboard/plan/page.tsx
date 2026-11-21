@@ -1,9 +1,9 @@
 import {
   ArrowRight,
   BadgeCheck,
+  CalendarClock,
   Check,
   Crown,
-  Infinity as InfinityIcon,
   Minus,
   ShieldCheck,
   Sparkles,
@@ -18,23 +18,22 @@ import type { JSX } from "react";
 
 import { UpgradeToPremium } from "@/components/dashboard/vendorplan/upgrade-to-premium";
 import { auth } from "@/lib/auth";
-import { FREE_MENU_LIMIT } from "@/lib/menu";
 import { getMenuUsage } from "@/lib/menu-usage";
+import { isPremiumActive } from "@/lib/plan";
 
 export const metadata: Metadata = {
   title: "Plan & billing — PizzaHub",
   description:
-    "Compare the Free and Premium PizzaHub vendor plans, check your menu usage and request an upgrade.",
+    "Compare the Free and Premium PizzaHub vendor plans, check your menu usage and manage your subscription.",
 };
 
 const FREE_FEATURES = [
-  "Up to 3 active menu items",
+  "Unlimited menus",
   "Basic vendor dashboard",
   "Order management",
 ];
 
 const PREMIUM_FEATURES = [
-  "Unlimited active menu items",
   "Premium vendor badge",
   "Featured menu placement",
   "All Free features included",
@@ -45,13 +44,25 @@ const COMPARISON: Array<{
   free: string | boolean;
   premium: string | boolean;
 }> = [
-  { feature: "Active menu items", free: "Up to 3", premium: "Unlimited" },
+  { feature: "Menus", free: "Unlimited", premium: "Unlimited" },
   { feature: "Vendor dashboard", free: "Basic", premium: "Full access" },
   { feature: "Order management", free: true, premium: true },
   { feature: "Premium vendor badge", free: false, premium: true },
   { feature: "Featured menu placement", free: false, premium: true },
   { feature: "All Free features", free: false, premium: true },
 ];
+
+function formatPlanDate(value: Date | string) {
+  const date = value instanceof Date ? value : new Date(value);
+
+  if (Number.isNaN(date.getTime())) return null;
+
+  return new Intl.DateTimeFormat("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(date);
+}
 
 function CompareCell({ value }: { value: string | boolean }) {
   if (typeof value === "string") {
@@ -75,14 +86,15 @@ function CompareCell({ value }: { value: string | boolean }) {
 
 export default async function PlanPage(): Promise<JSX.Element> {
   const session = await auth.api.getSession({ headers: await headers() });
-  const vendorName = session?.user?.name ?? "Your storefront";
-  const { active: activeItems } = await getMenuUsage(session?.user?.id ?? "");
+  const user = session?.user;
+  const vendorName = user?.name ?? "Your storefront";
+  const { total: menuCount } = await getMenuUsage(user?.id ?? "");
 
-  const limitReached = activeItems >= FREE_MENU_LIMIT;
-  const usagePercent = Math.min(
-    Math.round((activeItems / FREE_MENU_LIMIT) * 100),
-    100,
-  );
+  const premium = isPremiumActive(user);
+  const cancelAt = user?.premiumCancelAt
+    ? new Date(user.premiumCancelAt)
+    : null;
+  const cancelsOn = premium && cancelAt ? formatPlanDate(cancelAt) : null;
 
   return (
     <div className="space-y-space-lg">
@@ -96,14 +108,25 @@ export default async function PlanPage(): Promise<JSX.Element> {
             Your PizzaHub plan
           </h1>
           <p className="font-body-md text-body-md text-on-surface-variant">
-            {vendorName} is on the Free plan — upgrade when your menu outgrows
-            three live items.
+            {premium
+              ? `${vendorName} is on Premium — unlimited menu items and featured placement are live.`
+              : `${vendorName} is on the Free plan — publish as many menu items as your kitchen needs.`}
           </p>
         </div>
 
-        <span className="inline-flex items-center gap-space-xs rounded-full bg-basil-fresh/15 px-space-sm py-space-xs font-label-md text-label-md font-bold text-tertiary">
-          <BadgeCheck size={14} />
-          Free plan · Active
+        <span
+          className={`inline-flex items-center gap-space-xs rounded-full px-space-sm py-space-xs font-label-md text-label-md font-bold ${
+            premium
+              ? "bg-crust-gold/20 text-secondary"
+              : "bg-basil-fresh/15 text-tertiary"
+          }`}
+        >
+          {premium ? <Crown size={14} /> : <BadgeCheck size={14} />}
+          {premium
+            ? cancelsOn
+              ? `Premium · ends ${cancelsOn}`
+              : "Premium plan · Active"
+            : "Free plan · Active"}
         </span>
       </header>
 
@@ -115,9 +138,21 @@ export default async function PlanPage(): Promise<JSX.Element> {
                 <Store size={12} />
                 Free
               </span>
-              <span className="inline-flex items-center gap-space-xs rounded-full bg-tertiary-fixed px-space-sm py-space-xs font-label-sm text-label-sm font-bold text-on-tertiary-fixed">
-                <span className="h-1.5 w-1.5 rounded-full bg-tertiary" />
-                Current plan
+              <span
+                className={`inline-flex items-center gap-space-xs rounded-full px-space-sm py-space-xs font-label-sm text-label-sm font-bold ${
+                  premium
+                    ? "bg-surface-container-low text-on-surface-variant"
+                    : "bg-tertiary-fixed text-on-tertiary-fixed"
+                }`}
+              >
+                {!premium ? (
+                  <span className="h-1.5 w-1.5 rounded-full bg-tertiary" />
+                ) : null}
+                {premium
+                  ? cancelsOn
+                    ? `Ends ${cancelsOn}`
+                    : "Included in Premium"
+                  : "Current plan"}
               </span>
             </div>
 
@@ -147,8 +182,18 @@ export default async function PlanPage(): Promise<JSX.Element> {
               ))}
             </ul>
 
-            <div className="mt-space-lg rounded-xl border border-surface-container-high bg-surface-container-low px-space-md py-space-sm text-center font-label-lg text-label-lg font-bold text-outline">
-              You are on this plan
+            <div
+              className={`mt-space-lg rounded-xl border px-space-md py-space-sm text-center font-label-lg text-label-lg font-bold ${
+                premium
+                  ? "border-surface-container-high bg-surface-container-low text-on-surface-variant"
+                  : "border-surface-container-high bg-surface-container-low text-outline"
+              }`}
+            >
+              {premium
+                ? cancelsOn
+                  ? `Your plan returns here on ${cancelsOn}`
+                  : "Included with your Premium plan"
+                : "You are on this plan"}
             </div>
           </article>
 
@@ -161,10 +206,17 @@ export default async function PlanPage(): Promise<JSX.Element> {
                 <Crown size={12} />
                 Premium
               </span>
-              <span className="inline-flex items-center gap-space-xs rounded-full bg-surface-container-lowest/10 px-space-sm py-space-xs font-label-sm text-label-sm font-bold text-crust-gold">
-                <Sparkles size={12} />
-                Recommended
-              </span>
+              {premium ? (
+                <span className="inline-flex items-center gap-space-xs rounded-full bg-basil-fresh/15 px-space-sm py-space-xs font-label-sm text-label-sm font-bold text-tertiary-fixed">
+                  <BadgeCheck size={12} />
+                  Current plan
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-space-xs rounded-full bg-surface-container-lowest/10 px-space-sm py-space-xs font-label-sm text-label-sm font-bold text-crust-gold">
+                  <Sparkles size={12} />
+                  Recommended
+                </span>
+              )}
             </div>
 
             <div className="relative mt-space-md flex items-end gap-space-xs">
@@ -194,7 +246,19 @@ export default async function PlanPage(): Promise<JSX.Element> {
             </ul>
 
             <div className="relative">
-              <UpgradeToPremium />
+              {premium ? (
+                <button
+                  aria-disabled="true"
+                  className="mt-space-lg inline-flex w-full cursor-not-allowed items-center justify-center gap-space-xs rounded-xl border border-surface-container-lowest/15 bg-surface-container-lowest/10 px-space-md py-space-sm font-label-lg text-label-lg font-bold text-surface-container-high/70"
+                  disabled
+                  type="button"
+                >
+                  <BadgeCheck size={16} />
+                  You are now on the Premium plan
+                </button>
+              ) : (
+                <UpgradeToPremium />
+              )}
             </div>
           </article>
         </section>
@@ -212,28 +276,15 @@ export default async function PlanPage(): Promise<JSX.Element> {
 
             <p className="mt-space-sm flex items-baseline gap-space-xs">
               <span className="font-headline-md text-headline-md font-bold text-charcoal-dark">
-                {activeItems}
+                {menuCount}
               </span>
               <span className="font-label-lg text-label-lg text-outline">
-                / {FREE_MENU_LIMIT} active menu items
+                {menuCount === 1 ? "menu" : "menus"}
               </span>
             </p>
 
-            <div className="mt-space-xs h-2 w-full overflow-hidden rounded-full bg-surface-container-low">
-              <div
-                className={`h-full rounded-full transition-all ${
-                  limitReached ? "bg-primary-container" : "bg-crust-gold"
-                }`}
-                style={{ width: `${usagePercent}%` }}
-              />
-            </div>
-
             <p className="mt-space-sm font-label-sm text-label-sm text-outline">
-              {limitReached
-                ? "You have reached the Free limit. Upgrade to Premium to publish more dishes."
-                : `${
-                    FREE_MENU_LIMIT - activeItems
-                  } more item${FREE_MENU_LIMIT - activeItems === 1 ? "" : "s"} left before you hit the Free limit.`}
+              Published menus across your storefront.
             </p>
 
             <Link
@@ -258,22 +309,47 @@ export default async function PlanPage(): Promise<JSX.Element> {
             <dl className="mt-space-sm divide-y divide-surface-container-high font-label-lg text-label-lg">
               <div className="flex items-center justify-between gap-space-sm py-space-sm">
                 <dt className="text-on-surface-variant">Current plan</dt>
-                <dd className="font-bold text-charcoal-dark">Free</dd>
+                <dd className="font-bold text-charcoal-dark">
+                  {premium ? "Premium" : "Free"}
+                </dd>
               </div>
               <div className="flex items-center justify-between gap-space-sm py-space-sm">
                 <dt className="text-on-surface-variant">Monthly total</dt>
-                <dd className="font-bold text-charcoal-dark">$0</dd>
+                <dd className="font-bold text-charcoal-dark">
+                  {premium ? "$20" : "$0"}
+                </dd>
               </div>
               <div className="flex items-center justify-between gap-space-sm py-space-sm">
-                <dt className="text-on-surface-variant">Next charge</dt>
-                <dd className="font-bold text-charcoal-dark">None</dd>
+                <dt className="text-on-surface-variant">
+                  {premium && cancelsOn ? "Ends on" : "Next charge"}
+                </dt>
+                <dd className="font-bold text-charcoal-dark">
+                  {premium
+                    ? cancelsOn
+                      ? cancelsOn
+                      : "Monthly · $20"
+                    : "None"}
+                </dd>
               </div>
             </dl>
 
             <p className="mt-space-sm flex items-start gap-space-xs rounded-xl bg-surface-container-low px-space-sm py-space-xs font-label-sm text-label-sm text-on-surface-variant">
-              <ShieldCheck className="mt-0.5 shrink-0 text-tertiary" size={14} />
-              No card on file. Premium is $20/month, billed securely through
-              Stripe, and can be cancelled anytime.
+              {premium && cancelsOn ? (
+                <CalendarClock
+                  className="mt-0.5 shrink-0 text-secondary"
+                  size={14}
+                />
+              ) : (
+                <ShieldCheck
+                  className="mt-0.5 shrink-0 text-tertiary"
+                  size={14}
+                />
+              )}
+              {premium
+                ? cancelsOn
+                  ? `Cancellation scheduled. Premium stays active until ${cancelsOn}, then your storefront moves to the Free plan.`
+                  : "Premium is active and renews monthly through Stripe. Contact PizzaHub support if you need to change your plan."
+                : "No card on file. Premium is $20/month, billed securely through Stripe, and can be cancelled anytime."}
             </p>
           </section>
         </div>
@@ -289,10 +365,6 @@ export default async function PlanPage(): Promise<JSX.Element> {
               Everything the Free plan includes, and what Premium adds on top.
             </p>
           </div>
-          <span className="inline-flex items-center gap-space-xs rounded-full bg-surface-container-low px-space-sm py-space-xs font-label-sm text-label-sm text-on-surface-variant">
-            <InfinityIcon size={12} />
-            Premium never caps your menu
-          </span>
         </div>
 
         <div className="overflow-x-auto">
@@ -331,8 +403,11 @@ export default async function PlanPage(): Promise<JSX.Element> {
 
       <p className="flex items-center justify-center gap-space-xs text-center font-label-sm text-label-sm text-outline">
         <Crown className="shrink-0 text-outline-variant" size={13} />
-        Premium is billed monthly through Stripe&apos;s secure checkout. Your
-        Free plan stays active until the payment completes.
+        {premium
+          ? cancelsOn
+            ? `Premium ends on ${cancelsOn}. After that your storefront automatically returns to the Free plan.`
+            : "Premium is active and renews monthly through Stripe's secure checkout."
+          : "Premium is billed monthly through Stripe's secure checkout. Your Free plan stays active until the payment completes."}
       </p>
     </div>
   );

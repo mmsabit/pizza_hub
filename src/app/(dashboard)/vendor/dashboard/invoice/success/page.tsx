@@ -7,11 +7,14 @@ import {
   TriangleAlert,
 } from "lucide-react";
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import Link from "next/link";
 import type Stripe from "stripe";
 
-import { stripe } from "@/lib/stripe";
+import { auth } from "@/lib/auth";
 import { checkoutVerify } from "@/lib/menu";
+import { activatePremium } from "@/lib/plan";
+import { stripe } from "@/lib/stripe";
 
 export const metadata: Metadata = {
   title: "Premium checkout — PizzaHub",
@@ -33,6 +36,7 @@ export default async function CheckoutSuccessPage({
   searchParams: Promise<{ session_id?: string }>;
 }) {
   const { session_id: sessionId } = await searchParams;
+  const authSession = await auth.api.getSession({ headers: await headers() });
 
   let session: Stripe.Checkout.Session | null = null;
   let error: string | null = null;
@@ -42,10 +46,18 @@ export default async function CheckoutSuccessPage({
   } else {
     try {
       session = await stripe.checkout.sessions.retrieve(sessionId);
-      const result = await checkoutVerify(sessionId);
-      console.log({ result })
     } catch {
       error = "We could not find that checkout session. It may have expired.";
+    }
+
+    if (session) {
+      try {
+        const result = await checkoutVerify(sessionId);
+        console.log({ result });
+      } catch (verifyError) {
+        // A failing backend check should not hide a confirmed Stripe payment.
+        console.error("Checkout verification failed:", verifyError);
+      }
     }
   }
 
@@ -54,6 +66,24 @@ export default async function CheckoutSuccessPage({
     session?.payment_status === "no_payment_required";
   const complete = session?.status === "complete" && paid;
   const pending = Boolean(session) && !complete;
+
+  // Stripe confirms the payment, then this visit flips the vendor to Premium.
+  // The checkout session carries the signed-in user's id, so a session id
+  // copied from another account cannot grant Premium here.
+  if (
+    complete &&
+    session?.client_reference_id &&
+    authSession?.user?.id === session.client_reference_id
+  ) {
+    try {
+      await activatePremium(
+        authSession.user.id,
+        new Date(session.created * 1000),
+      );
+    } catch (activateError) {
+      console.error("Failed to activate Premium:", activateError);
+    }
+  }
 
   return (
     <div className="mx-auto flex max-w-xl flex-col items-center gap-space-md py-space-xl text-center">

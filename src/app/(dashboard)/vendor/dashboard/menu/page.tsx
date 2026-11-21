@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { MenuManager } from "@/components/dashboard/vendormenu/menu-manager";
 import type { PizzaType } from "@/app/type/type";
+import { isPremiumActive } from "@/lib/plan";
 
 export const metadata: Metadata = {
   title: "Menu — PizzaHub",
@@ -19,7 +20,7 @@ const user = session?.user
 
 const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/menus/${user?.id}`);
 const data: PizzaType[] = await res.json();
-const activeItems = data.filter((item) => item.available).length;
+const premium = isPremiumActive(user);
 
-  return <MenuManager userName={user?.name ?? ""} userImage={user?.image ?? ""} userId={user?.id??""} ITEMS={data} activeItems={activeItems} />;
+  return <MenuManager userName={user?.name ?? ""} userImage={user?.image ?? ""} userId={user?.id??""} ITEMS={data} premium={premium} />;
 }

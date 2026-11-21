@@ -1,13 +1,11 @@
 "use client";
 
-import { Plus } from "lucide-react";
+import { Crown, Plus } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 
 import { PizzaType } from "@/app/type/type";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { FREE_MENU_LIMIT } from "@/lib/menu";
 import { MenuFormModal } from "./menu-form-modal";
 
 
@@ -80,11 +78,10 @@ interface MenuManagerProps {
   userImage: string;
   userId:string;
   ITEMS: PizzaType[];
-  activeItems: number;
+  premium: boolean;
 }
 
-export function MenuManager({userName, userImage,userId, ITEMS, activeItems}:MenuManagerProps) {
-  const router = useRouter();
+export function MenuManager({userName, userImage,userId, ITEMS, premium}:MenuManagerProps) {
   const [formOpen, setFormOpen] = useState(false);
   const availableCount = ITEMS.filter((item) => item.available).length;
 
@@ -104,21 +101,23 @@ export function MenuManager({userName, userImage,userId, ITEMS, activeItems}:Men
           </p>
         </div>
 
-        <button
-          className="inline-flex items-center gap-space-xs rounded-xl bg-primary-container px-space-md py-space-sm font-label-lg text-label-lg text-on-primary-container shadow-lg shadow-primary-container/25 transition-all hover:bg-primary hover:-translate-y-0.5"
-          onClick={() => {
-            if (activeItems >= FREE_MENU_LIMIT) {
-              router.push("/vendor/dashboard/plan");
-              return;
-            }
+        <div className="flex flex-wrap items-center gap-space-sm">
+          {premium ? (
+            <span className="inline-flex items-center gap-space-xs rounded-full bg-crust-gold/15 px-space-sm py-space-xs font-label-sm text-label-sm font-bold text-secondary">
+              <Crown size={12} />
+              Premium
+            </span>
+          ) : null}
 
-            setFormOpen(true);
-          }}
-          type="button"
-        >
-          <Plus size={16} />
-          Add new menu
-        </button>
+          <button
+            className="inline-flex items-center gap-space-xs rounded-xl bg-primary-container px-space-md py-space-sm font-label-lg text-label-lg text-on-primary-container shadow-lg shadow-primary-container/25 transition-all hover:bg-primary hover:-translate-y-0.5"
+            onClick={() => setFormOpen(true)}
+            type="button"
+          >
+            <Plus size={16} />
+            Add new menu
+          </button>
+        </div>
       </header>
 
       <section className="overflow-hidden rounded-2xl border border-surface-container-high bg-surface-container-lowest shadow-sm">

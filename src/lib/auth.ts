@@ -1,14 +1,11 @@
 import { betterAuth } from "better-auth";
-import { MongoClient } from "mongodb";
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
 
-const client = new MongoClient(process.env.DB_URI as string);
-const db = client.db("pizza_hub");
-
+import { db, mongoClient } from "@/lib/db";
 
 export const auth = betterAuth({
     database: mongodbAdapter(db, {
-        client,
+        client: mongoClient,
     }),
     user: {
         additionalFields: {
@@ -19,7 +16,21 @@ export const auth = betterAuth({
                 // anyone from registering as an admin.
                 input: true,
                 defaultValue: "user",
-            }
+            },
+            premium: {
+                // Written server-side only (Stripe activation / cancellation),
+                // so clients can never grant themselves Premium.
+                type: "boolean",
+                input: false,
+                defaultValue: false,
+            },
+            premiumCancelAt: {
+                // When a Premium cancellation was requested. Premium stays
+                // active until this date, then the account falls back to Free.
+                type: "date",
+                input: false,
+                required: false,
+            },
         }
     },
     databaseHooks: {
