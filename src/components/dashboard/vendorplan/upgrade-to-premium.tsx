@@ -1,6 +1,6 @@
 "use client";
 
-import { BadgeCheck, Crown, Sparkles, X } from "lucide-react";
+import { BadgeCheck, Crown, Loader2, Sparkles, X } from "lucide-react";
 import { useRef, useState } from "react";
 import { Bounce, toast } from "react-toastify";
 
@@ -11,27 +11,48 @@ const PREMIUM_PERKS = [
   "Everything in the Free plan",
 ];
 
+type CheckoutResponse = {
+  url?: string;
+  error?: string;
+};
+
 export function UpgradeToPremium() {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const [requested, setRequested] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   const openDialog = () => {
-    setRequested(false);
+    setIsRedirecting(false);
     dialogRef.current?.showModal();
   };
 
-  const sendRequest = () => {
-    setRequested(true);
-    toast.success("Upgrade request sent — our team will reach out.", {
-      position: "bottom-right",
-      autoClose: 4000,
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: true,
-      draggable: true,
-      theme: "light",
-      transition: Bounce,
-    });
+  const startCheckout = async () => {
+    setIsRedirecting(true);
+
+    try {
+      const res = await fetch("/api/checkout_sessions", { method: "POST" });
+      const data = (await res.json()) as CheckoutResponse;
+
+      if (!res.ok || !data.url) {
+        throw new Error(data.error || "Could not start checkout.");
+      }
+
+      window.location.assign(data.url);
+    } catch (error) {
+      setIsRedirecting(false);
+      toast.error(
+        error instanceof Error ? error.message : "Could not start checkout.",
+        {
+          position: "bottom-right",
+          autoClose: 4000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "light",
+          transition: Bounce,
+        },
+      );
+    }
   };
 
   return (
@@ -61,84 +82,73 @@ export function UpgradeToPremium() {
             </button>
           </form>
 
-          {requested ? (
-            <div className="flex flex-col items-center gap-space-sm py-space-md text-center">
-              <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-tertiary-fixed text-tertiary">
-                <BadgeCheck size={28} />
-              </span>
-              <h2
-                className="font-title-md text-title-md text-charcoal-dark"
-                id="upgrade-premium-title"
+          <div className="pr-8">
+            <span className="inline-flex items-center gap-space-xs rounded-full bg-crust-gold/20 px-space-sm py-space-xs font-label-sm text-label-sm font-bold uppercase tracking-wider text-secondary">
+              <Sparkles size={12} />
+              Premium
+            </span>
+            <h2
+              className="mt-space-sm font-title-md text-title-md text-charcoal-dark"
+              id="upgrade-premium-title"
+            >
+              Upgrade your storefront
+            </h2>
+            <p className="mt-space-xs font-label-lg text-label-lg font-bold text-primary text-3xl">
+              $20/month
+            </p>
+            <p className="font-body-md text-body-md text-on-surface-variant">
+              Premium unlocks the full toolkit for growing kitchens. You will be
+              redirected to Stripe to complete the subscription securely.
+            </p>
+          </div>
+
+          <ul className="mt-space-md space-y-space-sm">
+            {PREMIUM_PERKS.map((perk) => (
+              <li
+                key={perk}
+                className="flex items-start gap-space-sm font-body-md text-body-md text-on-surface-variant"
               >
-                Request received
-              </h2>
-              <p className="font-body-md text-body-md text-on-surface-variant">
-                The PizzaHub team will confirm your Premium activation and
-                billing details by email. Your Free plan stays active until
-                then.
-              </p>
-              <form className="modal-action" method="dialog">
-                <button className="btn btn-primary" type="submit">
-                  Got it
-                </button>
-              </form>
-            </div>
-          ) : (
-            <>
-              <div className="pr-8">
-                <span className="inline-flex items-center gap-space-xs rounded-full bg-crust-gold/20 px-space-sm py-space-xs font-label-sm text-label-sm font-bold uppercase tracking-wider text-secondary">
-                  <Sparkles size={12} />
-                  Premium
-                </span>
-                <h2
-                  className="mt-space-sm font-title-md text-title-md text-charcoal-dark"
-                  id="upgrade-premium-title"
-                >
-                  Upgrade your storefront
-                </h2>
-                <p className="mt-space-xs font-label-lg text-label-lg font-bold text-primary text-3xl">
-                  $20/month
-                </p>
-                <p className="font-body-md text-body-md text-on-surface-variant">
-                  Premium unlocks the full toolkit for growing kitchens. This
-                  sends an upgrade request to the PizzaHub team.
-                </p>
-              </div>
+                <BadgeCheck
+                  className="mt-0.5 shrink-0 text-tertiary"
+                  size={18}
+                />
+                {perk}
+              </li>
+            ))}
+          </ul>
 
-              <ul className="mt-space-md space-y-space-sm">
-                {PREMIUM_PERKS.map((perk) => (
-                  <li
-                    key={perk}
-                    className="flex items-start gap-space-sm font-body-md text-body-md text-on-surface-variant"
-                  >
-                    <BadgeCheck
-                      className="mt-0.5 shrink-0 text-tertiary"
-                      size={18}
-                    />
-                    {perk}
-                  </li>
-                ))}
-              </ul>
-
-              <div className="modal-action">
-                <button
-                  className="btn btn-ghost"
-                  onClick={() => dialogRef.current?.close()}
-                  type="button"
-                >
-                  Not now
-                </button>
-                <button
-                  className="btn btn-primary"
-                  onClick={sendRequest}
-                  type="button"
-                >
+          <div className="modal-action">
+            <button
+              className="btn btn-ghost"
+              disabled={isRedirecting}
+              onClick={() => dialogRef.current?.close()}
+              type="button"
+            >
+              Not now
+            </button>
+            <button
+              className="btn btn-primary"
+              disabled={isRedirecting}
+              onClick={startCheckout}
+              type="button"
+            >
+              {isRedirecting ? (
+                <>
+                  <Loader2 className="animate-spin" size={16} />
+                  Redirecting…
+                </>
+              ) : (
+                <>
                   <Crown size={16} />
-                  Send upgrade request
-                </button>
-              </div>
-            </>
-          )}
+                  Continue to checkout
+                </>
+              )}
+            </button>
+          </div>
+
+          <p className="mt-space-sm text-center font-label-sm text-label-sm text-outline">
+            Secure payment powered by Stripe. Cancel anytime.
+          </p>
         </div>
 
         <form className="modal-backdrop" method="dialog">

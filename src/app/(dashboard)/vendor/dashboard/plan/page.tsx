@@ -14,6 +14,7 @@ import {
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import Link from "next/link";
+import type { JSX } from "react";
 
 import { UpgradeToPremium } from "@/components/dashboard/vendorplan/upgrade-to-premium";
 import { auth } from "@/lib/auth";
@@ -72,7 +73,7 @@ function CompareCell({ value }: { value: string | boolean }) {
   );
 }
 
-export default async function PlanPage() {
+export default async function PlanPage(): Promise<JSX.Element> {
   const session = await auth.api.getSession({ headers: await headers() });
   const vendorName = session?.user?.name ?? "Your storefront";
   const { active: activeItems } = await getMenuUsage(session?.user?.id ?? "");
@@ -122,7 +123,7 @@ export default async function PlanPage() {
 
             <div className="mt-space-md flex items-end gap-space-xs">
               <p className="font-headline-lg text-headline-lg text-charcoal-dark">
-                ৳0
+                $0
               </p>
               <p className="pb-1 font-label-lg text-label-lg text-outline">
                 / forever
@@ -168,10 +169,10 @@ export default async function PlanPage() {
 
             <div className="relative mt-space-md flex items-end gap-space-xs">
               <p className="font-headline-lg text-headline-lg text-surface-container-lowest">
-                Custom
+                $20
               </p>
               <p className="pb-1 font-label-lg text-label-lg text-surface-container-high/70">
-                / billed monthly
+                / per month
               </p>
             </div>
             <p className="relative font-body-md text-body-md text-surface-container-high/70">
@@ -261,7 +262,7 @@ export default async function PlanPage() {
               </div>
               <div className="flex items-center justify-between gap-space-sm py-space-sm">
                 <dt className="text-on-surface-variant">Monthly total</dt>
-                <dd className="font-bold text-charcoal-dark">৳0</dd>
+                <dd className="font-bold text-charcoal-dark">$0</dd>
               </div>
               <div className="flex items-center justify-between gap-space-sm py-space-sm">
                 <dt className="text-on-surface-variant">Next charge</dt>
@@ -271,8 +272,8 @@ export default async function PlanPage() {
 
             <p className="mt-space-sm flex items-start gap-space-xs rounded-xl bg-surface-container-low px-space-sm py-space-xs font-label-sm text-label-sm text-on-surface-variant">
               <ShieldCheck className="mt-0.5 shrink-0 text-tertiary" size={14} />
-              No card on file. Premium upgrades are confirmed by the PizzaHub
-              team before any charge.
+              No card on file. Premium is $20/month, billed securely through
+              Stripe, and can be cancelled anytime.
             </p>
           </section>
         </div>
@@ -330,8 +331,8 @@ export default async function PlanPage() {
 
       <p className="flex items-center justify-center gap-space-xs text-center font-label-sm text-label-sm text-outline">
         <Crown className="shrink-0 text-outline-variant" size={13} />
-        Upgrade requests are reviewed by the PizzaHub team, and your Free plan
-        stays active until Premium is confirmed.
+        Premium is billed monthly through Stripe&apos;s secure checkout. Your
+        Free plan stays active until the payment completes.
       </p>
     </div>
   );
