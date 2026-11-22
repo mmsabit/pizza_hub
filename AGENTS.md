@@ -16,7 +16,7 @@ No test runner, CI workflow or formatter config. `README.md` is the untouched cr
 
 ## Backend boundary
 
-- Menu/order/search calls hit `${process.env.NEXT_PUBLIC_API_URL}`: `/menu`, `/menu/:id`, `/menus`, `/menus/:vendorId`, `/menus/search`, `/adminmenu`, `/order`, `/vendor_order/:id`, `/customer_order/:id`, `/available-menu`, `/payments/checkout-verify`. Those routes do not exist in this repo.
+- Menu/order/search calls hit `${process.env.NEXT_PUBLIC_API_URL}`: `/menu`, `/menu/:id`, `/menus`, `/menus/:vendorId`, `/menus/search`, `/adminmenu`, `/order`, `/vendor_order/:id`, `/customer_order/:id`, `/available-menu`, `/payment`, `/vendor-data/:id`, `/payments/checkout-verify`. Those routes do not exist in this repo.
 - Server pages fetch with `cache: "no-store"`; client components read `NEXT_PUBLIC_API_URL` directly. There is no local data layer for menus or orders.
 - Mongo (`DB_URI`, database hardcoded `pizza_hub`) is touched only by `src/lib/auth.ts` and `src/lib/plan.ts` (`user` collection). Don't add menu/order collections here.
 - Local API routes: `src/app/api/auth/[...all]/route.ts` (better-auth), `api/upload` (ImgBB proxy), `api/checkout_sessions` (Stripe).
@@ -33,7 +33,7 @@ No test runner, CI workflow or formatter config. `README.md` is the untouched cr
 
 - `src/app/(site)/` — storefront. `layout.tsx` adds `SiteHeader` + `SiteFooter`; `page.tsx` owns `/`. `/menu` is `force-dynamic`; `/menu/[menuid]` is public and swaps actions by role (owner vendor: edit/delete, admin: delete/status, signed-in customer: order form).
 - `src/app/(auth)/` — `/sign-in`, `/sign-up`. Standalone dark shell, no site header/footer.
-- `src/app/(dashboard)/` — role-gated areas. `user/` (`/user/dashboard`, `/user/dashboard/order`, `/user/dashboard/order/[slug]`), `vendor/` (`/vendor/dashboard`, `menu`, `order`, `order/[slug]`, `plan`, `invoice/success`), `admin/` (`/admin/dashboard`, `menu`, `order`, `order/[slug]`). Each area's `layout.tsx` wraps `DashboardRoleLayout`, which reads the session, redirects signed-out visitors to `/sign-in`, and redirects a mismatched role to `homeForRole()`. There is no `/dashboard` route — don't add one.
+- `src/app/(dashboard)/` — role-gated areas. `user/` (`/user/dashboard`, `/user/dashboard/order`, `/user/dashboard/order/[slug]`, `/user/profile`), `vendor/` (`/vendor/dashboard`, `menu`, `order`, `order/[slug]`, `plan`, `invoice/success`, `/vendor/profile`), `admin/` (`/admin/dashboard`, `menu`, `order`, `order/[slug]`, `payment`, `profile`). Each area's `layout.tsx` wraps `DashboardRoleLayout`, which reads the session, redirects signed-out visitors to `/sign-in`, and redirects a mismatched role to `homeForRole()`. There is no `/dashboard` route — don't add one.
 - Put new pages inside one of these groups. Do **not** create `src/app/page.tsx` — `/` is owned by `(site)` and a second root page is a route conflict.
 
 ## Auth, roles, Premium

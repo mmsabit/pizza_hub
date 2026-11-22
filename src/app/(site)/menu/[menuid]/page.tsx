@@ -46,7 +46,6 @@ const MenuDetailespage = async ({
   const vendorName = menu.vendor?.name ?? "PizzaHub kitchen";
   const vendorImage = menu.vendor?.image || PLACEHOLDER;
   const imageSrc = menu.image || PLACEHOLDER;
-  const vendorId = menu.vendor?.id ?? "PizzaHub"
 
   const numericPrice = Number(menu.price);
   const priceLabel = Number.isFinite(numericPrice)
@@ -55,14 +54,13 @@ const MenuDetailespage = async ({
       })
     : String(menu.price);
 
-const session = await auth.api.getSession({
-    headers: await headers() 
-})
-
-const user =session?.user;
-const userData = user?.id
-  ? { id: user.id, name: user.name ?? "" }
-  : null;
+  const session = await auth.api.getSession({ headers: await headers() });
+  const user = session?.user;
+  const userData = user?.id ? { id: user.id, name: user.name ?? "" } : null;
+  const isVendorOwner =
+    user?.role === "vendor" && user.id === menu.vendor?.id;
+  const isAdmin = user?.role === "admin";
+  const isOrderable = menu.status === "approved" && menu.available;
 
   return (
     <section className="relative w-full overflow-hidden bg-dough-surface">
@@ -202,20 +200,26 @@ const userData = user?.id
 
             {/* Actions */}
             <div className="flex flex-wrap items-center gap-space-sm border-t border-surface-container-high pt-space-lg">
-              {user?.id === vendorId && user?.role == 'vendor'?(
+              {isVendorOwner ? (
                 <>
-                <MenuDelete menu={menu} />
-              <MenuEdit menu={menu} />
-              </>
-              ): user?.role == "admin"?(
-                <>
-                <MenuDelete menu={menu} />
-                <MenuStatusEdit item={menu} />
+                  <MenuDelete menu={menu} />
+                  <MenuEdit menu={menu} />
                 </>
-              ):(
+              ) : isAdmin ? (
+                <>
+                  <MenuDelete menu={menu} />
+                  <MenuStatusEdit item={menu} />
+                </>
+              ) : isOrderable ? (
                 userData ? <OrderForm menu={menu} user={userData} /> : null
+              ) : (
+                <p
+                  className="font-label-lg text-label-lg text-on-surface-variant"
+                  role="status"
+                >
+                  Menu not available
+                </p>
               )}
-              
 
               <Link
                 className="inline-flex items-center justify-center gap-space-xs rounded-xl border border-outline-variant/60 px-space-md py-space-sm font-label-lg text-label-lg text-on-surface-variant transition-colors hover:border-primary hover:text-primary"

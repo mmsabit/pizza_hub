@@ -15,7 +15,7 @@ export default async function MenuPage() {
   let items: PizzaType[] = [];
 
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/menu`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/available-menu`, {
       cache: "no-store",
     });
 

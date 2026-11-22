@@ -2,7 +2,6 @@
 
 import type { LucideIcon } from "lucide-react";
 import {
-  BarChart3,
   Gift,
   LayoutDashboard,
   MapPin,
@@ -13,6 +12,7 @@ import {
   Users,
   UtensilsCrossed,
   Wallet,
+  CreditCard,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -48,7 +48,7 @@ const NAV_BY_ROLE: Record<Role, NavItem[]> = {
     { label: "Users", href: "#", icon: Users },
     { label: "Orders", href: "/admin/dashboard/order", icon: ReceiptText },
     { label: "Menu", href: "/admin/dashboard/menu", icon: UtensilsCrossed },
-    { label: "Reports", href: "#", icon: BarChart3 },
+    { label: "Payment", href: "/admin/dashboard/payment", icon: CreditCard },
   ],
 };
 
