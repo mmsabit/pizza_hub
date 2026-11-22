@@ -1,7 +1,6 @@
 "use client";
 import {
   ChevronDown,
-  LayoutDashboard,
   LogIn,
   LogOut,
   User,
@@ -11,8 +10,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { NAV_BY_ROLE } from "@/components/dashboard/dashboard-nav";
 import { authClient } from "@/lib/auth-client";
-import { homeForRole } from "@/lib/roles";
+import { homeForRole, normalizeRole, roleLabel } from "@/lib/roles";
 
 const MENU_ITEM_CLASS =
   "flex w-full items-center gap-space-xs rounded-xl px-space-sm py-space-xs font-label-md text-label-md text-on-surface-variant transition-colors hover:bg-surface-container-low hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-container";
@@ -25,6 +25,7 @@ const SiteHeaderBtn = () => {
   const menuRef = useRef<HTMLDivElement>(null);
   const user = session?.user;
   const dashboardHref = homeForRole(user?.role);
+  const role = normalizeRole(user?.role);
 
   useEffect(() => {
     if (!open) return;
@@ -113,18 +114,44 @@ const SiteHeaderBtn = () => {
           }`}
           id="profile-menu"
         >
-          <div
-            aria-label="Account"
-            className="w-52 rounded-2xl border border-outline-variant/60 bg-surface-container-lowest p-space-xs shadow-xl shadow-charcoal-dark/10"
-          >
-            <Link
-              className={MENU_ITEM_CLASS}
-              href={dashboardHref}
-              onClick={() => setOpen(false)}
-            >
-              <LayoutDashboard size={16} />
-              Dashboard
-            </Link>
+          <div className="max-h-[80vh] w-64 overflow-y-auto rounded-2xl border border-outline-variant/60 bg-surface-container-lowest p-space-sm shadow-xl shadow-charcoal-dark/10">
+            <div className="mb-space-xs flex items-center gap-space-sm rounded-xl bg-surface-container-low p-space-sm">
+              {user.image ? (
+                <Image
+                  alt={user.name || "Profile"}
+                  className="h-11 w-11 shrink-0 rounded-full object-cover"
+                  height={44}
+                  src={user.image}
+                  width={44}
+                />
+              ) : (
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary-container text-on-primary-container">
+                  <User aria-hidden="true" size={20} />
+                </span>
+              )}
+              <div className="min-w-0">
+                <p className="truncate font-label-lg text-label-lg font-bold text-charcoal-dark">
+                  {user.name || "PizzaHub member"}
+                </p>
+                <p className="font-label-sm text-label-sm text-on-surface-variant">
+                  {roleLabel(user.role)}
+                </p>
+              </div>
+            </div>
+            <nav aria-label="Dashboard navigation" className="space-y-space-xs">
+              {NAV_BY_ROLE[role].map((item) => (
+                <Link
+                  key={item.href}
+                  className={MENU_ITEM_CLASS}
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                >
+                  <item.icon size={16} />
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+            <div className="my-space-xs border-t border-surface-container-high" />
             <button
               className={`${MENU_ITEM_CLASS} disabled:cursor-not-allowed disabled:opacity-60`}
               disabled={signingOut}

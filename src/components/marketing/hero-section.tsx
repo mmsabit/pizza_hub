@@ -11,14 +11,14 @@ export function HeroSection() {
       <div className="absolute top-1/2 -right-32 w-125 h-125 rounded-full bg-primary-container/10 blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-margin relative z-10 pt-space-md pb-space-lg ">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-center h-[70vh]">
+        <div className="grid min-h-[70vh] grid-cols-1 items-center gap-space-xl lg:grid-cols-12">
           <div className="lg:col-span-7 space-y-space-md">
             <div className="inline-flex items-center gap-space-xs px-space-md py-space-xs rounded-full bg-primary-fixed text-primary font-label-md text-label-md">
               <Flame size={16} />
               <span>Authentic 450°C Wood-Fired Neapolitan Pies</span>
             </div>
 
-            <h1 className="font-display-lg text-display-lg font-extrabold text-charcoal-dark tracking-tight leading-tight">
+            <h1 className="font-display-lg text-display-lg-mobile font-extrabold leading-tight tracking-tight text-charcoal-dark sm:text-display-lg">
               Hot &amp; Fresh Pizza <br />
               <span className="text-primary underline decoration-secondary-container decoration-wavy decoration-2">
                 Delivered to Your Door
@@ -83,8 +83,8 @@ export function HeroSection() {
             </div>
           </div>
 
-          <div className="lg:col-span-5 relative flex justify-center items-center">
-            <div className="relative w-full max-w-md">
+          <div className="relative flex items-center justify-center lg:col-span-5">
+            <div className="relative w-full max-w-xs sm:max-w-md">
               <div className="absolute inset-0 m-auto w-80 h-80 rounded-full bg-crust-gold/20 filter blur-2xl" />
 
               <div className="relative z-10 w-full aspect-square rounded-full overflow-hidden shadow-2xl bg-linear-to-tr from-secondary-container/40 via-transparent to-primary-container/30">

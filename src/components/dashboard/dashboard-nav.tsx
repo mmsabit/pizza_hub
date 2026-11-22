@@ -23,7 +23,7 @@ type NavItem = {
   icon: LucideIcon;
 };
 
-const NAV_BY_ROLE: Record<Role, NavItem[]> = {
+export const NAV_BY_ROLE: Record<Role, NavItem[]> = {
   user: [
     { label: "Dashboard", href: "/user/dashboard", icon: LayoutDashboard },
     { label: "Profile", href: "/user/profile", icon: User },

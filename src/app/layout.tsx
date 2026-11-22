@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Epilogue, Plus_Jakarta_Sans } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
 
@@ -27,9 +28,19 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      data-theme="light"
+      suppressHydrationWarning
       className={`${epilogue.variable} ${jakarta.variable} h-full antialiased`}
     >
+      <head>
+        <Script
+          dangerouslySetInnerHTML={{
+            __html:
+              'const theme = document.cookie.match(/(?:^|; )pizzahub-theme=(dark|light)(?:;|$)/); document.documentElement.dataset.theme = theme?.[1] ?? "light";',
+          }}
+          id="theme-preference"
+          strategy="beforeInteractive"
+        />
+      </head>
       <body className="min-h-full bg-dough-canvas font-body-md text-body-md text-on-surface antialiased">
         {children}
         <ToastContainer />
