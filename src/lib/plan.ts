@@ -6,7 +6,6 @@ import { db } from "@/lib/db";
 
 type PremiumState = {
   premium?: boolean | null;
-  premiumCancelAt?: Date | string | null;
 };
 
 type PremiumUserDoc = PremiumState & {
@@ -15,24 +14,12 @@ type PremiumUserDoc = PremiumState & {
 
 const USERS = db.collection<PremiumUserDoc>("user");
 
-function toDate(value: Date | string | null | undefined) {
-  if (!value) return null;
-
-  const date = value instanceof Date ? value : new Date(value);
-
-  return Number.isNaN(date.getTime()) ? null : date;
-}
-
 /**
- * Premium is active when the flag is on and its scheduled cancellation date
- * (if any) has not passed yet. Missing fields mean a plain Free account.
+ * Premium is active whenever the flag is on. A missing field means a plain
+ * Free account.
  */
 export function isPremiumActive(user: PremiumState | null | undefined) {
-  if (!user?.premium) return false;
-
-  const cancelAt = toDate(user.premiumCancelAt);
-
-  return cancelAt === null || cancelAt.getTime() > Date.now();
+  return Boolean(user?.premium);
 }
 
 function toObjectId(userId: string) {
@@ -44,26 +31,14 @@ function toObjectId(userId: string) {
 }
 
 /**
- * Marks the account as Premium and clears an old cancellation. A cancellation
- * scheduled *after* the payment stays in place, so revisiting an old checkout
- * success page cannot silently re-subscribe someone.
+ * Marks the account as Premium.
  */
-export async function activatePremium(userId: string, paidAt: Date) {
+export async function activatePremium(userId: string) {
   const _id = toObjectId(userId);
-  const user = await USERS.findOne({ _id });
 
-  if (!user) throw new Error("User not found.");
+  const result = await USERS.updateOne({ _id }, { $set: { premium: true } });
 
-  const scheduledCancelAt = toDate(user.premiumCancelAt);
-
-  if (scheduledCancelAt && scheduledCancelAt.getTime() > paidAt.getTime()) {
-    return false;
+  if (result.matchedCount === 0) {
+    throw new Error("User not found.");
   }
-
-  await USERS.updateOne(
-    { _id },
-    { $set: { premium: true, premiumCancelAt: null } },
-  );
-
-  return true;
 }

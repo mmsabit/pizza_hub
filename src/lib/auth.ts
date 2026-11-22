@@ -8,28 +8,20 @@ export const auth = betterAuth({
         client: mongoClient,
     }),
     user: {
+        changeEmail: {
+            enabled: true,
+            updateEmailWithoutVerification: true,
+        },
         additionalFields: {
             role: {
                 type: ["admin", "user", "vendor"],
-                // The sign-up form sends "user" or "vendor", so the field has
-                // to be writable by the client. `databaseHooks` below keeps
-                // anyone from registering as an admin.
                 input: true,
                 defaultValue: "user",
             },
             premium: {
-                // Written server-side only (Stripe activation / cancellation),
-                // so clients can never grant themselves Premium.
                 type: "boolean",
                 input: false,
                 defaultValue: false,
-            },
-            premiumCancelAt: {
-                // When a Premium cancellation was requested. Premium stays
-                // active until this date, then the account falls back to Free.
-                type: "date",
-                input: false,
-                required: false,
             },
         }
     },

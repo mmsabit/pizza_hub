@@ -76,10 +76,7 @@ export default async function CheckoutSuccessPage({
     authSession?.user?.id === session.client_reference_id
   ) {
     try {
-      await activatePremium(
-        authSession.user.id,
-        new Date(session.created * 1000),
-      );
+      await activatePremium(authSession.user.id);
     } catch (activateError) {
       console.error("Failed to activate Premium:", activateError);
     }

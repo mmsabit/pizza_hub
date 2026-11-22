@@ -9,6 +9,7 @@ import {
   ReceiptText,
   Settings,
   Store,
+  User,
   Users,
   UtensilsCrossed,
   Wallet,
@@ -27,6 +28,7 @@ type NavItem = {
 const NAV_BY_ROLE: Record<Role, NavItem[]> = {
   user: [
     { label: "Dashboard", href: "/user/dashboard", icon: LayoutDashboard },
+    { label: "Profile", href: "/user/profile", icon: User },
     { label: "Orders", href: "/user/dashboard/order", icon: ReceiptText },
     { label: "Addresses", href: "#", icon: MapPin },
     { label: "Rewards", href: "#", icon: Gift },
@@ -37,10 +39,11 @@ const NAV_BY_ROLE: Record<Role, NavItem[]> = {
     { label: "Menu", href: "/vendor/dashboard/menu", icon: UtensilsCrossed },
     { label: "Orders", href: "/vendor/dashboard/order", icon: ReceiptText },
     { label: "Plan", href: "/vendor/dashboard/plan", icon: Wallet },
-    { label: "Store profile", href: "#", icon: Store },
+    { label: "Store profile", href: "/vendor/profile", icon: Store },
   ],
   admin: [
     { label: "Overview", href: "/admin/dashboard", icon: LayoutDashboard },
+    { label: "Profile", href: "/admin/dashboard/profile", icon: User },
     { label: "Vendors", href: "#", icon: Store },
     { label: "Users", href: "#", icon: Users },
     { label: "Orders", href: "/admin/dashboard/order", icon: ReceiptText },

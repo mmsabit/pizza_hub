@@ -1,7 +1,6 @@
 import {
   ArrowRight,
   BadgeCheck,
-  CalendarClock,
   Check,
   Crown,
   Minus,
@@ -52,18 +51,6 @@ const COMPARISON: Array<{
   { feature: "All Free features", free: false, premium: true },
 ];
 
-function formatPlanDate(value: Date | string) {
-  const date = value instanceof Date ? value : new Date(value);
-
-  if (Number.isNaN(date.getTime())) return null;
-
-  return new Intl.DateTimeFormat("en-US", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  }).format(date);
-}
-
 function CompareCell({ value }: { value: string | boolean }) {
   if (typeof value === "string") {
     return (
@@ -91,10 +78,6 @@ export default async function PlanPage(): Promise<JSX.Element> {
   const { total: menuCount } = await getMenuUsage(user?.id ?? "");
 
   const premium = isPremiumActive(user);
-  const cancelAt = user?.premiumCancelAt
-    ? new Date(user.premiumCancelAt)
-    : null;
-  const cancelsOn = premium && cancelAt ? formatPlanDate(cancelAt) : null;
 
   return (
     <div className="space-y-space-lg">
@@ -123,9 +106,7 @@ export default async function PlanPage(): Promise<JSX.Element> {
         >
           {premium ? <Crown size={14} /> : <BadgeCheck size={14} />}
           {premium
-            ? cancelsOn
-              ? `Premium · ends ${cancelsOn}`
-              : "Premium plan · Active"
+            ? "Premium plan · Active"
             : "Free plan · Active"}
         </span>
       </header>
@@ -148,11 +129,7 @@ export default async function PlanPage(): Promise<JSX.Element> {
                 {!premium ? (
                   <span className="h-1.5 w-1.5 rounded-full bg-tertiary" />
                 ) : null}
-                {premium
-                  ? cancelsOn
-                    ? `Ends ${cancelsOn}`
-                    : "Included in Premium"
-                  : "Current plan"}
+                {premium ? "Included in Premium" : "Current plan"}
               </span>
             </div>
 
@@ -190,9 +167,7 @@ export default async function PlanPage(): Promise<JSX.Element> {
               }`}
             >
               {premium
-                ? cancelsOn
-                  ? `Your plan returns here on ${cancelsOn}`
-                  : "Included with your Premium plan"
+                ? "Included with your Premium plan"
                 : "You are on this plan"}
             </div>
           </article>
@@ -321,35 +296,22 @@ export default async function PlanPage(): Promise<JSX.Element> {
               </div>
               <div className="flex items-center justify-between gap-space-sm py-space-sm">
                 <dt className="text-on-surface-variant">
-                  {premium && cancelsOn ? "Ends on" : "Next charge"}
+                  Next charge
                 </dt>
                 <dd className="font-bold text-charcoal-dark">
-                  {premium
-                    ? cancelsOn
-                      ? cancelsOn
-                      : "Monthly · $20"
-                    : "None"}
+                  {premium ? "Monthly · $20" : "None"}
                 </dd>
               </div>
             </dl>
 
             <p className="mt-space-sm flex items-start gap-space-xs rounded-xl bg-surface-container-low px-space-sm py-space-xs font-label-sm text-label-sm text-on-surface-variant">
-              {premium && cancelsOn ? (
-                <CalendarClock
-                  className="mt-0.5 shrink-0 text-secondary"
-                  size={14}
-                />
-              ) : (
-                <ShieldCheck
-                  className="mt-0.5 shrink-0 text-tertiary"
-                  size={14}
-                />
-              )}
+              <ShieldCheck
+                className="mt-0.5 shrink-0 text-tertiary"
+                size={14}
+              />
               {premium
-                ? cancelsOn
-                  ? `Cancellation scheduled. Premium stays active until ${cancelsOn}, then your storefront moves to the Free plan.`
-                  : "Premium is active and renews monthly through Stripe. Contact PizzaHub support if you need to change your plan."
-                : "No card on file. Premium is $20/month, billed securely through Stripe, and can be cancelled anytime."}
+                ? "Premium is active and renews monthly through Stripe. Contact PizzaHub support if you need to change your plan."
+                : "No card on file. Premium is $20/month, billed securely through Stripe."}
             </p>
           </section>
         </div>
@@ -404,9 +366,7 @@ export default async function PlanPage(): Promise<JSX.Element> {
       <p className="flex items-center justify-center gap-space-xs text-center font-label-sm text-label-sm text-outline">
         <Crown className="shrink-0 text-outline-variant" size={13} />
         {premium
-          ? cancelsOn
-            ? `Premium ends on ${cancelsOn}. After that your storefront automatically returns to the Free plan.`
-            : "Premium is active and renews monthly through Stripe's secure checkout."
+          ? "Premium is active and renews monthly through Stripe's secure checkout."
           : "Premium is billed monthly through Stripe's secure checkout. Your Free plan stays active until the payment completes."}
       </p>
     </div>
