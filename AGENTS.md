@@ -79,7 +79,7 @@ No test runner, CI workflow or formatter config. `README.md` is the untouched cr
 
 - `ToastContainer` is mounted in `src/app/layout.tsx`; `(site)`, `(auth)` and `(vendor)` layouts add duplicates. Toasts work everywhere — don't add another container.
 - Components live in feature folders under `src/components/`: `layout/`, `marketing/` (`*-section.tsx`), `auth/`, `dashboard/` (`vendormenu/`, `adminmenu/`, `vendorplan/`, `adminaccounts/`, `profile/`). PascalCase exports, `@/` alias → `src/`.
-- Dashboard overview pages (`user`, `vendor`, `admin` `dashboard/page.tsx`) use hardcoded stats/demo rows. Orders and menu pages fetch the real backend — don't assume a dashboard number is live.
+- Dashboard overview pages (`user`, `vendor`, `admin` `dashboard/page.tsx`) now fetch live totals: `/customer_order/:userId`, `/vendor_order/:vendorId` + `/menus/:vendorId`, and `/user` + `/vendor` + `/adminmenu` + `/payment`. `src/lib/api.ts` (`fetchArray`) wraps list fetches and returns `[]` on failure, so a dashboard shows zeros instead of crashing when the backend is down.
 - The three profile pages (`/user/profile`, `/vendor/profile`, `/admin/dashboard/profile`) share `ProfileScreen` in `src/components/dashboard/profile/`; the vendor variant also gets a plan card. Update the shared component, not each page.
 - Several user nav entries are `"#"` placeholders (addresses, rewards, settings).
 - `BETTER_AUTH_URL` is pinned to `http://localhost:3000`, so sign-up/sign-in POSTs need `Origin: http://localhost:3000` even when the app is served on another port.
