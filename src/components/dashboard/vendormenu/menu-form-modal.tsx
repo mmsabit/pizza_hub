@@ -286,7 +286,6 @@ export function MenuFormModal({
             </div>
           </fieldset>
 
-          
           <input name="status" type="hidden" value="pending" />
           <input name="vendorId" type="hidden" value={userId} />
           <input name="vendorName" type="hidden" value={userName} />

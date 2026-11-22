@@ -1,6 +1,7 @@
 import {
   ArrowRight,
   Bike,
+  CalendarDays,
   Flame,
   Gift,
   MapPin,
@@ -61,6 +62,7 @@ const ORDERS = [
     status: "Delivered",
     total: "$32.40",
     placed: "Today, 19:12",
+    deliveryDate: "22 November 2026",
     statusClassName: "bg-tertiary-fixed text-on-tertiary-fixed",
   },
   {
@@ -70,6 +72,7 @@ const ORDERS = [
     status: "Out for delivery",
     total: "$28.50",
     placed: "Today, 18:47",
+    deliveryDate: "22 November 2026",
     statusClassName: "bg-secondary-fixed text-on-secondary-fixed-variant",
   },
   {
@@ -79,6 +82,7 @@ const ORDERS = [
     status: "In the oven",
     total: "$34.00",
     placed: "Today, 18:20",
+    deliveryDate: "22 November 2026",
     statusClassName: "bg-primary-fixed text-on-primary-fixed",
   },
   {
@@ -88,6 +92,7 @@ const ORDERS = [
     status: "Delivered",
     total: "$21.10",
     placed: "Yesterday, 20:05",
+    deliveryDate: "21 November 2026",
     statusClassName: "bg-tertiary-fixed text-on-tertiary-fixed",
   },
 ];
@@ -223,6 +228,10 @@ export default async function UserDashboardPage() {
                     </p>
                     <p className="font-label-sm text-label-sm text-outline">
                       {order.placed}
+                    </p>
+                    <p className="inline-flex items-center gap-1 font-label-sm text-label-sm text-outline">
+                      <CalendarDays size={12} />
+                      Delivery {order.deliveryDate}
                     </p>
                   </div>
                 </div>

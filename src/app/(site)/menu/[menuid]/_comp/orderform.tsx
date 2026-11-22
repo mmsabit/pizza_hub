@@ -12,6 +12,8 @@ import {
   Wallet,
   X,
 } from "lucide-react";
+import Flatpickr from "react-flatpickr";
+import "flatpickr/dist/flatpickr.min.css";
 import type { PizzaType } from "@/app/type/type";
 
 const FIELD_CLASS =
@@ -30,6 +32,13 @@ const formatPrice = (value: number) =>
     maximumFractionDigits: 2,
   })}`;
 
+const formatDeliveryDate = (date: Date) =>
+  new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(date);
+
 const closeOrderForm = () => {
   (document.getElementById(ORDER_MODAL_ID) as HTMLDialogElement)?.close();
 };
@@ -42,6 +51,9 @@ type usertype = {
 const OrderForm = ({ menu, user }: { menu: PizzaType; user: usertype }) => {
   const uid = useId();
   const [quantity, setQuantity] = useState(1);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [dialogElement, setDialogElement] =
+    useState<HTMLDialogElement | null>(null);
 
   const unitPrice = Number(menu.price);
   const hasPrice = Number.isFinite(unitPrice);
@@ -50,6 +62,7 @@ const OrderForm = ({ menu, user }: { menu: PizzaType; user: usertype }) => {
   const openDialog = () => {
     if (!menu.available || !hasPrice) return;
     setQuantity(1);
+    setSelectedDate(null);
     (document.getElementById(ORDER_MODAL_ID) as HTMLDialogElement)?.showModal();
   };
 
@@ -59,6 +72,16 @@ const OrderForm = ({ menu, user }: { menu: PizzaType; user: usertype }) => {
 
     if (!menu.available) {
       toast.error(`${menu.name} is not available right now.`, {
+        position: "bottom-right",
+        autoClose: 4000,
+        theme: "light",
+        transition: Bounce,
+      });
+      return;
+    }
+
+    if (!selectedDate) {
+      toast.error("Please select a delivery date.", {
         position: "bottom-right",
         autoClose: 4000,
         theme: "light",
@@ -81,7 +104,8 @@ const OrderForm = ({ menu, user }: { menu: PizzaType; user: usertype }) => {
       unitPrice,
       subtotal,
       payment: String(formData.get("payment") ?? "cash"),
-      order_status:String(formData.get("order_status") ?? "cash"),
+      order_status: String(formData.get("order_status") ?? "PENDING"),
+      deliveryDate: formatDeliveryDate(selectedDate),
       customer: {
         name: String(formData.get("customerName") ?? "").trim(),
         phone: String(formData.get("phone") ?? "").trim(),
@@ -91,15 +115,26 @@ const OrderForm = ({ menu, user }: { menu: PizzaType; user: usertype }) => {
       },
     };
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/order`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(order),
-    });
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/order`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(order),
+        
+      });
+      const result = await res.json();
+      if (!res.ok) {
+        toast.error(result.message ||"We couldn't place your order. Please try again.", {
+          position: "bottom-right",
+          autoClose: 5000,
+          theme: "light",
+          transition: Bounce,
+        });
+        return;
+      }
 
-    if (res.ok) {
       toast.success(
         `${quantity} × ${menu.name} added to your order request. We'll confirm by phone shortly.`,
         {
@@ -114,7 +149,16 @@ const OrderForm = ({ menu, user }: { menu: PizzaType; user: usertype }) => {
 
       form.reset();
       setQuantity(1);
+      setSelectedDate(null);
       closeOrderForm();
+    } catch (error) {
+      console.error("Failed to place order:", error);
+      toast.error("We couldn't place your order. Check your connection and try again.", {
+        position: "bottom-right",
+        autoClose: 5000,
+        theme: "light",
+        transition: Bounce,
+      });
     }
   };
 
@@ -134,6 +178,7 @@ const OrderForm = ({ menu, user }: { menu: PizzaType; user: usertype }) => {
         aria-labelledby={`${uid}-title`}
         className="modal"
         id={ORDER_MODAL_ID}
+        ref={setDialogElement}
       >
         <div className="modal-box max-w-lg">
           <form method="dialog">
@@ -254,6 +299,7 @@ const OrderForm = ({ menu, user }: { menu: PizzaType; user: usertype }) => {
                   required
                   type="text"
                   defaultValue={user.name}
+                  readOnly
                 />
               </div>
 
@@ -287,6 +333,29 @@ const OrderForm = ({ menu, user }: { menu: PizzaType; user: usertype }) => {
                 placeholder="House, road, area and a landmark for the rider."
                 required
                 rows={2}
+              />
+            </div>
+
+            <div className="space-y-space-xs">
+              <label className={LABEL_CLASS} htmlFor={`${uid}-delivery-date`}>
+                Delivery date
+              </label>
+              <Flatpickr
+                id={`${uid}-delivery-date`}
+                name="deliveryDate"
+                value={selectedDate ? formatDeliveryDate(selectedDate) : ""}
+                onChange={(dates) => setSelectedDate(dates[0] ?? null)}
+                options={{
+                  minDate: "today",
+                  dateFormat: "j F Y",
+                  disableMobile: true,
+                  clickOpens: true,
+                  allowInput: false,
+                  appendTo: dialogElement ?? undefined,
+                }}
+                placeholder="Select a date"
+                className={FIELD_CLASS}
+                required
               />
             </div>
 

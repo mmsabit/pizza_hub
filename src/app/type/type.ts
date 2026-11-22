@@ -56,5 +56,6 @@ export interface OrderType {
   subtotal: number;
   payment: string ;
   order_status: OrderStateType;
+  deliveryDate?: string;
   customer: OrderCustomer;
 }

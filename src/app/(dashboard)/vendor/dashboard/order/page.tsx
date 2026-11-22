@@ -1,6 +1,7 @@
 import {
   ArrowRight,
   ArrowUpRight,
+  CalendarDays,
   ChefHat,
   Clock3,
   CreditCard,
@@ -363,6 +364,12 @@ export default async function VendorOrderPage({
                           <span className="inline-flex items-center gap-1">
                             <Clock3 size={12} />
                             {formatPlacedAt(placedAt)}
+                          </span>
+                        ) : null}
+                        {order.deliveryDate ? (
+                          <span className="inline-flex items-center gap-1">
+                            <CalendarDays size={12} />
+                            Delivery {order.deliveryDate}
                           </span>
                         ) : null}
                       </p>
