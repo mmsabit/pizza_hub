@@ -28,6 +28,8 @@ const MenuDetailespage = async ({
 }) => {
   const { menuid } = await params;
   const session = await auth.api.getSession({ headers: await headers() });
+  const jwtToken = await auth.api.getToken({ headers: await headers() });
+  const token = jwtToken.token
 
   if (!session?.user) {
     redirect(`/sign-in?redirect=/menu/${menuid}`);
@@ -36,7 +38,11 @@ const MenuDetailespage = async ({
   let menu: PizzaType | null = null;
 
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/menu/${menuid}`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/menu/${menuid}`,{
+      headers:{
+        authorization: `Bearer ${token}`
+      }
+    });
     if (res.ok) {
       menu = await res.json();
     }

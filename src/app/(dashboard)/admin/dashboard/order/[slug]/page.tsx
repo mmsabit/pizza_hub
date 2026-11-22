@@ -3,7 +3,6 @@ import {
   Check,
   Clock3,
   CreditCard,
-  Eye,
   MapPin,
   Phone,
   ReceiptText,
@@ -27,6 +26,8 @@ import {
   statusStepIndex,
 } from "@/app/(dashboard)/user/dashboard/order/_comp/order-ui";
 import type { OrderType } from "@/app/type/type";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export const metadata: Metadata = {
   title: "Order detail — PizzaHub admin",
@@ -45,10 +46,14 @@ export default async function AdminOrderDetailPage({
   const { slug } = await params;
 
   if (!/^[\da-f]{24}$/i.test(slug)) notFound();
-
+const jwtToken = await auth.api.getToken({ headers: await headers() });
+  const token = jwtToken.token
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/order/${slug}`,
-    { cache: "no-store" },
+    { cache: "no-store", 
+      headers:{
+        authorization: `Bearer ${token}`
+      }},
   );
   if (!response.ok) notFound();
 
@@ -143,12 +148,6 @@ export default async function AdminOrderDetailPage({
           </div>
         </div>
       </header>
-
-      <p className="flex items-start gap-space-xs rounded-2xl bg-surface-container-low px-space-md py-space-sm font-label-sm text-label-sm text-on-surface-variant">
-        <Eye className="mt-0.5 shrink-0" size={14} />
-        Read-only view — {order.vendor?.name || "the vendor"} owns this ticket
-        and is the only one who can change its status.
-      </p>
 
       <div className="grid gap-space-md lg:grid-cols-3">
         <div className="space-y-space-md lg:col-span-2">

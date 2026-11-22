@@ -8,6 +8,7 @@ import { PizzaType } from "@/app/type/type";
 import Link from "next/link";
 import AdminStatusBadge from "./adminstatusbadge";
 import { useState } from "react";
+import { authClient } from "@/lib/auth-client";
 
 
 
@@ -54,7 +55,9 @@ interface MenuManagerProps {
 }
 
 export function AdminMenuManager({ITEMS}:MenuManagerProps) {
-  const [items, setItems] = useState(ITEMS);
+  const [items, setItems] = useState<PizzaType[]>(
+    Array.isArray(ITEMS) ? ITEMS : []
+  );
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [error, setError] = useState("");
   const availableCount = items.filter((item) => item.available).length;
@@ -63,13 +66,17 @@ export function AdminMenuManager({ITEMS}:MenuManagerProps) {
     setUpdatingId(item._id);
     setError("");
 
+    const {data} = await authClient.token();
+      const token = data?.token;
+      
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/adminmenu/${item._id}`,
         {
           method: "PATCH",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", authorization: `Bearer ${token}`, },
           body: JSON.stringify({ status }),
+          
         },
       );
 

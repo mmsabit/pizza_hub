@@ -111,22 +111,7 @@ export function SignInForm({ callbackURL = "/" }: { callbackURL?: string }) {
         </div>
       </div>
 
-      <div className="flex items-center justify-between gap-space-sm pt-space-xs">
-        <label className="flex items-center gap-space-xs font-body-md text-body-md text-on-surface-variant">
-          <input
-            className="h-4 w-4 rounded border-outline-variant accent-primary-container"
-            name="remember"
-            type="checkbox"
-          />
-          Remember me
-        </label>
-        <a
-          className="font-label-lg text-label-lg text-primary hover:text-primary-container transition-colors"
-          href="#"
-        >
-          Forgot password?
-        </a>
-      </div>
+      
 
       <button
         className="inline-flex w-full items-center justify-center gap-space-xs rounded-xl bg-primary-container px-space-lg py-space-md font-label-lg text-label-lg text-on-primary-container shadow-lg shadow-primary-container/25 transition-all hover:bg-primary hover:-translate-y-0.5"

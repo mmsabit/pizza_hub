@@ -37,7 +37,8 @@ export default async function CheckoutSuccessPage({
   searchParams: Promise<{ session_id?: string }>;
 }) {
   const { session_id: sessionId } = await searchParams;
-  const authSession = await auth.api.getSession({ headers: await headers() });
+  const requestHeaders = await headers();
+  const authSession = await auth.api.getSession({ headers: requestHeaders });
 
   if (!authSession?.user) {
     redirect("/sign-in?redirect=/vendor/dashboard/invoice/success");
@@ -57,7 +58,8 @@ export default async function CheckoutSuccessPage({
 
     if (session) {
       try {
-        const result = await checkoutVerify(sessionId);
+        const jwtToken = await auth.api.getToken({ headers: requestHeaders });
+        const result = await checkoutVerify(sessionId, jwtToken.token);
         console.log({ result });
       } catch (verifyError) {
         // A failing backend check should not hide a confirmed Stripe payment.

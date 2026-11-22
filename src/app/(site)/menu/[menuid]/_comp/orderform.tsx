@@ -15,6 +15,7 @@ import {
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 import type { PizzaType } from "@/app/type/type";
+import { authClient } from "@/lib/auth-client";
 
 const FIELD_CLASS =
   "w-full rounded-xl border border-outline-variant/60 bg-surface-container-low px-space-md py-space-sm text-body-md text-on-surface placeholder:text-outline transition-shadow focus:border-primary-container focus:outline-none focus:ring-2 focus:ring-primary-container";
@@ -114,12 +115,14 @@ const OrderForm = ({ menu, user }: { menu: PizzaType; user: usertype }) => {
         id:user?.id
       },
     };
-
+    const {data} = await authClient.token();
+      const token = data?.token;
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/order`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          authorization: `Bearer ${token}`
         },
         body: JSON.stringify(order),
         

@@ -7,6 +7,7 @@ import { useState } from "react";
 import { PizzaType } from "@/app/type/type";
 import Link from "next/link";
 import { MenuFormModal } from "./menu-form-modal";
+import { authClient } from "@/lib/auth-client";
 
 
 
@@ -97,13 +98,14 @@ export function MenuManager({userName, userImage,userId, ITEMS, premium}:MenuMan
   async function updateFeatured(item: PizzaType, featured: boolean) {
     setUpdatingFeaturedId(item._id);
     setFeaturedError("");
-
+    const {data} = await authClient.token();
+      const token = data?.token;
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/menu/${item._id}`,
         {
           method: "PATCH",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json",authorization: `Bearer ${token}` },
           body: JSON.stringify({ featured }),
         },
       );

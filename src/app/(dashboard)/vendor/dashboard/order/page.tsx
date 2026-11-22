@@ -82,11 +82,16 @@ export default async function VendorOrderPage({
     : "all";
 
   let fetchedOrders: OrderType[] = [];
-
+const jwtToken = await auth.api.getToken({ headers: await headers() });
+  const token = jwtToken.token
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/vendor_order/${vendorId}`,
-      { cache: "no-store" },
+      { cache: "no-store",
+        headers:{
+        authorization: `Bearer ${token}`
+      }
+       },
     );
 
     if (res.ok) {

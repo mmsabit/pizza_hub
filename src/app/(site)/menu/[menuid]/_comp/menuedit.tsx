@@ -14,6 +14,7 @@ import {
 import type { FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { toast, Bounce } from "react-toastify";
+import { authClient } from "@/lib/auth-client";
 
 const FIELD_CLASS =
   "w-full rounded-xl border border-outline-variant/60 bg-surface-container-low px-space-md py-space-sm text-body-md text-on-surface placeholder:text-outline transition-shadow focus:border-primary-container focus:outline-none focus:ring-2 focus:ring-primary-container";
@@ -75,13 +76,14 @@ const MenuEdit= ({
         },
         image: imageUrl,
       };
-
+      const {data} = await authClient.token();
+      const token = data?.token;
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/menu/${menu._id}`,
         {
           method: "PATCH",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json",authorization: `Bearer ${token}`
           },
           body: JSON.stringify(updatedMenu),
         },

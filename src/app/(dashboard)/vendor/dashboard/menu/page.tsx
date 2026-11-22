@@ -17,8 +17,14 @@ export default async function MenuPage() {
     headers: await headers() 
 })
 const user = session?.user
+const jwtToken = await auth.api.getToken({ headers: await headers() });
+  const token = jwtToken.token
 
-const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/menus/${user?.id}`);
+const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/menus/${user?.id}`,
+  {headers:{
+        authorization: `Bearer ${token}`
+      }}
+);
 const data: PizzaType[] = await res.json();
 const premium = isPremiumActive(user);
 

@@ -85,11 +85,17 @@ export default async function CustomerOrderPage({
     : "all";
 
   let fetchedOrders: OrderWithImage[] = [];
+const jwtToken = await auth.api.getToken({ headers: await headers() });
+  const token = jwtToken.token
 
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/customer_order/${user?.id ?? ""}`,
-      { cache: "no-store" },
+      { cache: "no-store",
+        headers:{
+        authorization: `Bearer ${token}`
+      }
+       },
     );
 
     if (res.ok) {

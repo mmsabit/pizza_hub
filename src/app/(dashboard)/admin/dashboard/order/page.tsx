@@ -11,6 +11,8 @@ import { formatPrice, orderTimestamp } from "@/app/(dashboard)/user/dashboard/or
 import type { OrderType } from "@/app/type/type";
 
 import { AdminOrderQueue } from "./_comp/admin-order-queue";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export const metadata: Metadata = {
   title: "Orders — PizzaHub admin",
@@ -25,9 +27,15 @@ export default async function AdminOrderPage() {
   let fetchedOrders: OrderType[] = [];
 
   try {
+    const jwtToken = await auth.api.getToken({ headers: await headers() });
+  const token = jwtToken.token
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/order/`, {
       cache: "no-store",
-    });
+      headers:{
+        authorization: `Bearer ${token}`
+      }
+    }
+  );
 
     if (res.ok) {
       const data = await res.json();

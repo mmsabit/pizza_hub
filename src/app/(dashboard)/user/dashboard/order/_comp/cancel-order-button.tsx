@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import type { OrderType } from "@/app/type/type";
+import { authClient } from "@/lib/auth-client";
 
 type CancelOrderButtonProps = {
   order: Pick<OrderType, "_id" | "order_status">;
@@ -29,13 +30,14 @@ export function CancelOrderButton({
   const cancelOrder = async () => {
     setPending(true);
     setError(null);
-
+const {data} = await authClient.token();
+      const token = data?.token;
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/order/${order._id}`,
         {
           method: "PATCH",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json",authorization: `Bearer ${token}` },
           body: JSON.stringify({ order_status: "CANCELLED" }),
         },
       );

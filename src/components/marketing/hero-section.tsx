@@ -34,7 +34,7 @@ export function HeroSection() {
             <div className="flex flex-wrap items-center gap-space-md pt-space-xs">
               <Link
                 className="inline-flex items-center gap-space-xs px-space-lg py-space-md bg-primary-container hover:bg-primary text-on-primary-container font-label-lg text-label-lg rounded-xl shadow-lg shadow-primary-container/25 transition-all transform hover:-translate-y-0.5"
-                href="#featured-menu"
+                href="/menu"
               >
                 <span>Explore Pizza Menu</span>
                 <ArrowRight size={18} />

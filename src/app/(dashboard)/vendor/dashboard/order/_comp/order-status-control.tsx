@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import type { OrderStateType } from "@/app/type/type";
+import { authClient } from "@/lib/auth-client";
 
 const NEXT_STEP: Partial<
   Record<OrderStateType, { status: OrderStateType; label: string }>
@@ -36,13 +37,14 @@ export function OrderStatusControl({
   async function updateStatus(target: OrderStateType) {
     setPending(target);
     setError(null);
-
+const {data} = await authClient.token();
+      const token = data?.token;
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/order/${orderId}`,
         {
           method: "PATCH",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", authorization: `Bearer ${token}` },
           body: JSON.stringify({ order_status: target }),
         },
       );

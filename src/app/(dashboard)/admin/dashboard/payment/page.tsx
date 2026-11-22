@@ -14,6 +14,8 @@ import {
   formatPlacedAt,
   orderTimestamp,
 } from "@/app/(dashboard)/user/dashboard/order/_comp/order-ui";
+import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
 
 export const metadata: Metadata = {
   title: "Payments — PizzaHub admin",
@@ -38,11 +40,15 @@ type VendorType = {
   role?: string | null;
 };
 
-async function getVendor(id: string): Promise<VendorType | null> {
+async function getVendor(id: string, token: string): Promise<VendorType | null> {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/vendor-data/${id}`,
-      { cache: "no-store" },
+      { cache: "no-store",
+        headers:{
+        authorization: `Bearer ${token}`
+      }
+       },
     );
 
     if (!res.ok) return null;
@@ -95,11 +101,15 @@ function StatusBadge({ value }: { value?: string | null }) {
 }
 
 export default async function PaymentTransactionPage() {
+  const jwtToken = await auth.api.getToken({ headers: await headers() });
+  const token = jwtToken.token;
   let fetchedPayments: PaymentType[] = [];
-
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/payment`, {
       cache: "no-store",
+      headers:{
+        authorization: `Bearer ${token}`
+      }
     });
 
     if (res.ok) {
@@ -123,7 +133,7 @@ export default async function PaymentTransactionPage() {
     ),
   ];
   const vendorEntries = await Promise.all(
-    vendorIds.map(async (id) => [id, await getVendor(id)] as const),
+    vendorIds.map(async (id) => [id, await getVendor(id, token)] as const),
   );
   const vendors = new Map<string, VendorType | null>(vendorEntries);
 

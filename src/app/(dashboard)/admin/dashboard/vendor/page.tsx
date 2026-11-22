@@ -6,6 +6,8 @@ import {
   accountCreatedTime,
   type AdminAccount,
 } from "@/components/dashboard/adminaccounts/account-table";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export const metadata: Metadata = {
   title: "Vendors — PizzaHub admin",
@@ -23,10 +25,15 @@ const joinedWithin = (account: AdminAccount, days: number) => {
 
 export default async function VendorListPage() {
   let fetchedVendors: AdminAccount[] = [];
+  const jwtToken = await auth.api.getToken({ headers: await headers() });
+  const token = jwtToken.token
 
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/vendor`, {
       cache: "no-store",
+      headers:{
+        authorization: `Bearer ${token}`
+      }
     });
 
     if (res.ok) {

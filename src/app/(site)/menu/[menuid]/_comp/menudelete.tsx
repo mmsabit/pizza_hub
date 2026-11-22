@@ -1,6 +1,7 @@
 'use client'
 
 import { PizzaType } from '@/app/type/type';
+import { authClient } from '@/lib/auth-client';
 import { Trash2, X } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import { toast, Bounce } from 'react-toastify';
@@ -8,10 +9,15 @@ import { toast, Bounce } from 'react-toastify';
 const MenuDelete = ({ menu }: { menu: PizzaType }) => {
 
     const handleDelete = async () => {
+      const {data} = await authClient.token();
+      const token = data?.token;
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/menu/${menu._id}`,
           {
             method: "DELETE",
+            headers:{
+              authorization: `Bearer ${token}`
+      }
           },
         );
     

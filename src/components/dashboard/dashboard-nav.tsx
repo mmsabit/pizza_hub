@@ -2,11 +2,8 @@
 
 import type { LucideIcon } from "lucide-react";
 import {
-  Gift,
   LayoutDashboard,
-  MapPin,
   ReceiptText,
-  Settings,
   Store,
   User,
   Users,
@@ -31,9 +28,6 @@ const NAV_BY_ROLE: Record<Role, NavItem[]> = {
     { label: "Dashboard", href: "/user/dashboard", icon: LayoutDashboard },
     { label: "Profile", href: "/user/profile", icon: User },
     { label: "Orders", href: "/user/dashboard/order", icon: ReceiptText },
-    { label: "Addresses", href: "#", icon: MapPin },
-    { label: "Rewards", href: "#", icon: Gift },
-    { label: "Settings", href: "#", icon: Settings },
   ],
   vendor: [
     { label: "Dashboard", href: "/vendor/dashboard", icon: LayoutDashboard },

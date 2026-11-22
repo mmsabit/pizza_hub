@@ -51,10 +51,15 @@ const UserOrderDetailesPage = async ({
   if (!session?.user?.id) redirect("/sign-in");
 
   if (!/^[\da-f]{24}$/i.test(slug)) notFound();
+const jwtToken = await auth.api.getToken({ headers: await headers() });
+  const token = jwtToken.token
 
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/order/${slug}`,
-    { cache: "no-store" },
+    { cache: "no-store",
+      headers:{
+        authorization: `Bearer ${token}`
+      } },
   );
   if (!response.ok) notFound();
 
