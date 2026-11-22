@@ -35,6 +35,7 @@ No test runner, CI workflow or formatter config. `README.md` is the untouched cr
 - `src/app/(auth)/` — `/sign-in`, `/sign-up`. Standalone dark shell, no site header/footer.
 - `src/app/(dashboard)/` — role-gated areas. `user/` (`/user/dashboard`, `/user/dashboard/order`, `/user/dashboard/order/[slug]`, `/user/profile`), `vendor/` (`/vendor/dashboard`, `menu`, `order`, `order/[slug]`, `plan`, `invoice/success`, `/vendor/profile`), `admin/` (`/admin/dashboard`, `menu`, `order`, `order/[slug]`, `payment`, `user`, `vendor`, `profile`). Each area's `layout.tsx` wraps `DashboardRoleLayout`, which reads the session, redirects signed-out visitors to `/sign-in`, and redirects a mismatched role to `homeForRole()`. There is no `/dashboard` route — don't add one.
 - Put new pages inside one of these groups. Do **not** create `src/app/page.tsx` — `/` is owned by `(site)` and a second root page is a route conflict.
+- 404s use `src/components/layout/not-found-screen.tsx`. `src/app/not-found.tsx` handles unmatched URLs (adds `SiteHeader`/`SiteFooter` itself because the root layout has no chrome); `(site)/not-found.tsx` covers `notFound()` in storefront routes; `(dashboard)/not-found.tsx` covers dashboard routes and links back to the signed-in role's home.
 
 ## Auth, roles, Premium
 
