@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import {
   ArrowLeft,
   BadgeCheck,
@@ -27,6 +27,11 @@ const MenuDetailespage = async ({
   params: Promise<{ menuid: string }>;
 }) => {
   const { menuid } = await params;
+  const session = await auth.api.getSession({ headers: await headers() });
+
+  if (!session?.user) {
+    redirect(`/sign-in?redirect=/menu/${menuid}`);
+  }
 
   let menu: PizzaType | null = null;
 
@@ -54,7 +59,6 @@ const MenuDetailespage = async ({
       })
     : String(menu.price);
 
-  const session = await auth.api.getSession({ headers: await headers() });
   const user = session?.user;
   const userData = user?.id ? { id: user.id, name: user.name ?? "" } : null;
   const isVendorOwner =

@@ -5,7 +5,7 @@ import { ArrowRight, Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { useState } from "react";
 import { toast, Bounce } from "react-toastify";
 
-export function SignInForm() {
+export function SignInForm({ callbackURL = "/" }: { callbackURL?: string }) {
   const [showPassword, setShowPassword] = useState(false);
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -20,7 +20,7 @@ export function SignInForm() {
     const { data, error } = await authClient.signIn.email({
       email: user.email,
       password: user.password,
-      callbackURL: "/",
+      callbackURL,
       rememberMe: user.remember === "on",
     });
 

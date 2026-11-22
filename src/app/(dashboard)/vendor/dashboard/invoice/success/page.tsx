@@ -9,6 +9,7 @@ import {
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import type Stripe from "stripe";
 
 import { auth } from "@/lib/auth";
@@ -37,6 +38,10 @@ export default async function CheckoutSuccessPage({
 }) {
   const { session_id: sessionId } = await searchParams;
   const authSession = await auth.api.getSession({ headers: await headers() });
+
+  if (!authSession?.user) {
+    redirect("/sign-in?redirect=/vendor/dashboard/invoice/success");
+  }
 
   let session: Stripe.Checkout.Session | null = null;
   let error: string | null = null;

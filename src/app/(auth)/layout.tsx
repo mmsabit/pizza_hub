@@ -1,9 +1,20 @@
 import { Pizza } from "lucide-react";
 import Link from "next/link";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { ToastContainer } from "react-toastify";
 
-export default function AuthLayout({ children }: { children: ReactNode }) {
+import { auth } from "@/lib/auth";
+import { homeForRole } from "@/lib/roles";
+
+export default async function AuthLayout({ children }: { children: ReactNode }) {
+  const session = await auth.api.getSession({ headers: await headers() });
+
+  if (session?.user) {
+    redirect(homeForRole(session.user.role));
+  }
+
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-charcoal-dark">
       <div className="pointer-events-none absolute -top-40 -left-32 h-120 w-120 rounded-full bg-primary-container/25 blur-3xl" />

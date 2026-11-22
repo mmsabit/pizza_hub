@@ -1,9 +1,9 @@
 import {
-  ArrowRight,
+
   Compass,
   Home,
   Pizza,
-  ReceiptText,
+
   Store,
   UtensilsCrossed,
 } from "lucide-react";
@@ -12,11 +12,6 @@ import Link from "next/link";
 
 const HERO_PIZZA_SRC = "/images/hero-pizza.jpg";
 
-const QUICK_LINKS = [
-  { label: "Full menu", href: "/menu", icon: UtensilsCrossed },
-  { label: "Your orders", href: "/user/dashboard/order", icon: ReceiptText },
-  { label: "Become a vendor", href: "/sign-up", icon: Store },
-];
 
 /**
  * Storefront 404. Rendered by the root and `(site)` not-found boundaries, so

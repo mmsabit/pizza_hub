@@ -5,12 +5,17 @@ import { toast, Bounce } from "react-toastify";
 
 type GoogleAuthButtonProps = {
   label: string;
+  callbackURL?: string;
 };
 
-export function GoogleAuthButton({ label }: GoogleAuthButtonProps) {
+export function GoogleAuthButton({
+  label,
+  callbackURL = "/",
+}: GoogleAuthButtonProps) {
   const submitGoogle = async() =>{
     const data = await authClient.signIn.social({
       provider: "google",
+      callbackURL,
     });
 
      if (data) {

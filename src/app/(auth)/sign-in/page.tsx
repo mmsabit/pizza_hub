@@ -29,7 +29,17 @@ const PERKS = [
   },
 ];
 
-export default function SignInPage() {
+export default async function SignInPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ redirect?: string }>;
+}) {
+  const { redirect } = await searchParams;
+  const callbackURL =
+    redirect?.startsWith("/") && !redirect.startsWith("//")
+      ? redirect
+      : "/";
+
   return (
     <div className="grid w-full max-w-5xl overflow-hidden rounded-3xl bg-surface-container-lowest shadow-2xl shadow-black/40 lg:grid-cols-2">
       <div className="relative hidden flex-col justify-between overflow-hidden bg-charcoal-dark p-space-xl lg:flex">
@@ -86,7 +96,10 @@ export default function SignInPage() {
           </p>
         </div>
 
-        <GoogleAuthButton label="Continue with Google" />
+        <GoogleAuthButton
+          callbackURL={callbackURL}
+          label="Continue with Google"
+        />
 
         <div className="my-space-md flex items-center gap-space-sm">
           <span className="h-px flex-1 bg-outline-variant/60" />
@@ -96,7 +109,7 @@ export default function SignInPage() {
           <span className="h-px flex-1 bg-outline-variant/60" />
         </div>
 
-        <SignInForm />
+        <SignInForm callbackURL={callbackURL} />
 
         <div className="my-space-lg h-px w-full bg-outline-variant/50" />
 
