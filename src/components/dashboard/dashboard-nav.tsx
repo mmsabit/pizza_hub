@@ -44,8 +44,8 @@ const NAV_BY_ROLE: Record<Role, NavItem[]> = {
   admin: [
     { label: "Overview", href: "/admin/dashboard", icon: LayoutDashboard },
     { label: "Profile", href: "/admin/dashboard/profile", icon: User },
-    { label: "Vendors", href: "#", icon: Store },
-    { label: "Users", href: "#", icon: Users },
+    { label: "Vendors", href: "/admin/dashboard/vendor", icon: Store },
+    { label: "Users", href: "/admin/dashboard/user", icon: Users },
     { label: "Orders", href: "/admin/dashboard/order", icon: ReceiptText },
     { label: "Menu", href: "/admin/dashboard/menu", icon: UtensilsCrossed },
     { label: "Payment", href: "/admin/dashboard/payment", icon: CreditCard },

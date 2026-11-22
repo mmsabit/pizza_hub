@@ -16,7 +16,7 @@ No test runner, CI workflow or formatter config. `README.md` is the untouched cr
 
 ## Backend boundary
 
-- Menu/order/search calls hit `${process.env.NEXT_PUBLIC_API_URL}`: `/menu`, `/menu/:id`, `/menus`, `/menus/:vendorId`, `/menus/search`, `/adminmenu`, `/order`, `/vendor_order/:id`, `/customer_order/:id`, `/available-menu`, `/payment`, `/vendor-data/:id`, `/payments/checkout-verify`. Those routes do not exist in this repo.
+- Menu/order/search calls hit `${process.env.NEXT_PUBLIC_API_URL}`: `/menu`, `/menu/:id`, `/menus`, `/menus/:vendorId`, `/menus/search`, `/adminmenu`, `/order`, `/vendor_order/:id`, `/customer_order/:id`, `/available-menu`, `/payment`, `/vendor`, `/user`, `/vendor-data/:id`, `/payments/checkout-verify`. Those routes do not exist in this repo.
 - Server pages fetch with `cache: "no-store"`; client components read `NEXT_PUBLIC_API_URL` directly. There is no local data layer for menus or orders.
 - Mongo (`DB_URI`, database hardcoded `pizza_hub`) is touched only by `src/lib/auth.ts` and `src/lib/plan.ts` (`user` collection). Don't add menu/order collections here.
 - Local API routes: `src/app/api/auth/[...all]/route.ts` (better-auth), `api/upload` (ImgBB proxy), `api/checkout_sessions` (Stripe).
@@ -33,7 +33,7 @@ No test runner, CI workflow or formatter config. `README.md` is the untouched cr
 
 - `src/app/(site)/` — storefront. `layout.tsx` adds `SiteHeader` + `SiteFooter`; `page.tsx` owns `/`. `/menu` is `force-dynamic`; `/menu/[menuid]` is public and swaps actions by role (owner vendor: edit/delete, admin: delete/status, signed-in customer: order form).
 - `src/app/(auth)/` — `/sign-in`, `/sign-up`. Standalone dark shell, no site header/footer.
-- `src/app/(dashboard)/` — role-gated areas. `user/` (`/user/dashboard`, `/user/dashboard/order`, `/user/dashboard/order/[slug]`, `/user/profile`), `vendor/` (`/vendor/dashboard`, `menu`, `order`, `order/[slug]`, `plan`, `invoice/success`, `/vendor/profile`), `admin/` (`/admin/dashboard`, `menu`, `order`, `order/[slug]`, `payment`, `profile`). Each area's `layout.tsx` wraps `DashboardRoleLayout`, which reads the session, redirects signed-out visitors to `/sign-in`, and redirects a mismatched role to `homeForRole()`. There is no `/dashboard` route — don't add one.
+- `src/app/(dashboard)/` — role-gated areas. `user/` (`/user/dashboard`, `/user/dashboard/order`, `/user/dashboard/order/[slug]`, `/user/profile`), `vendor/` (`/vendor/dashboard`, `menu`, `order`, `order/[slug]`, `plan`, `invoice/success`, `/vendor/profile`), `admin/` (`/admin/dashboard`, `menu`, `order`, `order/[slug]`, `payment`, `user`, `vendor`, `profile`). Each area's `layout.tsx` wraps `DashboardRoleLayout`, which reads the session, redirects signed-out visitors to `/sign-in`, and redirects a mismatched role to `homeForRole()`. There is no `/dashboard` route — don't add one.
 - Put new pages inside one of these groups. Do **not** create `src/app/page.tsx` — `/` is owned by `(site)` and a second root page is a route conflict.
 
 ## Auth, roles, Premium
@@ -78,9 +78,9 @@ No test runner, CI workflow or formatter config. `README.md` is the untouched cr
 ## Conventions and gotchas
 
 - `ToastContainer` is mounted in `src/app/layout.tsx`; `(site)`, `(auth)` and `(vendor)` layouts add duplicates. Toasts work everywhere — don't add another container.
-- Components live in feature folders under `src/components/`: `layout/`, `marketing/` (`*-section.tsx`), `auth/`, `dashboard/` (`vendormenu/`, `adminmenu/`, `vendorplan/`, `profile/`). PascalCase exports, `@/` alias → `src/`.
+- Components live in feature folders under `src/components/`: `layout/`, `marketing/` (`*-section.tsx`), `auth/`, `dashboard/` (`vendormenu/`, `adminmenu/`, `vendorplan/`, `adminaccounts/`, `profile/`). PascalCase exports, `@/` alias → `src/`.
 - Dashboard overview pages (`user`, `vendor`, `admin` `dashboard/page.tsx`) use hardcoded stats/demo rows. Orders and menu pages fetch the real backend — don't assume a dashboard number is live.
 - The three profile pages (`/user/profile`, `/vendor/profile`, `/admin/dashboard/profile`) share `ProfileScreen` in `src/components/dashboard/profile/`; the vendor variant also gets a plan card. Update the shared component, not each page.
-- Several nav entries are `"#"` placeholders (addresses, rewards, settings, vendors, users, reports).
+- Several user nav entries are `"#"` placeholders (addresses, rewards, settings).
 - `BETTER_AUTH_URL` is pinned to `http://localhost:3000`, so sign-up/sign-in POSTs need `Origin: http://localhost:3000` even when the app is served on another port.
 - In headless-browser checks, scope form selectors to `[role="dialog"]`: `document.querySelector('[name="description"]')` matches Next's `<meta name="description">` in `<head>`, not the modal textarea.

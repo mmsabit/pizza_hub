@@ -138,28 +138,24 @@ export default async function PaymentTransactionPage() {
     {
       label: "Payments verified",
       value: String(payments.length),
-      hint: "Stripe records on file",
       icon: CreditCard,
       chipClassName: "bg-primary-fixed text-primary",
     },
     {
       label: "Paid",
       value: String(paidCount),
-      hint: "payment_status = paid",
       icon: BadgeCheck,
       chipClassName: "bg-tertiary-fixed text-tertiary",
     },
     {
       label: "Complete checkouts",
       value: String(completeCount),
-      hint: "status = complete",
       icon: ReceiptText,
       chipClassName: "bg-secondary-fixed text-secondary",
     },
     {
       label: "Vendors billed",
       value: String(vendorIds.length),
-      hint: "Unique premium accounts",
       icon: Store,
       chipClassName: "bg-crust-gold/20 text-charcoal-dark",
     },
@@ -204,9 +200,6 @@ export default async function PaymentTransactionPage() {
             </p>
             <p className="font-label-lg text-label-lg text-on-surface-variant">
               {stat.label}
-            </p>
-            <p className="mt-1 truncate font-label-sm text-label-sm text-outline">
-              {stat.hint}
             </p>
           </div>
         ))}
