@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { roleLabel, type Role, type RoleUser } from "@/lib/roles";
+import { DashboardLogoutButton } from "./dashboard-logout-button";
 import { DashboardSidebarNav } from "./dashboard-nav";
 
 export { DashboardMobileNav } from "./dashboard-nav";
@@ -50,6 +51,8 @@ export function DashboardSidebar({ role, user }: DashboardSidebarProps) {
             </p>
           </div>
         </div>
+
+        <DashboardLogoutButton />
       </div>
     </aside>
   );

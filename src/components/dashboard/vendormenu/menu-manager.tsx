@@ -83,7 +83,93 @@ interface MenuManagerProps {
 
 export function MenuManager({userName, userImage,userId, ITEMS, premium}:MenuManagerProps) {
   const [formOpen, setFormOpen] = useState(false);
-  const availableCount = ITEMS.filter((item) => item.available).length;
+  const [featuredOverrides, setFeaturedOverrides] = useState<Record<string, boolean>>({});
+  const [updatingFeaturedId, setUpdatingFeaturedId] = useState<string | null>(null);
+  const [featuredError, setFeaturedError] = useState("");
+  const items = ITEMS.map((item) => {
+    const featuredOverride = featuredOverrides[item._id];
+    return featuredOverride === undefined
+      ? item
+      : { ...item, featured: featuredOverride };
+  });
+  const availableCount = items.filter((item) => item.available).length;
+
+  async function updateFeatured(item: PizzaType, featured: boolean) {
+    setUpdatingFeaturedId(item._id);
+    setFeaturedError("");
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/menu/${item._id}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ featured }),
+        },
+      );
+
+      if (response.status === 403) {
+        throw new Error("Only Premium vendors can feature menu items.");
+      }
+      if (response.status === 422) {
+        throw new Error("Only approved menu items can be featured.");
+      }
+      if (!response.ok) {
+        throw new Error("Could not update featured menu status.");
+      }
+
+      setFeaturedOverrides((current) => ({
+        ...current,
+        [item._id]: featured,
+      }));
+    } catch (error) {
+      setFeaturedError(
+        error instanceof Error
+          ? error.message
+          : "Could not update featured menu status.",
+      );
+    } finally {
+      setUpdatingFeaturedId(null);
+    }
+  }
+
+  function FeaturedToggle({ item }: { item: PizzaType }) {
+    const isFeatured = item.featured === true;
+
+    if (item.status !== "approved") {
+      return (
+        <span className="font-label-sm text-label-sm text-outline">
+          Available after approval
+        </span>
+      );
+    }
+
+    if (!premium && !isFeatured) {
+      return (
+        <Link
+          className="inline-flex items-center gap-1 font-label-sm text-label-sm font-bold text-secondary hover:text-primary"
+          href="/vendor/dashboard/plan"
+        >
+          <Crown size={12} />
+          Premium to feature
+        </Link>
+      );
+    }
+
+    return (
+      <label className="flex items-center gap-space-xs font-label-sm text-label-sm">
+        <input
+          aria-label={`Feature ${item.name}`}
+          checked={isFeatured}
+          className="checkbox checkbox-primary"
+          disabled={updatingFeaturedId !== null}
+          onChange={(event) => updateFeatured(item, event.target.checked)}
+          type="checkbox"
+        />
+        <span>Featured</span>
+      </label>
+    );
+  }
 
   return (
     <div className="space-y-space-lg">
@@ -96,7 +182,7 @@ export function MenuManager({userName, userImage,userId, ITEMS, premium}:MenuMan
             Menu
           </h1>
           <p className="font-body-md text-body-md text-on-surface-variant">
-            {ITEMS.length} {ITEMS.length === 1 ? "dish" : "dishes"} on the board •{" "}
+            {items.length} {items.length === 1 ? "dish" : "dishes"} on the board •{" "}
             {availableCount} available tonight
           </p>
         </div>
@@ -120,6 +206,15 @@ export function MenuManager({userName, userImage,userId, ITEMS, premium}:MenuMan
         </div>
       </header>
 
+      {featuredError ? (
+        <p
+          className="rounded-xl bg-error-container px-space-md py-space-sm text-on-error-container"
+          role="alert"
+        >
+          {featuredError}
+        </p>
+      ) : null}
+
       <section className="overflow-hidden rounded-2xl border border-surface-container-high bg-surface-container-lowest shadow-sm">
         <div className="hidden items-center gap-space-sm border-b border-surface-container-high px-space-md py-space-sm font-label-sm text-label-sm uppercase tracking-wider text-outline sm:flex">
           <span className="w-11 shrink-0" />
@@ -128,11 +223,12 @@ export function MenuManager({userName, userImage,userId, ITEMS, premium}:MenuMan
           <span className="w-20 shrink-0 text-right">Price</span>
           <span className="w-28 shrink-0 text-right">Availability</span>
           <span className="w-28 shrink-0 text-right">Status</span>
-          <span className="w-28 shrink-0 text-right"> </span>
+          <span className="w-36 shrink-0 text-right">Featured</span>
+          <span className="w-28 shrink-0 text-right">Actions</span>
         </div>
 
         <ul className="divide-y divide-surface-container-high">
-          {ITEMS.map((item) => (
+          {items.map((item) => (
             <li
               key={item._id}
               className="flex flex-wrap items-center gap-space-sm px-space-md py-space-md transition-colors hover:bg-surface-container-low"
@@ -166,6 +262,9 @@ export function MenuManager({userName, userImage,userId, ITEMS, premium}:MenuMan
               <span className="hidden w-28 shrink-0 justify-end sm:flex">
                 <StatusBadge status={item.status} />
               </span>
+              <span className="hidden w-36 shrink-0 justify-end sm:flex">
+                <FeaturedToggle item={item} />
+              </span>
               <span className="hidden w-28 shrink-0 justify-end sm:flex">
                 <Link
                 href={`/menu/${item._id}`}
@@ -180,6 +279,7 @@ export function MenuManager({userName, userImage,userId, ITEMS, premium}:MenuMan
                 </p>
                 <AvailabilityBadge available={item.available} />
                 <StatusBadge status={item.status}/>
+                <FeaturedToggle item={item} />
                 <Link
                 href={`/menu/${item._id}`}
                 className="btn btn-ghost"

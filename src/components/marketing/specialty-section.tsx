@@ -1,22 +1,26 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { PizzaType } from "@/app/type/type";
 
-const SPECIALITIES = [
-  {
-    name: "MEXICAN GREEN WAVE",
-    image: "/images/menu-caesar.jpg",
-  },
-  {
-    name: "DOUBLE CHEESE PIZZA",
-    image: "/images/menu-seafood.jpg",
-  },
-  {
-    name: "MARGHERITA PIZZA",
-    image: "/images/menu-margherita.jpg",
-  },
-];
+const PLACEHOLDER_IMAGE = "/images/placeholder.png";
 
-export function SpecialtySection() {
+export async function SpecialtySection() {
+  let items: PizzaType[] = [];
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/featured_menu`,
+      { cache: "no-store" },
+    );
+
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data)) items = data;
+    }
+  } catch (error) {
+    console.error("Failed to load featured menu:", error);
+  }
+
   return (
     <section
       className="w-full py-space-xl bg-surface-container-lowest  relative overflow-hidden "
@@ -56,7 +60,7 @@ export function SpecialtySection() {
         </svg>
       </div>
 
-      <div className="max-w-7xl mx-auto px-margin relative z-20 h-[70vh] flex flex-col justify-center ">
+      <div className="max-w-7xl mx-auto px-margin relative z-20 min-h-[70vh] py-space-xl flex flex-col justify-center ">
         <div className="text-center mb-space-xl">
           <span className="text-secondary-container font-headline-sm italic font-bold tracking-wide block mb-1">
             Fresh From PizzaHub
@@ -66,23 +70,33 @@ export function SpecialtySection() {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-space-xl max-w-5xl mx-auto text-center items-center justify-center w-full">
-          {SPECIALITIES.map((item) => (
-            <div key={item.name} className="flex flex-col items-center group">
-              <div className="relative w-58 h-58 rounded-full overflow-hidden shadow-lg mb-space-md bg-dough-surface transition-transform duration-300 group-hover:scale-105">
-                <Image
-                  alt={item.name}
-                  className="object-cover rounded-full"
-                  fill
-                  sizes="2000px"
-                  src={item.image}
-                />
-              </div>
-              <h3 className="font-title-md font-bold text-charcoal-dark uppercase tracking-wider text-base">
-                {item.name}
-              </h3>
-            </div>
-          ))}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-space-xl max-w-5xl mx-auto text-center items-center justify-center w-full">
+          {items.length > 0 ? (
+            items.map((item) => (
+              <Link
+                key={item._id}
+                className="flex flex-col items-center group"
+                href={`/menu/${item._id}`}
+              >
+                <div className="relative w-58 h-58 rounded-full overflow-hidden shadow-lg mb-space-md bg-dough-surface transition-transform duration-300 group-hover:scale-105">
+                  <Image
+                    alt={item.name}
+                    className="object-cover rounded-full"
+                    fill
+                    sizes="(min-width: 768px) 232px, 80vw"
+                    src={item.image || PLACEHOLDER_IMAGE}
+                  />
+                </div>
+                <h3 className="font-title-md font-bold text-charcoal-dark uppercase tracking-wider text-base">
+                  {item.name}
+                </h3>
+              </Link>
+            ))
+          ) : (
+            <p className="sm:col-span-2 md:col-span-3 text-center font-label-md text-on-surface-variant">
+              No featured dishes right now.
+            </p>
+          )}
         </div>
 
         <div className="mt-space-xl flex justify-center">

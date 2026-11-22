@@ -56,10 +56,8 @@ interface MenuManagerProps {
 export function AdminMenuManager({ITEMS}:MenuManagerProps) {
   const [items, setItems] = useState(ITEMS);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
-  const [updatingFeaturedId, setUpdatingFeaturedId] = useState<string | null>(null);
   const [error, setError] = useState("");
   const availableCount = items.filter((item) => item.available).length;
-  const featuredCount = items.filter((item) => item.featured === true).length;
 
   async function updateStatus(item: PizzaType, status: "approved" | "rejected") {
     setUpdatingId(item._id);
@@ -94,63 +92,6 @@ export function AdminMenuManager({ITEMS}:MenuManagerProps) {
     } finally {
       setUpdatingId(null);
     }
-  }
-
-  async function updateFeatured(item: PizzaType, featured: boolean) {
-    setUpdatingFeaturedId(item._id);
-    setError("");
-
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/adminmenu/${item._id}`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ featured }),
-        },
-      );
-
-      if (!response.ok) {
-        const result = await response.json();
-        throw new Error(result.message || "Could not update featured menu status.");
-      }
-
-      setItems((currentItems) =>
-        currentItems.map((currentItem) =>
-          currentItem._id === item._id
-            ? { ...currentItem, featured }
-            : currentItem,
-        ),
-      );
-    } catch (updateError) {
-      setError(
-        updateError instanceof Error
-          ? updateError.message
-          : "Could not update featured menu status.",
-      );
-    } finally {
-      setUpdatingFeaturedId(null);
-    }
-  }
-
-  function FeaturedToggle({ item }: { item: PizzaType }) {
-    const isFeatured = item.featured === true;
-
-    return (
-      <label className="flex items-center gap-space-xs font-label-sm text-label-sm">
-        <input
-          aria-label={`Feature ${item.name}`}
-          checked={isFeatured}
-          className="checkbox checkbox-primary"
-          disabled={
-            updatingFeaturedId !== null || (!isFeatured && featuredCount >= 3)
-          }
-          onChange={(event) => updateFeatured(item, event.target.checked)}
-          type="checkbox"
-        />
-        <span>Featured</span>
-      </label>
-    );
   }
 
   function StatusActions({ item }: { item: PizzaType }) {
@@ -202,10 +143,6 @@ export function AdminMenuManager({ITEMS}:MenuManagerProps) {
           {error}
         </p>
       ) : null}
-      <p className="font-label-sm text-label-sm text-on-surface-variant">
-        Featured dishes: {featuredCount}/3
-      </p>
-
       {/* Desktop / large screen table */}
       <section className="hidden overflow-hidden rounded-2xl border border-surface-container-high bg-surface-container-lowest shadow-sm xl:block">
         <table className="w-full table-fixed border-collapse text-left">
@@ -240,9 +177,6 @@ export function AdminMenuManager({ITEMS}:MenuManagerProps) {
                 scope="col"
               >
                 Status
-              </th>
-              <th className="w-28 px-space-sm py-space-sm" scope="col">
-                Featured
               </th>
               <th
                 className="w-36 py-space-sm pl-space-sm pr-space-md text-right"
@@ -309,16 +243,6 @@ export function AdminMenuManager({ITEMS}:MenuManagerProps) {
                   </div>
                 </td>
 
-                <td className="px-space-sm py-space-md">
-                  {item.status === "pending" ? (
-                    <span aria-hidden="true" className="text-outline">
-                      —
-                    </span>
-                  ) : (
-                    <FeaturedToggle item={item} />
-                  )}
-                </td>
-
                 <td className="py-space-md pl-space-sm pr-space-md text-right">
                   <Link
                     href={`/menu/${item._id}`}
@@ -376,7 +300,6 @@ export function AdminMenuManager({ITEMS}:MenuManagerProps) {
               ) : (
                 <>
                   <AdminStatusBadge status={item.status} />
-                  <FeaturedToggle item={item} />
                 </>
               )}
 

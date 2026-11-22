@@ -50,7 +50,7 @@ No test runner, CI workflow or formatter config. `README.md` is the untouched cr
 ## Data and status conventions
 
 - Menu `status` is lowercase `pending | approved | rejected`; order `order_status` is uppercase `PENDING | CONFIRMED | PREPARING | READY | OUT_FOR_DELIVERY | DELIVERED | CANCELLED`. Don't normalize one into the other.
-- New vendor dishes POST with `status: "pending"`; admin approves/rejects via `PATCH /adminmenu/:id`. Admin can mark at most 3 items featured — enforced in the UI only.
+- New vendor dishes POST with `status: "pending"`; admin approves/rejects via `PATCH /adminmenu/:id`. Only Premium vendors can feature their approved dishes.
 - Order "placed at" is derived from the MongoDB ObjectId prefix (`orderTimestamp` in `user/dashboard/order/_comp/order-ui.ts`), not a stored timestamp.
 - Currency is inconsistent by design: storefront/orders use BDT (`৳`), vendor/admin menu tables and the Premium plan still use `$`. Change both sides together or not at all.
 - The public `/menu` page renders whatever `/menu` returns and shows non-approved items with a status badge rather than hiding them; the homepage uses `/available-menu` for featured dishes.

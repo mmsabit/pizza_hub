@@ -18,6 +18,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import type { Role } from "@/lib/roles";
+import { DashboardMobileLogoutButton } from "./dashboard-logout-button";
 
 type NavItem = {
   label: string;
@@ -102,26 +103,30 @@ export function DashboardMobileNav({ role }: { role: Role }) {
 
   return (
     <nav className="border-b border-surface-container-high bg-surface-container-lowest lg:hidden">
-      <div className="flex gap-space-xs overflow-x-auto px-margin py-space-sm">
-        {NAV_BY_ROLE[role].map((item) => {
-          const active = isActive(pathname, item.href);
+      <div className="flex items-center gap-space-sm px-margin py-space-sm">
+        <div className="flex flex-1 gap-space-xs overflow-x-auto">
+          {NAV_BY_ROLE[role].map((item) => {
+            const active = isActive(pathname, item.href);
 
-          return (
-            <Link
-              key={item.label}
-              aria-current={active ? "page" : undefined}
-              className={
-                active
-                  ? "inline-flex items-center gap-space-xs whitespace-nowrap rounded-full bg-primary-container px-space-sm py-space-xs font-label-md text-label-md text-on-primary-container"
-                  : "inline-flex items-center gap-space-xs whitespace-nowrap rounded-full px-space-sm py-space-xs font-label-md text-label-md text-on-surface-variant transition-colors hover:bg-surface-container-low hover:text-primary"
-              }
-              href={item.href}
-            >
-              <item.icon size={14} />
-              <span>{item.label}</span>
-            </Link>
-          );
-        })}
+            return (
+              <Link
+                key={item.label}
+                aria-current={active ? "page" : undefined}
+                className={
+                  active
+                    ? "inline-flex items-center gap-space-xs whitespace-nowrap rounded-full bg-primary-container px-space-sm py-space-xs font-label-md text-label-md text-on-primary-container"
+                    : "inline-flex items-center gap-space-xs whitespace-nowrap rounded-full px-space-sm py-space-xs font-label-md text-label-md text-on-surface-variant transition-colors hover:bg-surface-container-low hover:text-primary"
+                }
+                href={item.href}
+              >
+                <item.icon size={14} />
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
+        </div>
+
+        <DashboardMobileLogoutButton />
       </div>
     </nav>
   );
