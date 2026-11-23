@@ -75,6 +75,7 @@ No test runner, CI workflow or formatter config. `README.md` is the untouched cr
 - All primitives are client components and respect `useReducedMotion()`. Server pages and components can import and wrap their children with them.
 - `src/app/template.tsx` cross-fades every route change, so pages do not need their own entrance wrapper.
 - Prefer `whileInView` with `once` for scroll reveals and wrap only the section-level blocks (header, card grids, panels) rather than every text node.
+- The homepage's floating pizza/kitchen icons come from `src/components/marketing/floating-food-icons.tsx`. Each marketing section renders its own `FloatingFoodIcons` layer (`count`/`offset`/`dark` props) and needs `relative overflow-hidden` plus a `relative z-10` content wrapper; a single page-level layer would be hidden by the sections' opaque backgrounds.
 
 ## Images, icons, uploads
 

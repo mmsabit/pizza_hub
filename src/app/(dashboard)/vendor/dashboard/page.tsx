@@ -8,6 +8,7 @@ import {
   ReceiptText,
   UtensilsCrossed,
   Wallet,
+  ArrowLeft
 } from "lucide-react";
 import type { Metadata } from "next";
 import { headers } from "next/headers";
@@ -31,7 +32,7 @@ import {
 } from "@/components/animation/motion-primitives";
 import { fetchArray } from "@/lib/api";
 import { auth } from "@/lib/auth";
-import { isPremiumActive } from "@/lib/plan";
+import { getPremiumState } from "@/lib/plan";
 
 export const metadata: Metadata = {
   title: "Vendor dashboard — PizzaHub",
@@ -63,14 +64,16 @@ type VendorStat = {
 };
 
 export default async function VendorDashboardPage() {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const requestHeaders = await headers();
+  const session = await auth.api.getSession({ headers: requestHeaders });
+  const jwtToken = await auth.api.getToken({ headers: requestHeaders });
   const user = session?.user;
   const vendorId = user?.id ?? "";
   const firstName = user?.name?.split(" ")[0];
 
   const [menus, fetchedOrders] = await Promise.all([
-    fetchArray<PizzaType>(`/menus/${vendorId}`),
-    fetchArray<OrderType>(`/vendor_order/${vendorId}`),
+    fetchArray<PizzaType>(`/menus/${vendorId}`, jwtToken.token),
+    fetchArray<OrderType>(`/vendor_order/${vendorId}`, jwtToken.token),
   ]);
 
   // Newest first: the ObjectId prefix carries the creation timestamp.
@@ -88,7 +91,7 @@ export default async function VendorDashboardPage() {
   const acceptedCount = orders.filter((order) =>
     ACCEPTED_STATUSES.includes(order.order_status),
   ).length;
-  const premium = isPremiumActive(user);
+  const premium = await getPremiumState(user?.id ?? "");
 
   const recentOrders = orders.slice(0, 5);
   const recentMenu = menuItems.slice(0, 4);
@@ -151,19 +154,13 @@ export default async function VendorDashboardPage() {
         </div>
 
         <div className="flex flex-wrap items-center gap-space-sm">
-          <Link
-            className="inline-flex items-center gap-space-xs rounded-xl border border-outline-variant bg-surface-container-lowest px-space-md py-space-sm font-label-lg text-label-lg text-on-surface-variant transition-colors hover:border-primary hover:text-primary"
-            href="/vendor/dashboard/menu"
-          >
-            <UtensilsCrossed size={16} />
-            Manage menu
-          </Link>
+          
           <Link
             className="inline-flex items-center gap-space-xs rounded-xl bg-primary-container px-space-md py-space-sm font-label-lg text-label-lg text-on-primary-container shadow-lg shadow-primary-container/25 transition-all hover:-translate-y-0.5 hover:bg-primary"
             href="/vendor/dashboard/order"
           >
-            <ReceiptText size={16} />
-            View orders
+            <ArrowLeft size={16} />
+            Back to Home
           </Link>
         </div>
       </Reveal>

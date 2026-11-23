@@ -4,9 +4,9 @@ import {
   CheckCircle2,
   Clock3,
   Pizza,
-  Plus,
   ReceiptText,
   XCircle,
+  ArrowLeft
 } from "lucide-react";
 import type { Metadata } from "next";
 import { headers } from "next/headers";
@@ -53,12 +53,15 @@ type UserStat = {
 };
 
 export default async function UserDashboardPage() {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const requestHeaders = await headers();
+  const session = await auth.api.getSession({ headers: requestHeaders });
+  const jwtToken = await auth.api.getToken({ headers: requestHeaders });
   const user = session?.user;
   const firstName = user?.name?.split(" ")[0];
 
   const fetchedOrders = await fetchArray<OrderType>(
     `/customer_order/${user?.id ?? ""}`,
+    jwtToken.token,
   );
 
   // Newest first: the ObjectId prefix carries the creation timestamp.
@@ -151,19 +154,13 @@ export default async function UserDashboardPage() {
         </div>
 
         <div className="flex flex-wrap items-center gap-space-sm">
-          <Link
-            className="inline-flex items-center gap-space-xs rounded-xl border border-outline-variant bg-surface-container-lowest px-space-md py-space-sm font-label-lg text-label-lg text-on-surface-variant transition-colors hover:border-primary hover:text-primary"
-            href="/user/dashboard/order"
-          >
-            <ReceiptText size={16} />
-            All orders
-          </Link>
+          
           <Link
             className="inline-flex items-center gap-space-xs rounded-xl bg-primary-container px-space-md py-space-sm font-label-lg text-label-lg text-on-primary-container shadow-lg shadow-primary-container/25 transition-all hover:-translate-y-0.5 hover:bg-primary"
             href="/"
           >
-            <Plus size={16} />
-            New order
+            <ArrowLeft size={16} />
+            Back to Home
           </Link>
         </div>
       </Reveal>

@@ -147,7 +147,7 @@ export function UpgradeToPremium() {
           </div>
 
           <p className="mt-space-sm text-center font-label-sm text-label-sm text-outline">
-            Secure payment powered by Stripe. Cancel anytime.
+            Secure payment powered by Stripe.
           </p>
         </div>
 

@@ -1,14 +1,17 @@
 "use client";
 
 import { authClient } from "@/lib/auth-client";
-import { ArrowRight, Eye, EyeOff, Lock, Mail } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
 import { useState } from "react";
 import { toast, Bounce } from "react-toastify";
 
 export function SignInForm({ callbackURL = "/" }: { callbackURL?: string }) {
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     const formData = new FormData(e.target);
     const user = Object.fromEntries(formData.entries()) as Record<
@@ -16,40 +19,43 @@ export function SignInForm({ callbackURL = "/" }: { callbackURL?: string }) {
       string
     >;
 
-
-    const { data, error } = await authClient.signIn.email({
-      email: user.email,
-      password: user.password,
-      callbackURL,
-      rememberMe: user.remember === "on",
-    });
-
-    if (data) {
-      toast.success("Successfully signed in", {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
+    try {
+      const { data, error } = await authClient.signIn.email({
+        email: user.email,
+        password: user.password,
+        callbackURL,
+        rememberMe: user.remember === "on",
       });
-    }
 
-    if (error) {
-      toast.error(error.message, {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-      });
+      if (data) {
+        toast.success("Successfully signed in", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
+      }
+
+      if (error) {
+        toast.error(error.message, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -114,11 +120,21 @@ export function SignInForm({ callbackURL = "/" }: { callbackURL?: string }) {
       
 
       <button
-        className="inline-flex w-full items-center justify-center gap-space-xs rounded-xl bg-primary-container px-space-lg py-space-md font-label-lg text-label-lg text-on-primary-container shadow-lg shadow-primary-container/25 transition-all hover:bg-primary hover:-translate-y-0.5"
+        className="inline-flex w-full items-center justify-center gap-space-xs rounded-xl bg-primary-container px-space-lg py-space-md font-label-lg text-label-lg text-on-primary-container shadow-lg shadow-primary-container/25 transition-all hover:bg-primary hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-70"
+        disabled={isSubmitting}
         type="submit"
       >
-        <span>Sign in to PizzaHub</span>
-        <ArrowRight size={18} />
+        {isSubmitting ? (
+          <>
+            <Loader2 aria-hidden="true" className="animate-spin" size={18} />
+            <span>Signing in...</span>
+          </>
+        ) : (
+          <>
+            <span>Sign in to PizzaHub</span>
+            <ArrowRight size={18} />
+          </>
+        )}
       </button>
     </form>
   );

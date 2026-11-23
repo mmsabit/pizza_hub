@@ -26,6 +26,8 @@ export const metadata: Metadata = {
   description: "Confirm your PizzaHub Premium subscription payment.",
 };
 
+export const dynamic = "force-dynamic";
+
 function formatAmount(amount: number | null, currency: string | null) {
   if (amount === null) return "—";
 

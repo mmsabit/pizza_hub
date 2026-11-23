@@ -1,10 +1,13 @@
-export async function getMenuUsage(vendorId: string) {
-  if (!vendorId) return { active: 0, total: 0 };
+export async function getMenuUsage(vendorId: string, token?: string) {
+  if (!vendorId || !token) return { active: 0, total: 0 };
 
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/menus/${vendorId}`,
-      { cache: "no-store" },
+      {
+        cache: "no-store",
+        headers: { authorization: `Bearer ${token}` },
+      },
     );
 
     if (!res.ok) {

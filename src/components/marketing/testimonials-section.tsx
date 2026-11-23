@@ -5,6 +5,7 @@ import {
   Stagger,
   StaggerItem,
 } from "@/components/animation/motion-primitives";
+import { FloatingFoodIcons } from "./floating-food-icons";
 
 const REVIEWS = [
   {
@@ -35,8 +36,10 @@ const REVIEWS = [
 
 export function TestimonialsSection() {
   return (
-    <section className="w-full py-space-xl bg-dough-surface">
-      <div className="max-w-7xl mx-auto px-margin py-20">
+    <section className="relative w-full overflow-hidden py-space-xl bg-dough-surface">
+      <FloatingFoodIcons count={5} offset={8} />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-margin py-20">
         <Reveal className="text-center max-w-xl mx-auto mb-space-lg">
           <span className="text-primary font-label-sm text-label-sm uppercase tracking-wider font-bold">
             Pizza Addict Praise

@@ -42,3 +42,18 @@ export async function activatePremium(userId: string) {
     throw new Error("User not found.");
   }
 }
+
+/**
+ * Reads Premium directly from the account document because Better Auth session
+ * values can be cached and may remain stale immediately after Stripe payment.
+ */
+export async function getPremiumState(userId: string) {
+  if (!ObjectId.isValid(userId)) return false;
+
+  const user = await USERS.findOne(
+    { _id: new ObjectId(userId) },
+    { projection: { premium: 1 } },
+  );
+
+  return Boolean(user?.premium);
+}

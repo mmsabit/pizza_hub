@@ -8,6 +8,7 @@ import {
   Stagger,
   StaggerItem,
 } from "@/components/animation/motion-primitives";
+import { FloatingFoodIcons } from "./floating-food-icons";
 
 const HERO_PIZZA_SRC = "/images/hero-pizza.jpg";
 
@@ -16,6 +17,8 @@ export function HeroSection() {
     <section className="relative w-full bg-dough-surface overflow-hidden  pb-space-xl">
       <div className="absolute -top-32 -left-20 w-96 h-96 rounded-full bg-secondary-container/10 blur-3xl pointer-events-none" />
       <div className="absolute top-1/2 -right-32 w-125 h-125 rounded-full bg-primary-container/10 blur-3xl pointer-events-none" />
+
+      <FloatingFoodIcons count={8} />
 
       <div className="max-w-7xl mx-auto px-margin relative z-10 pt-space-md pb-space-lg ">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-center h-[70vh]">

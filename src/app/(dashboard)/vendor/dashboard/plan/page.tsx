@@ -23,13 +23,15 @@ import {
 } from "@/components/animation/motion-primitives";
 import { auth } from "@/lib/auth";
 import { getMenuUsage } from "@/lib/menu-usage";
-import { isPremiumActive } from "@/lib/plan";
+import { getPremiumState } from "@/lib/plan";
 
 export const metadata: Metadata = {
   title: "Plan & billing — PizzaHub",
   description:
     "Compare the Free and Premium PizzaHub vendor plans, check your menu usage and manage your subscription.",
 };
+
+export const dynamic = "force-dynamic";
 
 const FREE_FEATURES = [
   "Unlimited menus",
@@ -77,12 +79,17 @@ function CompareCell({ value }: { value: string | boolean }) {
 }
 
 export default async function PlanPage(): Promise<JSX.Element> {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const requestHeaders = await headers();
+  const session = await auth.api.getSession({ headers: requestHeaders });
   const user = session?.user;
   const vendorName = user?.name ?? "Your storefront";
-  const { total: menuCount } = await getMenuUsage(user?.id ?? "");
+  const jwtToken = await auth.api.getToken({ headers: requestHeaders });
+  const { total: menuCount } = await getMenuUsage(
+    user?.id ?? "",
+    jwtToken.token,
+  );
 
-  const premium = isPremiumActive(user);
+  const premium = await getPremiumState(user?.id ?? "");
 
   return (
     <div className="space-y-space-lg">

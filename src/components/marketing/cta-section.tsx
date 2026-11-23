@@ -5,11 +5,14 @@ import {
   MotionCard,
   Reveal,
 } from "@/components/animation/motion-primitives";
+import { FloatingFoodIcons } from "./floating-food-icons";
 
 export function CtaSection() {
   return (
     <section className="w-full bg-charcoal-dark text-surface-container-lowest py-space-xl relative overflow-hidden">
       {/* <div className="absolute -right-20 -bottom-20 w-80 h-80 rounded-full bg-primary-container/20 blur-3xl pointer-events-none" /> */}
+
+      <FloatingFoodIcons count={4} offset={3} dark />
 
       <div className="max-w-7xl mx-auto px-margin relative z-10 py-20">
         <Reveal className="bg-surface-container-high/10 rounded-3xl p-space-lg lg:p-space-xl flex flex-col lg:flex-row items-center justify-between gap-space-xl">

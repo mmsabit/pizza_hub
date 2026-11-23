@@ -1,5 +1,6 @@
 import { PizzaType } from "@/app/type/type";
 import { Reveal } from "@/components/animation/motion-primitives";
+import { FloatingFoodIcons } from "./floating-food-icons";
 import { MenuGrid } from "./menu-grid";
 
 export async function MenuSection() {
@@ -14,10 +15,12 @@ export async function MenuSection() {
   }
   return (
     <section
-      className="w-full py-space-xl bg-charcoal-dark text-surface-container-lowest"
+      className="relative w-full overflow-hidden py-space-xl bg-charcoal-dark text-surface-container-lowest"
       id="featured-menu"
     >
-      <div className="max-w-7xl mx-auto px-margin py-20">
+      <FloatingFoodIcons count={6} offset={4} dark />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-margin py-20">
         <Reveal className="text-center max-w-2xl mx-auto mb-space-xl">
           <span className="text-secondary-container font-bold text-headline-sm italic tracking-wide block mb-1">
             Fresh From PizzaHub

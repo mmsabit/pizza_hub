@@ -13,6 +13,7 @@ import {
   Store,
   Timer,
   Wallet,
+  ArrowLeft
 } from "lucide-react";
 import type { Metadata } from "next";
 import { headers } from "next/headers";
@@ -199,19 +200,13 @@ const jwtToken = await auth.api.getToken({ headers: await headers() });
         </div>
 
         <div className="flex flex-wrap items-center gap-space-sm">
-          <Link
-            className="inline-flex items-center gap-space-xs rounded-xl border border-outline-variant bg-surface-container-lowest px-space-md py-space-sm font-label-lg text-label-lg text-on-surface-variant transition-colors hover:border-primary hover:text-primary"
-            href="/vendor/dashboard/menu"
-          >
-            <Store size={16} />
-            Edit menu
-          </Link>
+          
           <Link
             className="inline-flex items-center gap-space-xs rounded-xl bg-primary-container px-space-md py-space-sm font-label-lg text-label-lg text-on-primary-container shadow-lg shadow-primary-container/25 transition-all hover:-translate-y-0.5 hover:bg-primary"
-            href="/vendor/dashboard"
+            href="/"
           >
-            <ChefHat size={16} />
-            Dashboard
+            <ArrowLeft size={16} />
+            Back to Home
           </Link>
         </div>
       </Reveal>

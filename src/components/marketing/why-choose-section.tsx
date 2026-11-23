@@ -6,6 +6,7 @@ import {
   Stagger,
   StaggerItem,
 } from "@/components/animation/motion-primitives";
+import { FloatingFoodIcons } from "./floating-food-icons";
 
 const OVEN_IMAGE_SRC = "/images/oven.jpg";
 
@@ -61,8 +62,10 @@ const METRICS = [
 
 export function WhyChooseSection() {
   return (
-    <section className="w-full py-space-xl bg-dough-canvas">
-      <div className="max-w-7xl mx-auto px-margin py-20">
+    <section className="relative w-full overflow-hidden py-space-xl bg-dough-canvas">
+      <FloatingFoodIcons count={5} offset={1} />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-margin py-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-center">
           <Reveal className="lg:col-span-5 relative" direction="right">
             <div className="rounded-3xl overflow-hidden shadow-2xl relative h-120">

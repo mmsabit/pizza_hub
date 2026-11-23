@@ -6,6 +6,7 @@ import {
   Stagger,
   StaggerItem,
 } from "@/components/animation/motion-primitives";
+import { FloatingFoodIcons } from "./floating-food-icons";
 
 const PLACEHOLDER_IMAGE = "/images/placeholder.png";
 
@@ -31,6 +32,8 @@ export async function SpecialtySection() {
       className="w-full py-space-xl bg-surface-container-lowest  relative overflow-hidden "
       id="featured-specials"
     >
+      <FloatingFoodIcons count={5} offset={2} />
+
       <div className="absolute top-0 left-0 right-0 w-full pointer-events-none z-10 select-none overflow-hidden leading-none">
         <svg
           className="w-full h-10 sm:h-16 md:h-20 text-secondary-container fill-current object-cover"
