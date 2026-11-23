@@ -11,7 +11,8 @@ import {
   Pencil,
   X,
 } from "lucide-react";
-import type { FormEvent } from "react";
+import type { ChangeEvent, FormEvent } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast, Bounce } from "react-toastify";
 import { authClient } from "@/lib/auth-client";
@@ -29,6 +30,20 @@ const MenuEdit= ({
   menu: PizzaType;
 }) => {
   const router = useRouter();
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!previewUrl) return;
+
+    return () => URL.revokeObjectURL(previewUrl);
+  }, [previewUrl]);
+
+  const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    setPreviewUrl(
+      file?.type.startsWith("image/") ? URL.createObjectURL(file) : null,
+    );
+  };
 
   const handleEdit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -266,10 +281,20 @@ const MenuEdit= ({
                   className="sr-only"
                   id={`image`}
                   name="imageFile"
+                  onChange={handleImageChange}
                   type="file"
                 />
               </label>
-              {menu.image && (
+              {previewUrl ? (
+                <Image
+                  alt="Selected menu image preview"
+                  className="max-h-56 w-full rounded-xl object-contain"
+                  height={224}
+                  src={previewUrl}
+                  unoptimized
+                  width={448}
+                />
+              ) : menu.image ? (
                 <Image
                   alt={`Current image for ${menu.name}`}
                   className="h-20 w-20 rounded-lg object-cover"
@@ -277,7 +302,7 @@ const MenuEdit= ({
                   src={menu.image}
                   width={80}
                 />
-              )}
+              ) : null}
             </div>
 
             {/* 6. Availability radio */}

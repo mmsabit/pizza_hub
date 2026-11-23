@@ -7,8 +7,9 @@ import {
   X,
   XCircle,
 } from "lucide-react";
-import type { FormEvent } from "react";
-import { useEffect, useId, useRef } from "react";
+import Image from "next/image";
+import type { ChangeEvent, FormEvent } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { MENU_CATEGORIES } from "@/lib/menu";
 import { Bounce, toast } from "react-toastify";
@@ -37,6 +38,7 @@ export function MenuFormModal({
   const fieldId = useId();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const router = useRouter();
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -48,6 +50,17 @@ export function MenuFormModal({
 
     return () => dialog.removeEventListener("close", handleClose);
   }, [onClose]);
+
+  useEffect(() => {
+    if (!previewUrl) return;
+
+    return () => URL.revokeObjectURL(previewUrl);
+  }, [previewUrl]);
+
+  const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    setPreviewUrl(file?.type.startsWith("image/") ? URL.createObjectURL(file) : null);
+  };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -255,9 +268,20 @@ export function MenuFormModal({
                 className="sr-only"
                 id={`${fieldId}-image`}
                 name="imageFile"
+                onChange={handleImageChange}
                 type="file"
               />
             </label>
+            {previewUrl && (
+              <Image
+                alt="Selected menu image preview"
+                className="max-h-56 w-full rounded-xl object-contain"
+                height={224}
+                src={previewUrl}
+                unoptimized
+                width={448}
+              />
+            )}
           </div>
 
           {/* 6. Availability radio */}
