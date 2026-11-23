@@ -16,6 +16,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import MenuStatusEdit from "./_comp/menustatusedit";
 import OrderForm from "./_comp/orderform";
+import { Reveal } from "@/components/animation/motion-primitives";
 
 const PLACEHOLDER = "/images/placeholder.png";
 
@@ -79,7 +80,7 @@ const MenuDetailespage = async ({
 
       <div className="relative z-10 mx-auto max-w-7xl px-margin py-space-xl">
         {/* Breadcrumb */}
-        <nav
+        <Reveal as="nav"
           aria-label="Breadcrumb"
           className="mb-space-lg flex flex-wrap items-center gap-space-xs font-label-md text-label-md text-on-surface-variant"
         >
@@ -92,11 +93,11 @@ const MenuDetailespage = async ({
           </Link>
           <span className="text-outline-variant">/</span>
           <span className="font-bold text-charcoal-dark">{menu.name}</span>
-        </nav>
+        </Reveal>
 
         <div className="grid grid-cols-1 items-start gap-space-xl lg:grid-cols-12">
           {/* Image */}
-          <div className="lg:col-span-6">
+          <Reveal className="lg:col-span-6" direction="right">
             <div className="relative">
               <div className="absolute -inset-3 rounded-[2.5rem] bg-linear-to-tr from-secondary-container/30 via-transparent to-primary-container/25 blur-xl" />
 
@@ -128,10 +129,14 @@ const MenuDetailespage = async ({
                 </div>
               </div>
             </div>
-          </div>
+          </Reveal>
 
           {/* Details */}
-          <div className="space-y-space-lg lg:col-span-6">
+          <Reveal
+            className="space-y-space-lg lg:col-span-6"
+            delay={0.12}
+            direction="left"
+          >
             
 
             <div className="space-y-space-sm">
@@ -247,7 +252,7 @@ const MenuDetailespage = async ({
                 dispatched in insulated packaging so it reaches you oven-warm.
               </p>
             </div>
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>

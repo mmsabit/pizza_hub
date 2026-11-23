@@ -10,6 +10,11 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 
+import {
+  Float,
+  Reveal,
+} from "@/components/animation/motion-primitives";
+
 const HERO_PIZZA_SRC = "/images/hero-pizza.jpg";
 
 
@@ -25,7 +30,7 @@ export function SiteNotFound() {
 
       <div className="relative z-10 mx-auto max-w-6xl px-margin py-space-xl lg:py-20">
         <div className="grid items-center gap-space-xl lg:grid-cols-2">
-          <div>
+          <Reveal direction="right">
             <span className="inline-flex items-center gap-space-xs rounded-full bg-primary-fixed px-space-md py-space-xs font-label-md text-label-md text-primary">
               <Compass size={14} />
               Error 404 — Off the menu
@@ -61,10 +66,14 @@ export function SiteNotFound() {
                 Browse the menu
               </Link>
             </div>
-          </div>
+          </Reveal>
 
-          <div className="relative flex justify-center">
-            <div className="relative aspect-square w-full max-w-sm">
+          <Reveal
+            className="relative flex justify-center"
+            delay={0.12}
+            direction="left"
+          >
+            <Float className="relative aspect-square w-full max-w-sm" duration={6}>
               <div className="absolute inset-6 rounded-full bg-crust-gold/20 blur-2xl" />
 
               <div className="relative z-10 h-full w-full overflow-hidden rounded-full border-4 border-surface-container-lowest bg-linear-to-tr from-secondary-container/40 via-transparent to-primary-container/30 shadow-2xl">
@@ -93,8 +102,8 @@ export function SiteNotFound() {
                   The oven is still hot
                 </span>
               </div>
-            </div>
-          </div>
+            </Float>
+          </Reveal>
         </div>
       </div>
     </section>
@@ -113,7 +122,10 @@ export function DashboardNotFound({
 }: DashboardNotFoundProps) {
   return (
     <section className="flex min-h-[60vh] items-center justify-center py-space-xl">
-      <div className="w-full max-w-xl rounded-2xl border border-surface-container-high bg-surface-container-lowest p-space-lg text-center shadow-sm">
+      <Reveal
+        className="w-full max-w-xl rounded-2xl border border-surface-container-high bg-surface-container-lowest p-space-lg text-center shadow-sm"
+        scale={0.96}
+      >
         <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-fixed text-primary">
           <Pizza size={26} />
         </span>
@@ -145,7 +157,7 @@ export function DashboardNotFound({
             Visit the storefront
           </Link>
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }

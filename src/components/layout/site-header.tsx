@@ -1,9 +1,12 @@
 "use client";
 
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Menu, Pizza, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+
+import { EASE } from "@/components/animation/motion-primitives";
 import SiteHeaderBtn from "./site-headerBtn";
 import { SiteHeaderSearch } from "./site-header-search";
 
@@ -14,6 +17,7 @@ const NAV_LINKS = [
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const reduceMotion = useReducedMotion();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const themeToggleRef = useRef<HTMLInputElement>(null);
 
@@ -53,7 +57,12 @@ export function SiteHeader() {
     });
 
   return (
-    <header className="sticky top-0 z-50 bg-dough-surface/95 shadow-[0_4px_20px_rgba(253,157,62,0.08)] backdrop-blur-md">
+    <motion.header
+      animate={{ opacity: 1, y: 0 }}
+      className="sticky top-0 z-50 bg-dough-surface/95 shadow-[0_4px_20px_rgba(253,157,62,0.08)] backdrop-blur-md"
+      initial={reduceMotion ? false : { opacity: 0, y: -18 }}
+      transition={{ duration: 0.45, ease: EASE }}
+    >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-space-sm px-margin sm:h-20 md:gap-space-md">
         <div className="flex items-center gap-space-lg">
           <Link
@@ -123,22 +132,30 @@ export function SiteHeader() {
           </button>
         </div>
       </div>
-      {mobileMenuOpen ? (
-        <div
-          className="border-t border-surface-container-high bg-dough-surface px-margin pb-space-md pt-space-sm xl:hidden"
-          id="site-mobile-navigation"
-        >
-          <div className="mb-space-sm">
-            <SiteHeaderSearch />
-          </div>
-          <nav
-            aria-label="Main navigation"
-            className="flex items-center gap-space-lg"
+      <AnimatePresence initial={false}>
+        {mobileMenuOpen ? (
+          <motion.div
+            animate={{ height: "auto", opacity: 1 }}
+            className="overflow-hidden border-t border-surface-container-high bg-dough-surface xl:hidden"
+            exit={{ height: 0, opacity: 0 }}
+            id="site-mobile-navigation"
+            initial={reduceMotion ? false : { height: 0, opacity: 0 }}
+            transition={{ duration: 0.28, ease: EASE }}
           >
-            {renderNavLinks()}
-          </nav>
-        </div>
-      ) : null}
-    </header>
+            <div className="px-margin pb-space-md pt-space-sm">
+              <div className="mb-space-sm">
+                <SiteHeaderSearch />
+              </div>
+              <nav
+                aria-label="Main navigation"
+                className="flex items-center gap-space-lg"
+              >
+                {renderNavLinks()}
+              </nav>
+            </div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+    </motion.header>
   );
 }

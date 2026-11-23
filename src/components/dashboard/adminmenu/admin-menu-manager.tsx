@@ -7,6 +7,11 @@ import { Store } from "lucide-react";
 import { PizzaType } from "@/app/type/type";
 import Link from "next/link";
 import AdminStatusBadge from "./adminstatusbadge";
+import {
+  Reveal,
+  Stagger,
+  StaggerItem,
+} from "@/components/animation/motion-primitives";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 
@@ -128,7 +133,7 @@ export function AdminMenuManager({ITEMS}:MenuManagerProps) {
 
   return (
     <div className="space-y-space-lg">
-      <header className="flex flex-wrap items-end justify-between gap-space-md">
+      <Reveal as="header" className="flex flex-wrap items-end justify-between gap-space-md">
         <div>
           <p className="font-label-sm text-label-sm uppercase tracking-widest text-secondary">
             Kitchen
@@ -143,7 +148,7 @@ export function AdminMenuManager({ITEMS}:MenuManagerProps) {
         </div>
 
         
-      </header>
+      </Reveal>
 
       {error ? (
         <p className="rounded-xl bg-error-container px-space-md py-space-sm text-on-error-container" role="alert">
@@ -151,7 +156,11 @@ export function AdminMenuManager({ITEMS}:MenuManagerProps) {
         </p>
       ) : null}
       {/* Desktop / large screen table */}
-      <section className="hidden overflow-hidden rounded-2xl border border-surface-container-high bg-surface-container-lowest shadow-sm xl:block">
+      <Reveal
+        as="section"
+        className="hidden overflow-hidden rounded-2xl border border-surface-container-high bg-surface-container-lowest shadow-sm xl:block"
+        delay={0.08}
+      >
         <table className="w-full table-fixed border-collapse text-left">
           <thead className="border-b border-surface-container-high bg-surface-container-low">
             <tr className="font-label-sm text-label-sm uppercase tracking-wider text-outline">
@@ -262,12 +271,17 @@ export function AdminMenuManager({ITEMS}:MenuManagerProps) {
             ))}
           </tbody>
         </table>
-      </section>
+      </Reveal>
 
       {/* Mobile / tablet cards */}
-      <ul className="divide-y divide-surface-container-high overflow-hidden rounded-2xl border border-surface-container-high bg-surface-container-lowest shadow-sm xl:hidden">
+      <Stagger
+        as="ul"
+        className="divide-y divide-surface-container-high overflow-hidden rounded-2xl border border-surface-container-high bg-surface-container-lowest shadow-sm xl:hidden"
+        stagger={0.05}
+      >
         {items.map((item) => (
-          <li
+          <StaggerItem
+            as="li"
             key={item._id}
             className="px-space-md py-space-md transition-colors hover:bg-surface-container-low"
           >
@@ -317,9 +331,9 @@ export function AdminMenuManager({ITEMS}:MenuManagerProps) {
                 View Details
               </Link>
             </div>
-          </li>
+          </StaggerItem>
         ))}
-      </ul>
+      </Stagger>
     </div>
   );
 }

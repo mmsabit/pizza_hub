@@ -1,13 +1,18 @@
 import { Bike, Phone, Pizza, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 
+import {
+  MotionCard,
+  Reveal,
+} from "@/components/animation/motion-primitives";
+
 export function CtaSection() {
   return (
     <section className="w-full bg-charcoal-dark text-surface-container-lowest py-space-xl relative overflow-hidden">
       {/* <div className="absolute -right-20 -bottom-20 w-80 h-80 rounded-full bg-primary-container/20 blur-3xl pointer-events-none" /> */}
 
       <div className="max-w-7xl mx-auto px-margin relative z-10 py-20">
-        <div className="bg-surface-container-high/10 rounded-3xl p-space-lg lg:p-space-xl flex flex-col lg:flex-row items-center justify-between gap-space-xl">
+        <Reveal className="bg-surface-container-high/10 rounded-3xl p-space-lg lg:p-space-xl flex flex-col lg:flex-row items-center justify-between gap-space-xl">
           <div className="space-y-space-sm max-w-xl">
             <span className="text-crust-gold font-label-sm text-label-sm uppercase tracking-widest font-bold">
               PizzaHub VIP Express
@@ -38,7 +43,7 @@ export function CtaSection() {
           </div>
 
           <div className="w-full lg:w-auto flex flex-col sm:flex-row items-center gap-space-md">
-            <div className="bg-surface-container-lowest/10 p-space-md rounded-2xl flex items-center gap-space-md w-full sm:w-auto">
+            <MotionCard className="bg-surface-container-lowest/10 p-space-md rounded-2xl flex items-center gap-space-md w-full sm:w-auto">
               <Bike className="text-secondary-container" size={36} />
               <div>
                 <span className="block font-bold text-surface-container-lowest text-title-md font-title-md">
@@ -48,8 +53,8 @@ export function CtaSection() {
                   Guaranteed or $10 coupon
                 </span>
               </div>
-            </div>
-            <div className="bg-surface-container-lowest/10 p-space-md rounded-2xl flex items-center gap-space-md w-full sm:w-auto">
+            </MotionCard>
+            <MotionCard className="bg-surface-container-lowest/10 p-space-md rounded-2xl flex items-center gap-space-md w-full sm:w-auto">
               <ShieldCheck className="text-basil-fresh" size={36} />
               <div>
                 <span className="block font-bold text-surface-container-lowest text-title-md font-title-md">
@@ -59,9 +64,9 @@ export function CtaSection() {
                   Tamper-evident heat boxes
                 </span>
               </div>
-            </div>
+            </MotionCard>
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

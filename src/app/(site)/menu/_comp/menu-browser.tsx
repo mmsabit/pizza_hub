@@ -17,6 +17,11 @@ import Link from "next/link";
 import { useMemo, useState, type ReactNode } from "react";
 
 import type { PizzaType } from "@/app/type/type";
+import {
+  Reveal,
+  Stagger,
+  StaggerItem,
+} from "@/components/animation/motion-primitives";
 
 const PLACEHOLDER_IMAGE = "/images/placeholder.png";
 
@@ -164,19 +169,21 @@ export function MenuBrowser({ items }: { items: PizzaType[] }) {
         <div className="pointer-events-none absolute -right-40 top-1/3 h-125 w-125 rounded-full bg-primary-container/10 blur-3xl" />
 
         <div className="relative z-10 mx-auto max-w-7xl px-margin py-space-xl">
-          <p className="font-label-md text-label-md font-bold uppercase tracking-widest text-secondary">
-            Fresh from the oven
-          </p>
-          <h1 className="mt-space-xs font-headline-lg text-headline-lg-mobile font-extrabold uppercase tracking-tight text-charcoal-dark sm:text-headline-lg">
-            The full PizzaHub menu
-          </h1>
-          <p className="mt-space-sm max-w-2xl font-body-lg text-body-lg text-on-surface-variant">
-            {items.length > 0
-              ? `${items.length} dishes from our partner kitchens — ${availableCount} ready to bake right now.`
-              : "Our partner kitchens are restocking. Check back in a moment for tonight's pies."}
-          </p>
+          <Reveal>
+            <p className="font-label-md text-label-md font-bold uppercase tracking-widest text-secondary">
+              Fresh from the oven
+            </p>
+            <h1 className="mt-space-xs font-headline-lg text-headline-lg-mobile font-extrabold uppercase tracking-tight text-charcoal-dark sm:text-headline-lg">
+              The full PizzaHub menu
+            </h1>
+            <p className="mt-space-sm max-w-2xl font-body-lg text-body-lg text-on-surface-variant">
+              {items.length > 0
+                ? `${items.length} dishes from our partner kitchens — ${availableCount} ready to bake right now.`
+                : "Our partner kitchens are restocking. Check back in a moment for tonight's pies."}
+            </p>
+          </Reveal>
 
-          <div className="mt-space-lg max-w-3xl">
+          <Reveal className="mt-space-lg max-w-3xl" delay={0.12}>
             <div className="relative">
               <Search
                 aria-hidden
@@ -202,13 +209,14 @@ export function MenuBrowser({ items }: { items: PizzaType[] }) {
                 </button>
               ) : null}
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
 
       <div className="mx-auto grid max-w-7xl gap-space-lg px-margin py-space-xl lg:grid-cols-[17rem_minmax(0,1fr)]">
         {/* Filters */}
         <aside className="lg:sticky lg:top-space-lg lg:self-start">
+          <Reveal direction="right">
           <div className="mb-space-sm flex items-center justify-between gap-space-sm lg:hidden">
             <button
               aria-expanded={filtersOpen}
@@ -365,11 +373,12 @@ export function MenuBrowser({ items }: { items: PizzaType[] }) {
               </div>
             </FilterSection>
           </div>
+          </Reveal>
         </aside>
 
         {/* Results */}
         <section className="min-w-0">
-          <div className="mb-space-md flex flex-wrap items-center justify-between gap-space-sm">
+          <Reveal className="mb-space-md flex flex-wrap items-center justify-between gap-space-sm" delay={0.05}>
             <p className="font-label-lg text-label-lg text-on-surface-variant">
               {visibleItems.length === 1
                 ? "1 dish on the board"
@@ -391,7 +400,7 @@ export function MenuBrowser({ items }: { items: PizzaType[] }) {
                 ))}
               </select>
             </label>
-          </div>
+          </Reveal>
 
           {visibleItems.length === 0 ? (
             <div className="flex flex-col items-center gap-space-sm rounded-3xl border border-dashed border-outline-variant/70 bg-surface-container-lowest px-space-md py-space-xl text-center">
@@ -418,9 +427,13 @@ export function MenuBrowser({ items }: { items: PizzaType[] }) {
               ) : null}
             </div>
           ) : (
-            <ul className="grid gap-space-md sm:grid-cols-2 xl:grid-cols-3">
+            <Stagger
+              as="ul"
+              className="grid gap-space-md sm:grid-cols-2 xl:grid-cols-3"
+              stagger={0.06}
+            >
               {visibleItems.map((item) => (
-                <li key={item._id}>
+                <StaggerItem as="li" className="h-full" key={item._id}>
                   <Link
                     className="group flex h-full flex-col overflow-hidden rounded-3xl border border-surface-container-high bg-surface-container-lowest shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary-container/40 hover:shadow-xl"
                     href={`/menu/${item._id}`}
@@ -501,9 +514,9 @@ export function MenuBrowser({ items }: { items: PizzaType[] }) {
                       </div>
                     </div>
                   </Link>
-                </li>
+                </StaggerItem>
               ))}
-            </ul>
+            </Stagger>
           )}
         </section>
       </div>

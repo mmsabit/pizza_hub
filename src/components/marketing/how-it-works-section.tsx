@@ -1,5 +1,11 @@
 import { Flame, MapPin, SlidersHorizontal } from "lucide-react";
 
+import {
+  Reveal,
+  Stagger,
+  StaggerItem,
+} from "@/components/animation/motion-primitives";
+
 const STEPS = [
   {
     icon: SlidersHorizontal,
@@ -28,7 +34,7 @@ export function HowItWorksSection() {
   return (
     <section className="w-full py-space-xl bg-dough-surface">
       <div className="max-w-7xl mx-auto px-margin py-20">
-        <div className="text-center max-w-xl mx-auto mb-space-xl">
+        <Reveal className="text-center max-w-xl mx-auto mb-space-xl">
           <span className="text-primary font-label-sm text-label-sm uppercase tracking-wider font-bold">
             Fast • Artisanal • Seamless
           </span>
@@ -39,28 +45,27 @@ export function HowItWorksSection() {
             From artisanal preparation to your dining table in 3 straightforward
             steps.
           </p>
-        </div>
+        </Reveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-space-lg relative">
+        <Stagger className="grid grid-cols-1 md:grid-cols-3 gap-space-lg relative">
           {STEPS.map((step) => (
-            <div
-              key={step.title}
-              className="bg-surface-container-lowest rounded-2xl p-space-lg shadow-sm text-center relative flex flex-col items-center"
-            >
-              <div
-                className={`w-16 h-16 rounded-full flex items-center justify-center mb-space-sm ${step.iconClassName}`}
-              >
-                <step.icon size={30} />
+            <StaggerItem key={step.title}>
+              <div className="bg-surface-container-lowest rounded-2xl p-space-lg shadow-sm text-center relative flex flex-col items-center h-full transition-shadow hover:shadow-xl">
+                <div
+                  className={`w-16 h-16 rounded-full flex items-center justify-center mb-space-sm ${step.iconClassName}`}
+                >
+                  <step.icon size={30} />
+                </div>
+                <h3 className="font-headline-sm text-headline-sm font-bold text-charcoal-dark mb-space-xs">
+                  {step.title}
+                </h3>
+                <p className="font-body-md text-body-md text-on-surface-variant">
+                  {step.description}
+                </p>
               </div>
-              <h3 className="font-headline-sm text-headline-sm font-bold text-charcoal-dark mb-space-xs">
-                {step.title}
-              </h3>
-              <p className="font-body-md text-body-md text-on-surface-variant">
-                {step.description}
-              </p>
-            </div>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       </div>
     </section>
   );

@@ -16,6 +16,11 @@ import Link from "next/link";
 import type { JSX } from "react";
 
 import { UpgradeToPremium } from "@/components/dashboard/vendorplan/upgrade-to-premium";
+import {
+  Reveal,
+  Stagger,
+  StaggerItem,
+} from "@/components/animation/motion-primitives";
 import { auth } from "@/lib/auth";
 import { getMenuUsage } from "@/lib/menu-usage";
 import { isPremiumActive } from "@/lib/plan";
@@ -81,7 +86,7 @@ export default async function PlanPage(): Promise<JSX.Element> {
 
   return (
     <div className="space-y-space-lg">
-      <header className="flex flex-wrap items-end justify-between gap-space-md">
+      <Reveal as="header" className="flex flex-wrap items-end justify-between gap-space-md">
         <div>
           <p className="flex items-center gap-space-xs font-label-sm text-label-sm uppercase tracking-[0.2em] text-secondary">
             <span className="h-1.5 w-1.5 rounded-full bg-crust-gold" />
@@ -109,11 +114,17 @@ export default async function PlanPage(): Promise<JSX.Element> {
             ? "Premium plan · Active"
             : "Free plan · Active"}
         </span>
-      </header>
+      </Reveal>
 
-      <div className="grid gap-space-md xl:grid-cols-3">
-        <section className="grid gap-space-md sm:grid-cols-2 xl:col-span-2">
-          <article className="flex flex-col rounded-3xl border border-surface-container-high bg-surface-container-lowest p-space-lg shadow-sm">
+      <Reveal className="grid gap-space-md xl:grid-cols-3">
+        <Stagger
+          className="grid gap-space-md sm:grid-cols-2 xl:col-span-2"
+          stagger={0.12}
+        >
+          <StaggerItem
+            as="article"
+            className="flex flex-col rounded-3xl border border-surface-container-high bg-surface-container-lowest p-space-lg shadow-sm"
+          >
             <div className="flex flex-wrap items-center justify-between gap-space-xs">
               <span className="inline-flex items-center gap-space-xs rounded-full bg-surface-container-low px-space-sm py-space-xs font-label-sm text-label-sm font-bold uppercase tracking-wider text-on-surface-variant">
                 <Store size={12} />
@@ -170,9 +181,12 @@ export default async function PlanPage(): Promise<JSX.Element> {
                 ? "Included with your Premium plan"
                 : "You are on this plan"}
             </div>
-          </article>
+          </StaggerItem>
 
-          <article className="relative flex flex-col overflow-hidden rounded-3xl bg-charcoal-dark p-space-lg text-surface-container-lowest shadow-xl shadow-charcoal-dark/20">
+          <StaggerItem
+            as="article"
+            className="relative flex flex-col overflow-hidden rounded-3xl bg-charcoal-dark p-space-lg text-surface-container-lowest shadow-xl shadow-charcoal-dark/20"
+          >
             <span className="pointer-events-none absolute -right-14 -top-14 h-44 w-44 rounded-full bg-crust-gold/15 blur-2xl" />
             <span className="pointer-events-none absolute -bottom-16 -left-10 h-40 w-40 rounded-full bg-primary-container/25 blur-2xl" />
 
@@ -235,8 +249,8 @@ export default async function PlanPage(): Promise<JSX.Element> {
                 <UpgradeToPremium />
               )}
             </div>
-          </article>
-        </section>
+          </StaggerItem>
+        </Stagger>
 
         <div className="space-y-space-md">
           <section className="rounded-2xl border border-surface-container-high bg-surface-container-lowest p-space-md shadow-sm">
@@ -315,9 +329,13 @@ export default async function PlanPage(): Promise<JSX.Element> {
             </p>
           </section>
         </div>
-      </div>
+      </Reveal>
 
-      <section className="rounded-2xl border border-surface-container-high bg-surface-container-lowest shadow-sm">
+      <Reveal
+        as="section"
+        className="rounded-2xl border border-surface-container-high bg-surface-container-lowest shadow-sm"
+        delay={0.1}
+      >
         <div className="flex flex-wrap items-end justify-between gap-space-sm border-b border-surface-container-high px-space-md py-space-sm">
           <div>
             <h2 className="font-title-md text-title-md text-charcoal-dark">
@@ -361,14 +379,18 @@ export default async function PlanPage(): Promise<JSX.Element> {
             </tbody>
           </table>
         </div>
-      </section>
+      </Reveal>
 
-      <p className="flex items-center justify-center gap-space-xs text-center font-label-sm text-label-sm text-outline">
+      <Reveal
+        as="p"
+        className="flex items-center justify-center gap-space-xs text-center font-label-sm text-label-sm text-outline"
+        delay={0.15}
+      >
         <Crown className="shrink-0 text-outline-variant" size={13} />
         {premium
           ? "Premium is active and renews monthly through Stripe's secure checkout."
           : "Premium is billed monthly through Stripe's secure checkout. Your Free plan stays active until the payment completes."}
-      </p>
+      </Reveal>
     </div>
   );
 }

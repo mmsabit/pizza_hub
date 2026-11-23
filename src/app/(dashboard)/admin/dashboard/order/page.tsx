@@ -11,6 +11,11 @@ import { formatPrice, orderTimestamp } from "@/app/(dashboard)/user/dashboard/or
 import type { OrderType } from "@/app/type/type";
 
 import { AdminOrderQueue } from "./_comp/admin-order-queue";
+import {
+  Reveal,
+  Stagger,
+  StaggerItem,
+} from "@/components/animation/motion-primitives";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 
@@ -93,7 +98,7 @@ export default async function AdminOrderPage() {
 
   return (
     <div className="space-y-space-lg">
-      <header className="flex flex-wrap items-end justify-between gap-space-md">
+      <Reveal as="header" className="flex flex-wrap items-end justify-between gap-space-md">
         <div>
           <p className="flex items-center gap-space-xs font-label-sm text-label-sm uppercase tracking-[0.2em] text-secondary">
             <span className="h-1.5 w-1.5 rounded-full bg-crust-gold" />
@@ -118,13 +123,13 @@ export default async function AdminOrderPage() {
           <ReceiptText size={16} />
           Review menu
         </Link>
-      </header>
+      </Reveal>
 
-      <section className="grid grid-cols-2 gap-space-sm sm:gap-space-md xl:grid-cols-4">
+      <Stagger className="grid grid-cols-2 gap-space-sm sm:gap-space-md xl:grid-cols-4">
         {stats.map((stat) => (
-          <div
+          <StaggerItem
             key={stat.label}
-            className="rounded-2xl border border-surface-container-high bg-surface-container-lowest p-space-md shadow-sm"
+            className="rounded-2xl border border-surface-container-high bg-surface-container-lowest p-space-md shadow-sm transition-shadow hover:shadow-lg"
           >
             <span
               className={`flex h-10 w-10 items-center justify-center rounded-xl ${stat.chipClassName}`}
@@ -140,11 +145,13 @@ export default async function AdminOrderPage() {
             <p className="mt-1 truncate font-label-sm text-label-sm text-outline">
               {stat.hint}
             </p>
-          </div>
+          </StaggerItem>
         ))}
-      </section>
+      </Stagger>
 
-      <AdminOrderQueue orders={orders} />
+      <Reveal delay={0.1}>
+        <AdminOrderQueue orders={orders} />
+      </Reveal>
     </div>
   );
 }

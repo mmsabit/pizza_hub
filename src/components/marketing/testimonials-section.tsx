@@ -1,5 +1,11 @@
 import { BadgeCheck, Star } from "lucide-react";
 
+import {
+  Reveal,
+  Stagger,
+  StaggerItem,
+} from "@/components/animation/motion-primitives";
+
 const REVIEWS = [
   {
     quote:
@@ -31,7 +37,7 @@ export function TestimonialsSection() {
   return (
     <section className="w-full py-space-xl bg-dough-surface">
       <div className="max-w-7xl mx-auto px-margin py-20">
-        <div className="text-center max-w-xl mx-auto mb-space-lg">
+        <Reveal className="text-center max-w-xl mx-auto mb-space-lg">
           <span className="text-primary font-label-sm text-label-sm uppercase tracking-wider font-bold">
             Pizza Addict Praise
           </span>
@@ -42,14 +48,12 @@ export function TestimonialsSection() {
             See what real diners in Brooklyn, Manhattan, and Queens say about our
             wood-fired pies.
           </p>
-        </div>
+        </Reveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-space-lg">
+        <Stagger className="grid grid-cols-1 md:grid-cols-3 gap-space-lg">
           {REVIEWS.map((review) => (
-            <div
-              key={review.name}
-              className="bg-surface-container-lowest rounded-2xl p-space-lg shadow-sm flex flex-col justify-between"
-            >
+            <StaggerItem key={review.name}>
+              <div className="bg-surface-container-lowest rounded-2xl p-space-lg shadow-sm flex flex-col justify-between h-full transition-shadow hover:shadow-xl">
               <div>
                 <div className="flex items-center justify-between mb-space-sm">
                   <div className="flex text-crust-gold">
@@ -87,9 +91,10 @@ export function TestimonialsSection() {
                   </span>
                 </div>
               </div>
-            </div>
+              </div>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       </div>
     </section>
   );

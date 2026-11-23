@@ -15,6 +15,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import type { Role } from "@/lib/roles";
+import {
+  Stagger,
+  StaggerItem,
+} from "@/components/animation/motion-primitives";
 import { DashboardMobileLogoutButton } from "./dashboard-logout-button";
 
 type NavItem = {
@@ -65,7 +69,11 @@ export function DashboardSidebarNav({ role }: { role: Role }) {
   const pathname = usePathname();
 
   return (
-    <nav className="flex flex-1 flex-col gap-space-xs overflow-y-auto">
+    <Stagger
+      as="nav"
+      className="flex flex-1 flex-col gap-space-xs overflow-y-auto"
+      stagger={0.05}
+    >
       <span className="mb-space-xs px-space-sm font-label-sm text-label-sm uppercase tracking-widest text-surface-container-high/40">
         {SECTION_LABEL[role]}
       </span>
@@ -73,22 +81,23 @@ export function DashboardSidebarNav({ role }: { role: Role }) {
         const active = isActive(pathname, item.href);
 
         return (
-          <Link
-            key={item.label}
-            aria-current={active ? "page" : undefined}
-            className={
-              active
-                ? "flex items-center gap-space-sm rounded-xl bg-primary-container px-space-sm py-space-sm font-label-lg text-label-lg text-on-primary-container shadow-lg shadow-primary-container/25"
-                : "flex items-center gap-space-sm rounded-xl px-space-sm py-space-sm font-label-lg text-label-lg text-surface-container-high/70 transition-colors hover:bg-surface-container-lowest/10 hover:text-surface-container-lowest"
-            }
-            href={item.href}
-          >
-            <item.icon size={18} />
-            <span>{item.label}</span>
-          </Link>
+          <StaggerItem key={item.label}>
+            <Link
+              aria-current={active ? "page" : undefined}
+              className={
+                active
+                  ? "flex items-center gap-space-sm rounded-xl bg-primary-container px-space-sm py-space-sm font-label-lg text-label-lg text-on-primary-container shadow-lg shadow-primary-container/25"
+                  : "flex items-center gap-space-sm rounded-xl px-space-sm py-space-sm font-label-lg text-label-lg text-surface-container-high/70 transition-colors hover:bg-surface-container-lowest/10 hover:text-surface-container-lowest"
+              }
+              href={item.href}
+            >
+              <item.icon size={18} />
+              <span>{item.label}</span>
+            </Link>
+          </StaggerItem>
         );
       })}
-    </nav>
+    </Stagger>
   );
 }
 
@@ -98,27 +107,31 @@ export function DashboardMobileNav({ role }: { role: Role }) {
   return (
     <nav className="border-b border-surface-container-high bg-surface-container-lowest lg:hidden">
       <div className="flex items-center gap-space-sm px-margin py-space-sm">
-        <div className="flex flex-1 gap-space-xs overflow-x-auto">
+        <Stagger
+          className="flex flex-1 gap-space-xs overflow-x-auto"
+          stagger={0.04}
+        >
           {NAV_BY_ROLE[role].map((item) => {
             const active = isActive(pathname, item.href);
 
             return (
-              <Link
-                key={item.label}
-                aria-current={active ? "page" : undefined}
-                className={
-                  active
-                    ? "inline-flex items-center gap-space-xs whitespace-nowrap rounded-full bg-primary-container px-space-sm py-space-xs font-label-md text-label-md text-on-primary-container"
-                    : "inline-flex items-center gap-space-xs whitespace-nowrap rounded-full px-space-sm py-space-xs font-label-md text-label-md text-on-surface-variant transition-colors hover:bg-surface-container-low hover:text-primary"
-                }
-                href={item.href}
-              >
-                <item.icon size={14} />
-                <span>{item.label}</span>
-              </Link>
+              <StaggerItem key={item.label} direction="down">
+                <Link
+                  aria-current={active ? "page" : undefined}
+                  className={
+                    active
+                      ? "inline-flex items-center gap-space-xs whitespace-nowrap rounded-full bg-primary-container px-space-sm py-space-xs font-label-md text-label-md text-on-primary-container"
+                      : "inline-flex items-center gap-space-xs whitespace-nowrap rounded-full px-space-sm py-space-xs font-label-md text-label-md text-on-surface-variant transition-colors hover:bg-surface-container-low hover:text-primary"
+                  }
+                  href={item.href}
+                >
+                  <item.icon size={14} />
+                  <span>{item.label}</span>
+                </Link>
+              </StaggerItem>
             );
           })}
-        </div>
+        </Stagger>
 
         <DashboardMobileLogoutButton />
       </div>

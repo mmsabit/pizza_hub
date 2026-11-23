@@ -8,6 +8,11 @@ import { PizzaType } from "@/app/type/type";
 import Link from "next/link";
 import { MenuFormModal } from "./menu-form-modal";
 import { authClient } from "@/lib/auth-client";
+import {
+  Reveal,
+  Stagger,
+  StaggerItem,
+} from "@/components/animation/motion-primitives";
 
 
 
@@ -175,7 +180,7 @@ export function MenuManager({userName, userImage,userId, ITEMS, premium}:MenuMan
 
   return (
     <div className="space-y-space-lg">
-      <header className="flex flex-wrap items-end justify-between gap-space-md">
+      <Reveal as="header" className="flex flex-wrap items-end justify-between gap-space-md">
         <div>
           <p className="font-label-sm text-label-sm uppercase tracking-widest text-secondary">
             Kitchen
@@ -206,7 +211,7 @@ export function MenuManager({userName, userImage,userId, ITEMS, premium}:MenuMan
             Add new menu
           </button>
         </div>
-      </header>
+      </Reveal>
 
       {featuredError ? (
         <p
@@ -217,7 +222,11 @@ export function MenuManager({userName, userImage,userId, ITEMS, premium}:MenuMan
         </p>
       ) : null}
 
-      <section className="overflow-hidden rounded-2xl border border-surface-container-high bg-surface-container-lowest shadow-sm">
+      <Reveal
+        as="section"
+        className="overflow-hidden rounded-2xl border border-surface-container-high bg-surface-container-lowest shadow-sm"
+        delay={0.08}
+      >
         <div className="hidden items-center gap-space-sm border-b border-surface-container-high px-space-md py-space-sm font-label-sm text-label-sm uppercase tracking-wider text-outline sm:flex">
           <span className="w-11 shrink-0" />
           <span className="min-w-0 flex-1">Menu name</span>
@@ -229,9 +238,10 @@ export function MenuManager({userName, userImage,userId, ITEMS, premium}:MenuMan
           <span className="w-28 shrink-0 text-right">Actions</span>
         </div>
 
-        <ul className="divide-y divide-surface-container-high">
+        <Stagger as="ul" className="divide-y divide-surface-container-high" stagger={0.05}>
           {items.map((item) => (
-            <li
+            <StaggerItem
+              as="li"
               key={item._id}
               className="flex flex-wrap items-center gap-space-sm px-space-md py-space-md transition-colors hover:bg-surface-container-low"
             >
@@ -287,10 +297,10 @@ export function MenuManager({userName, userImage,userId, ITEMS, premium}:MenuMan
                 className="btn btn-ghost"
                 >View Details</Link>
               </div>
-            </li>
+            </StaggerItem>
           ))}
-        </ul>
-      </section>
+        </Stagger>
+      </Reveal>
 
       {formOpen ? (
         <MenuFormModal userName={userName} userImage={userImage} userId={userId} onClose={() => setFormOpen(false)} />

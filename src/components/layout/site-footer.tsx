@@ -1,6 +1,8 @@
 import { Globe, Leaf, MessageCircle, Navigation, Pizza, ThumbsUp } from "lucide-react";
 import Link from "next/link";
 
+import { Reveal } from "@/components/animation/motion-primitives";
+
 const CRUST_MENU = [
   "Classic Margherita",
   "Double Pepperoni Picante",
@@ -29,7 +31,7 @@ export function SiteFooter() {
       <div className="max-w-7xl mx-auto px-margin">
         
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-space-xl mb-space-xl">
+        <Reveal className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-space-xl mb-space-xl">
           <div className="lg:col-span-2 space-y-space-md">
             <div className="flex items-center gap-space-sm">
               <Pizza className="text-primary-container" size={24} />
@@ -114,9 +116,9 @@ export function SiteFooter() {
               </div>
             </div>
           </div>
-        </div>
+        </Reveal>
 
-        <div className="pt-space-lg flex flex-col md:flex-row items-center justify-between text-surface-dim text-body-md gap-space-md">
+        <Reveal className="pt-space-lg flex flex-col md:flex-row items-center justify-between text-surface-dim text-body-md gap-space-md">
           <div className="flex items-center gap-space-xs">
             <Leaf className="text-basil-fresh" size={16} />
             <span>Artisanal Ingredients Verified • Zero Artificial Preservatives</span>
@@ -125,7 +127,7 @@ export function SiteFooter() {
             © 2025 PizzaHub Craft Pizzeria LLC. All rights reserved. Sourdough
             perfection delivered.
           </div>
-        </div>
+        </Reveal>
       </div>
     </footer>
   );

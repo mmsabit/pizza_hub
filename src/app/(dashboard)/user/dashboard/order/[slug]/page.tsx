@@ -20,6 +20,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 import type { OrderType } from "@/app/type/type";
+import { Reveal } from "@/components/animation/motion-primitives";
 import { auth } from "@/lib/auth";
 import { CancelOrderButton } from "../_comp/cancel-order-button";
 import {
@@ -85,7 +86,7 @@ const jwtToken = await auth.api.getToken({ headers: await headers() });
 
   return (
     <div className="mx-auto max-w-5xl space-y-space-md">
-      <div className="flex flex-wrap items-center justify-between gap-space-sm">
+      <Reveal className="flex flex-wrap items-center justify-between gap-space-sm">
         <Link
           className="inline-flex items-center gap-space-xs font-label-lg text-label-lg text-on-surface-variant transition-colors hover:text-primary"
           href="/user/dashboard/order"
@@ -94,9 +95,9 @@ const jwtToken = await auth.api.getToken({ headers: await headers() });
           Back to orders
         </Link>
         
-      </div>
+      </Reveal>
 
-      <header className="overflow-hidden rounded-3xl border border-surface-container-high bg-surface-container-lowest shadow-sm">
+      <Reveal as="header" className="overflow-hidden rounded-3xl border border-surface-container-high bg-surface-container-lowest shadow-sm" delay={0.05}>
         <div className="flex flex-col gap-space-md p-space-md sm:flex-row sm:items-center sm:p-space-lg">
           <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-2xl bg-surface-container-low sm:h-28 sm:w-28">
             <Image
@@ -159,9 +160,9 @@ const jwtToken = await auth.api.getToken({ headers: await headers() });
             </p>
           </div>
         </div>
-      </header>
+      </Reveal>
 
-      <div className="grid gap-space-md lg:grid-cols-3">
+      <Reveal className="grid gap-space-md lg:grid-cols-3" delay={0.1}>
         <div className="space-y-space-md lg:col-span-2">
           <section className="rounded-2xl border border-surface-container-high bg-surface-container-lowest p-space-md shadow-sm">
             <div className="flex flex-wrap items-center justify-between gap-space-sm">
@@ -444,7 +445,7 @@ const jwtToken = await auth.api.getToken({ headers: await headers() });
             </p>
           ) : null}
         </aside>
-      </div>
+      </Reveal>
     </div>
   );
 };

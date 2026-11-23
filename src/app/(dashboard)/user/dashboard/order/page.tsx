@@ -20,6 +20,11 @@ import Image from "next/image";
 import Link from "next/link";
 
 import type { OrderStateType, OrderType } from "@/app/type/type";
+import {
+  Reveal,
+  Stagger,
+  StaggerItem,
+} from "@/components/animation/motion-primitives";
 import { auth } from "@/lib/auth";
 import { CancelOrderButton } from "./_comp/cancel-order-button";
 import {
@@ -188,7 +193,7 @@ const jwtToken = await auth.api.getToken({ headers: await headers() });
 
   return (
     <div className="space-y-space-lg">
-      <header className="flex flex-wrap items-end justify-between gap-space-md">
+      <Reveal as="header" className="flex flex-wrap items-end justify-between gap-space-md">
         <div>
           <p className="flex items-center gap-space-xs font-label-sm text-label-sm uppercase tracking-[0.2em] text-secondary">
             <span className="h-1.5 w-1.5 rounded-full bg-crust-gold" />
@@ -222,13 +227,13 @@ const jwtToken = await auth.api.getToken({ headers: await headers() });
             New order
           </Link>
         </div>
-      </header>
+      </Reveal>
 
-      <section className="grid grid-cols-2 gap-space-sm sm:gap-space-md xl:grid-cols-4">
+      <Stagger className="grid grid-cols-2 gap-space-sm sm:gap-space-md xl:grid-cols-4">
         {stats.map((stat) => (
-          <div
+          <StaggerItem
             key={stat.label}
-            className="rounded-2xl border border-surface-container-high bg-surface-container-lowest p-space-md shadow-sm"
+            className="rounded-2xl border border-surface-container-high bg-surface-container-lowest p-space-md shadow-sm transition-shadow hover:shadow-lg"
           >
             <div className="flex items-start justify-between gap-space-sm">
               <span
@@ -246,12 +251,16 @@ const jwtToken = await auth.api.getToken({ headers: await headers() });
             <p className="mt-1 truncate font-label-sm text-label-sm text-outline">
               {stat.hint}
             </p>
-          </div>
+          </StaggerItem>
         ))}
-      </section>
+      </Stagger>
 
       {liveOrder ? (
-        <section className="relative overflow-hidden rounded-3xl bg-charcoal-dark p-space-md text-surface-container-lowest shadow-lg sm:p-space-lg">
+        <Reveal
+          as="section"
+          className="relative overflow-hidden rounded-3xl bg-charcoal-dark p-space-md text-surface-container-lowest shadow-lg sm:p-space-lg"
+          delay={0.08}
+        >
           <div className="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full bg-primary-container/25 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-24 left-1/3 h-48 w-48 rounded-full bg-crust-gold/10 blur-3xl" />
 
@@ -316,10 +325,10 @@ const jwtToken = await auth.api.getToken({ headers: await headers() });
               {liveStatus.description}
             </p>
           </div>
-        </section>
+        </Reveal>
       ) : null}
 
-      <section className="space-y-space-sm">
+      <Reveal as="section" className="space-y-space-sm" delay={0.1}>
         <div className="flex flex-wrap items-center justify-between gap-space-sm">
           <nav aria-label="Filter orders" className="flex flex-wrap gap-space-xs">
             {FILTERS.map((filter) => {
@@ -496,13 +505,17 @@ const jwtToken = await auth.api.getToken({ headers: await headers() });
             })}
           </ul>
         )}
-      </section>
+      </Reveal>
 
-      <p className="flex items-center justify-center gap-space-xs text-center font-label-sm text-label-sm text-outline">
+      <Reveal
+        as="p"
+        className="flex items-center justify-center gap-space-xs text-center font-label-sm text-label-sm text-outline"
+        delay={0.15}
+      >
         <XCircle className="shrink-0 text-outline-variant" size={13} />
         Need to change an order? Call the kitchen — status updates are handled by
         the vendor.
-      </p>
+      </Reveal>
     </div>
   );
 }

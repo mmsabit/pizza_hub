@@ -1,13 +1,16 @@
 "use client";
 
+import { motion, useReducedMotion } from "motion/react";
 import { Pizza } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 
+import { EASE } from "@/components/animation/motion-primitives";
 import type { Role } from "@/lib/roles";
 
 export function DashboardTopbar({ role = "user" }: { role?: Role }) {
   const themeToggleRef = useRef<HTMLInputElement>(null);
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
     if (themeToggleRef.current) {
@@ -23,7 +26,12 @@ export function DashboardTopbar({ role = "user" }: { role?: Role }) {
   };
 
   return (
-    <header className="sticky top-0 z-30 border-b border-surface-container-high bg-surface-container-lowest/90 backdrop-blur-md">
+    <motion.header
+      animate={{ opacity: 1, y: 0 }}
+      className="sticky top-0 z-30 border-b border-surface-container-high bg-surface-container-lowest/90 backdrop-blur-md"
+      initial={reduceMotion ? false : { opacity: 0, y: -14 }}
+      transition={{ duration: 0.4, ease: EASE }}
+    >
       <div className="flex h-16 items-center gap-space-md px-margin">
         <Link
           aria-label="PizzaHub home"
@@ -65,6 +73,6 @@ export function DashboardTopbar({ role = "user" }: { role?: Role }) {
           </label>
         </div>
       </div>
-    </header>
+    </motion.header>
   );
 }

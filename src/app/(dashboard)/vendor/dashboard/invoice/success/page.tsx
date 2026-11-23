@@ -13,6 +13,10 @@ import { redirect } from "next/navigation";
 import type Stripe from "stripe";
 
 import { auth } from "@/lib/auth";
+import {
+  Float,
+  Reveal,
+} from "@/components/animation/motion-primitives";
 import { checkoutVerify } from "@/lib/menu";
 import { activatePremium } from "@/lib/plan";
 import { stripe } from "@/lib/stripe";
@@ -90,24 +94,30 @@ export default async function CheckoutSuccessPage({
   }
 
   return (
-    <div className="mx-auto flex max-w-xl flex-col items-center gap-space-md py-space-xl text-center">
-      <span
-        className={`flex h-16 w-16 items-center justify-center rounded-3xl ${
-          complete
-            ? "bg-tertiary-fixed text-tertiary"
-            : pending
-              ? "bg-crust-gold/20 text-secondary"
-              : "bg-error-container text-error"
-        }`}
-      >
-        {complete ? (
-          <BadgeCheck size={32} />
-        ) : pending ? (
-          <Loader2 className="animate-spin" size={30} />
-        ) : (
-          <TriangleAlert size={30} />
-        )}
-      </span>
+    <Reveal
+      className="mx-auto flex max-w-xl flex-col items-center gap-space-md py-space-xl text-center"
+      duration={0.5}
+      scale={0.97}
+    >
+      <Float amplitude={6} duration={3.5}>
+        <span
+          className={`flex h-16 w-16 items-center justify-center rounded-3xl ${
+            complete
+              ? "bg-tertiary-fixed text-tertiary"
+              : pending
+                ? "bg-crust-gold/20 text-secondary"
+                : "bg-error-container text-error"
+          }`}
+        >
+          {complete ? (
+            <BadgeCheck size={32} />
+          ) : pending ? (
+            <Loader2 className="animate-spin" size={30} />
+          ) : (
+            <TriangleAlert size={30} />
+          )}
+        </span>
+      </Float>
 
       <div>
         <p className="flex items-center justify-center gap-space-xs font-label-sm text-label-sm uppercase tracking-[0.2em] text-secondary">
@@ -185,6 +195,6 @@ export default async function CheckoutSuccessPage({
       <p className="font-label-sm text-label-sm text-outline">
         Keep the Stripe receipt email for your records.
       </p>
-    </div>
+    </Reveal>
   );
 }

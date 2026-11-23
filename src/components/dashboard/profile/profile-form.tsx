@@ -26,6 +26,11 @@ import {
 import { Bounce, toast } from "react-toastify";
 
 import { authClient } from "@/lib/auth-client";
+import {
+  Reveal,
+  Stagger,
+  StaggerItem,
+} from "@/components/animation/motion-primitives";
 import { roleLabel, type Role } from "@/lib/roles";
 
 const FIELD_CLASS =
@@ -244,7 +249,7 @@ export function ProfileForm({ role, user, plan }: ProfileFormProps) {
 
   return (
     <div className="mx-auto max-w-5xl space-y-space-lg">
-      <header>
+      <Reveal as="header">
         <p className="flex items-center gap-space-xs font-label-sm text-label-sm uppercase tracking-[0.2em] text-secondary">
           <span className="h-1.5 w-1.5 rounded-full bg-crust-gold" />
           Account settings
@@ -256,10 +261,13 @@ export function ProfileForm({ role, user, plan }: ProfileFormProps) {
           Keep the name, photo and email address on your PizzaHub account up to
           date.
         </p>
-      </header>
+      </Reveal>
 
-      <div className="grid gap-space-lg lg:grid-cols-[18rem_minmax(0,1fr)]">
-        <aside className="space-y-space-md">
+      <Stagger
+        className="grid gap-space-lg lg:grid-cols-[18rem_minmax(0,1fr)]"
+        stagger={0.12}
+      >
+        <StaggerItem as="aside" className="space-y-space-md" direction="right">
           <section className="rounded-3xl border border-surface-container-high bg-surface-container-lowest p-space-lg text-center shadow-sm">
             <div className="relative mx-auto h-24 w-24 overflow-hidden rounded-full bg-surface-container-low ring-4 ring-primary-fixed">
               <Image
@@ -286,9 +294,13 @@ export function ProfileForm({ role, user, plan }: ProfileFormProps) {
           </section>
 
           {plan ? <PlanCard plan={plan} /> : null}
-        </aside>
+        </StaggerItem>
 
-        <section className="rounded-3xl border border-surface-container-high bg-surface-container-lowest p-space-lg shadow-sm">
+        <StaggerItem
+          as="section"
+          className="rounded-3xl border border-surface-container-high bg-surface-container-lowest p-space-lg shadow-sm"
+          direction="left"
+        >
           <div className="flex flex-wrap items-start justify-between gap-space-sm">
             <div>
               <h2 className="font-title-md text-title-md text-charcoal-dark">
@@ -481,8 +493,8 @@ export function ProfileForm({ role, user, plan }: ProfileFormProps) {
               </div>
             </dl>
           )}
-        </section>
-      </div>
+        </StaggerItem>
+      </Stagger>
     </div>
   );
 }

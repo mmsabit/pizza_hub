@@ -68,6 +68,14 @@ No test runner, CI workflow or formatter config. `README.md` is the untouched cr
 - Fonts are Epilogue (headlines) + Plus Jakarta Sans (body), wired as `--font-epilogue` / `--font-jakarta` in `src/app/layout.tsx`.
 - `next.config.ts` registers `@tailwindcss/turbopack` as a CSS loader and enables the React Compiler; keep both.
 
+## Motion
+
+- Animations use the installed `motion` package (`import { motion } from "motion/react"`); do not add a second animation library.
+- Shared primitives live in `src/components/animation/motion-primitives.tsx`: `Reveal` (fade/slide/scale on scroll into view), `Stagger` + `StaggerItem` (grid/list cascades), `MotionCard` (hover lift/tap), `Float` (infinite bob), and the shared `EASE` curve.
+- All primitives are client components and respect `useReducedMotion()`. Server pages and components can import and wrap their children with them.
+- `src/app/template.tsx` cross-fades every route change, so pages do not need their own entrance wrapper.
+- Prefer `whileInView` with `once` for scroll reveals and wrap only the section-level blocks (header, card grids, panels) rather than every text node.
+
 ## Images, icons, uploads
 
 - Every image goes through `next/image`. Bundled assets are in `public/images/` (`hero-pizza.jpg`, `oven.jpg`, `avatar.jpg`, `placeholder.png`, `menu-*.jpg`).

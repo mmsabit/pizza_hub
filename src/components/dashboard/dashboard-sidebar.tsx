@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { roleLabel, type Role, type RoleUser } from "@/lib/roles";
+import { Reveal } from "@/components/animation/motion-primitives";
 import { DashboardLogoutButton } from "./dashboard-logout-button";
 import { DashboardSidebarNav } from "./dashboard-nav";
 
@@ -20,20 +21,26 @@ export function DashboardSidebar({ role, user }: DashboardSidebarProps) {
 
   return (
     <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col bg-charcoal-dark px-space-md py-space-lg lg:flex">
-      <Link
-        aria-label="PizzaHub home"
-        className="mb-space-xl flex items-center gap-space-sm px-space-xs"
-        href="/"
-      >
-        <Pizza className="text-secondary-container" size={30} strokeWidth={1.75} />
-        <span className="font-headline-md text-headline-md font-bold text-surface-container-lowest">
-          PizzaHub
-        </span>
-      </Link>
+      <Reveal className="mb-space-xl" direction="right">
+        <Link
+          aria-label="PizzaHub home"
+          className="flex items-center gap-space-sm px-space-xs"
+          href="/"
+        >
+          <Pizza className="text-secondary-container" size={30} strokeWidth={1.75} />
+          <span className="font-headline-md text-headline-md font-bold text-surface-container-lowest">
+            PizzaHub
+          </span>
+        </Link>
+      </Reveal>
 
       <DashboardSidebarNav role={role} />
 
-      <div className="mt-space-lg rounded-2xl bg-surface-container-lowest/5 p-space-sm">
+      <Reveal
+        className="mt-space-lg rounded-2xl bg-surface-container-lowest/5 p-space-sm"
+        delay={0.2}
+        direction="up"
+      >
         <div className="flex items-center gap-space-sm">
           <Image
             alt={name}
@@ -53,7 +60,7 @@ export function DashboardSidebar({ role, user }: DashboardSidebarProps) {
         </div>
 
         <DashboardLogoutButton />
-      </div>
+      </Reveal>
     </aside>
   );
 }

@@ -1,6 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { PizzaType } from "@/app/type/type";
+import {
+  Reveal,
+  Stagger,
+  StaggerItem,
+} from "@/components/animation/motion-primitives";
 
 const PLACEHOLDER_IMAGE = "/images/placeholder.png";
 
@@ -62,51 +67,54 @@ export async function SpecialtySection() {
 
       <div className="max-w-7xl mx-auto px-margin relative z-20 min-h-[70vh] py-space-xl flex flex-col justify-center ">
         <div className="text-center mb-space-xl">
-          <span className="text-secondary-container font-headline-sm italic font-bold tracking-wide block mb-1">
-            Fresh From PizzaHub
-          </span>
-          <h2 className="font-headline-lg text-3xl sm:text-4xl font-extrabold text-charcoal-dark tracking-wide uppercase">
-            OUR SPECIALITY
-          </h2>
+          <Reveal>
+            <span className="text-secondary-container font-headline-sm italic font-bold tracking-wide block mb-1">
+              Fresh From PizzaHub
+            </span>
+            <h2 className="font-headline-lg text-3xl sm:text-4xl font-extrabold text-charcoal-dark tracking-wide uppercase">
+              OUR SPECIALITY
+            </h2>
+          </Reveal>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-space-xl max-w-5xl mx-auto text-center items-center justify-center w-full">
+        <Stagger className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-space-xl max-w-5xl mx-auto text-center items-center justify-center w-full">
           {items.length > 0 ? (
             items.map((item) => (
-              <Link
-                key={item._id}
-                className="flex flex-col items-center group"
-                href={`/menu/${item._id}`}
-              >
-                <div className="relative w-58 h-58 rounded-full overflow-hidden shadow-lg mb-space-md bg-dough-surface transition-transform duration-300 group-hover:scale-105">
-                  <Image
-                    alt={item.name}
-                    className="object-cover rounded-full"
-                    fill
-                    sizes="(min-width: 768px) 232px, 80vw"
-                    src={item.image || PLACEHOLDER_IMAGE}
-                  />
-                </div>
-                <h3 className="font-title-md font-bold text-charcoal-dark uppercase tracking-wider text-base">
-                  {item.name}
-                </h3>
-              </Link>
+              <StaggerItem key={item._id}>
+                <Link
+                  className="flex flex-col items-center group"
+                  href={`/menu/${item._id}`}
+                >
+                  <div className="relative w-58 h-58 rounded-full overflow-hidden shadow-lg mb-space-md bg-dough-surface transition-transform duration-300 group-hover:scale-105">
+                    <Image
+                      alt={item.name}
+                      className="object-cover rounded-full"
+                      fill
+                      sizes="(min-width: 768px) 232px, 80vw"
+                      src={item.image || PLACEHOLDER_IMAGE}
+                    />
+                  </div>
+                  <h3 className="font-title-md font-bold text-charcoal-dark uppercase tracking-wider text-base">
+                    {item.name}
+                  </h3>
+                </Link>
+              </StaggerItem>
             ))
           ) : (
             <p className="sm:col-span-2 md:col-span-3 text-center font-label-md text-on-surface-variant">
               No featured dishes right now.
             </p>
           )}
-        </div>
+        </Stagger>
 
-        <div className="mt-space-xl flex justify-center">
+        <Reveal className="mt-space-xl flex justify-center" delay={0.2}>
           <Link
             className="px-space-xl py-2.5 rounded-full bg-secondary-container hover:bg-crust-gold text-on-secondary font-label-md font-bold text-xs uppercase tracking-widest shadow-md transition-all hover:shadow-lg inline-flex items-center justify-center"
             href="#featured-menu"
           >
             VIEW MORE
           </Link>
-        </div>
+        </Reveal>
       </div>
 
       <div className="absolute bottom-0 left-0 right-0 w-full pointer-events-none z-10 select-none overflow-hidden leading-none">

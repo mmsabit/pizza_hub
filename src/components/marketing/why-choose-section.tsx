@@ -1,6 +1,12 @@
 import { Medal, Timer, Tractor, Upload, Wheat } from "lucide-react";
 import Image from "next/image";
 
+import {
+  Reveal,
+  Stagger,
+  StaggerItem,
+} from "@/components/animation/motion-primitives";
+
 const OVEN_IMAGE_SRC = "/images/oven.jpg";
 
 const PILLARS = [
@@ -58,7 +64,7 @@ export function WhyChooseSection() {
     <section className="w-full py-space-xl bg-dough-canvas">
       <div className="max-w-7xl mx-auto px-margin py-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-center">
-          <div className="lg:col-span-5 relative">
+          <Reveal className="lg:col-span-5 relative" direction="right">
             <div className="rounded-3xl overflow-hidden shadow-2xl relative h-120">
               <Image
                 alt="Pizzaiolo in a white apron sliding an artisanal dough pizza on a long wooden peel into a blazing brick wood-fired dome oven glowing with yellow and red embers."
@@ -87,9 +93,13 @@ export function WhyChooseSection() {
                 Cold Sourdough Fermentation for Crisp &amp; Light Crust
               </span>
             </div>
-          </div>
+          </Reveal>
 
-          <div className="lg:col-span-7 space-y-space-lg">
+          <Reveal
+            className="lg:col-span-7 space-y-space-lg"
+            delay={0.1}
+            direction="left"
+          >
             <div>
               <span className="text-primary font-label-sm text-label-sm uppercase tracking-wider font-bold">
                 The Neapolitan Standard
@@ -104,45 +114,46 @@ export function WhyChooseSection() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+            <Stagger className="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
               {PILLARS.map((pillar) => (
-                <div
-                  key={pillar.title}
-                  className="bg-surface-container-lowest p-space-md rounded-2xl shadow-sm"
-                >
-                  <div
-                    className={`w-10 h-10 rounded-xl flex items-center justify-center mb-space-xs ${pillar.iconClassName}`}
-                  >
-                    <pillar.icon size={20} />
+                <StaggerItem key={pillar.title}>
+                  <div className="bg-surface-container-lowest p-space-md rounded-2xl shadow-sm transition-shadow hover:shadow-lg">
+                    <div
+                      className={`w-10 h-10 rounded-xl flex items-center justify-center mb-space-xs ${pillar.iconClassName}`}
+                    >
+                      <pillar.icon size={20} />
+                    </div>
+                    <h3 className="font-title-md text-title-md font-bold text-charcoal-dark">
+                      {pillar.title}
+                    </h3>
+                    <p className="font-body-md text-body-md text-on-surface-variant mt-1">
+                      {pillar.description}
+                    </p>
                   </div>
-                  <h3 className="font-title-md text-title-md font-bold text-charcoal-dark">
-                    {pillar.title}
-                  </h3>
-                  <p className="font-body-md text-body-md text-on-surface-variant mt-1">
-                    {pillar.description}
-                  </p>
-                </div>
+                </StaggerItem>
               ))}
-            </div>
+            </Stagger>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-space-sm pt-space-xs">
+            <Stagger
+              className="grid grid-cols-2 sm:grid-cols-4 gap-space-sm pt-space-xs"
+              stagger={0.06}
+            >
               {METRICS.map((metric) => (
-                <div
-                  key={metric.label}
-                  className="bg-surface-container-low rounded-xl p-space-sm text-center"
-                >
-                  <span
-                    className={`font-headline-md text-headline-md font-extrabold block ${metric.valueClassName}`}
-                  >
-                    {metric.value}
-                  </span>
-                  <span className="font-label-sm text-label-sm text-on-surface-variant">
-                    {metric.label}
-                  </span>
-                </div>
+                <StaggerItem key={metric.label} scale={0.92}>
+                  <div className="bg-surface-container-low rounded-xl p-space-sm text-center">
+                    <span
+                      className={`font-headline-md text-headline-md font-extrabold block ${metric.valueClassName}`}
+                    >
+                      {metric.value}
+                    </span>
+                    <span className="font-label-sm text-label-sm text-on-surface-variant">
+                      {metric.label}
+                    </span>
+                  </div>
+                </StaggerItem>
               ))}
-            </div>
-          </div>
+            </Stagger>
+          </Reveal>
         </div>
       </div>
     </section>

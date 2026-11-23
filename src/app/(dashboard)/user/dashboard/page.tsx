@@ -22,6 +22,11 @@ import {
   statusMeta,
 } from "@/app/(dashboard)/user/dashboard/order/_comp/order-ui";
 import type { OrderStateType, OrderType } from "@/app/type/type";
+import {
+  Reveal,
+  Stagger,
+  StaggerItem,
+} from "@/components/animation/motion-primitives";
 import { fetchArray } from "@/lib/api";
 import { auth } from "@/lib/auth";
 
@@ -127,7 +132,7 @@ export default async function UserDashboardPage() {
 
   return (
     <div className="space-y-space-lg">
-      <header className="flex flex-wrap items-end justify-between gap-space-md">
+      <Reveal as="header" className="flex flex-wrap items-end justify-between gap-space-md">
         <div>
           <p className="flex items-center gap-space-xs font-label-sm text-label-sm uppercase tracking-[0.2em] text-secondary">
             <span className="h-1.5 w-1.5 rounded-full bg-crust-gold" />
@@ -161,13 +166,13 @@ export default async function UserDashboardPage() {
             New order
           </Link>
         </div>
-      </header>
+      </Reveal>
 
-      <section className="grid grid-cols-2 gap-space-sm sm:gap-space-md xl:grid-cols-4">
+      <Stagger className="grid grid-cols-2 gap-space-sm sm:gap-space-md xl:grid-cols-4">
         {stats.map((stat) => (
-          <div
+          <StaggerItem
             key={stat.label}
-            className="rounded-2xl border border-surface-container-high bg-surface-container-lowest p-space-md shadow-sm"
+            className="rounded-2xl border border-surface-container-high bg-surface-container-lowest p-space-md shadow-sm transition-shadow hover:shadow-lg"
           >
             <span
               className={`flex h-10 w-10 items-center justify-center rounded-xl ${stat.chipClassName}`}
@@ -183,11 +188,11 @@ export default async function UserDashboardPage() {
             <p className="mt-1 truncate font-label-sm text-label-sm text-outline">
               {stat.hint}
             </p>
-          </div>
+          </StaggerItem>
         ))}
-      </section>
+      </Stagger>
 
-      <div className="grid gap-space-md xl:grid-cols-3">
+      <Reveal className="grid gap-space-md xl:grid-cols-3" delay={0.1}>
         <section className="rounded-2xl border border-surface-container-high bg-surface-container-lowest shadow-sm xl:col-span-2">
           <div className="flex flex-wrap items-center justify-between gap-space-sm border-b border-surface-container-high px-space-md py-space-sm">
             <div>
@@ -366,7 +371,7 @@ export default async function UserDashboardPage() {
             </Link>
           </section>
         </div>
-      </div>
+      </Reveal>
     </div>
   );
 }

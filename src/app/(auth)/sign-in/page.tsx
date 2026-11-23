@@ -4,6 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { GoogleAuthButton } from "@/components/auth/google-auth-button";
 import { SignInForm } from "@/components/auth/sign-in-form";
+import {
+  Reveal,
+  Stagger,
+  StaggerItem,
+} from "@/components/animation/motion-primitives";
 
 export const metadata: Metadata = {
   title: "Sign In — PizzaHub",
@@ -41,8 +46,15 @@ export default async function SignInPage({
       : "/";
 
   return (
-    <div className="grid w-full max-w-5xl overflow-hidden rounded-3xl bg-surface-container-lowest shadow-2xl shadow-black/40 lg:grid-cols-2">
-      <div className="relative hidden flex-col justify-between overflow-hidden bg-charcoal-dark p-space-xl lg:flex">
+    <Reveal
+      className="grid w-full max-w-5xl overflow-hidden rounded-3xl bg-surface-container-lowest shadow-2xl shadow-black/40 lg:grid-cols-2"
+      duration={0.5}
+      scale={0.97}
+    >
+      <Reveal
+        className="relative hidden flex-col justify-between overflow-hidden bg-charcoal-dark p-space-xl lg:flex"
+        direction="right"
+      >
         <Image
           alt="Artisan wood-fired pizza fresh from the stone oven"
           className="object-cover"
@@ -67,9 +79,9 @@ export default async function SignInPage({
           </p>
         </div>
 
-        <ul className="relative z-10 mt-space-xl space-y-space-md">
+        <Stagger as="ul" className="relative z-10 mt-space-xl space-y-space-md">
           {PERKS.map((perk) => (
-            <li key={perk.title} className="flex items-start gap-space-sm">
+            <StaggerItem as="li" className="flex items-start gap-space-sm" key={perk.title}>
               <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-surface-container-lowest/10 text-crust-gold">
                 <perk.icon size={18} />
               </span>
@@ -81,12 +93,16 @@ export default async function SignInPage({
                   {perk.description}
                 </p>
               </div>
-            </li>
+            </StaggerItem>
           ))}
-        </ul>
-      </div>
+        </Stagger>
+      </Reveal>
 
-      <div className="flex flex-col justify-center p-space-lg sm:p-space-xl">
+      <Reveal
+        className="flex flex-col justify-center p-space-lg sm:p-space-xl"
+        delay={0.12}
+        direction="left"
+      >
         <div className="mb-space-md space-y-space-xs">
           <h1 className="font-headline-lg text-headline-lg text-charcoal-dark">
             Sign in
@@ -122,7 +138,7 @@ export default async function SignInPage({
             Create an account
           </Link>
         </p>
-      </div>
-    </div>
+      </Reveal>
+    </Reveal>
   );
 }
