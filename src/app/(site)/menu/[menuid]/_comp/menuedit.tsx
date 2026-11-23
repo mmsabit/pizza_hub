@@ -6,6 +6,7 @@ import { MENU_CATEGORIES } from "@/lib/menu";
 import {
   ImagePlus,
   CheckCircle2,
+  Loader2,
   XCircle,
   UtensilsCrossed,
   Pencil,
@@ -31,6 +32,7 @@ const MenuEdit= ({
 }) => {
   const router = useRouter();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (!previewUrl) return;
@@ -47,9 +49,11 @@ const MenuEdit= ({
 
   const handleEdit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
+    if (isSubmitting) return;
 
+    setIsSubmitting(true);
     try {
+      const formData = new FormData(event.currentTarget);
       const selectedImage = formData.get("imageFile");
       let imageUrl = menu.image;
 
@@ -134,6 +138,8 @@ const MenuEdit= ({
           transition: Bounce,
         },
       );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -353,9 +359,27 @@ const MenuEdit= ({
               >
                 Cancel
               </button>
-              <button className="btn btn-primary" type="submit">
-                <UtensilsCrossed size={16} />
-                Submit
+              <button
+                aria-busy={isSubmitting}
+                className="btn btn-primary"
+                disabled={isSubmitting}
+                type="submit"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2
+                      aria-hidden="true"
+                      className="animate-spin"
+                      size={16}
+                    />
+                    Submitting...
+                  </>
+                ) : (
+                  <>
+                    <UtensilsCrossed size={16} />
+                    Submit
+                  </>
+                )}
               </button>
             </div>
           </form>

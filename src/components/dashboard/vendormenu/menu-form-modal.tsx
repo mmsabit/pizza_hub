@@ -3,6 +3,7 @@
 import {
   CheckCircle2,
   ImagePlus,
+  Loader2,
   UtensilsCrossed,
   X,
   XCircle,
@@ -39,6 +40,7 @@ export function MenuFormModal({
   const dialogRef = useRef<HTMLDialogElement>(null);
   const router = useRouter();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -64,60 +66,77 @@ export function MenuFormModal({
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (isSubmitting) return;
 
-    const data = new FormData(event.currentTarget);
-    const imageFile = data.get("imageFile");
-    let imageUrl: string | null = null;
+    setIsSubmitting(true);
+    try {
+      const data = new FormData(event.currentTarget);
+      const imageFile = data.get("imageFile");
+      let imageUrl: string | null = null;
 
-    if (imageFile instanceof File && imageFile.size > 0) {
-      const uploadFormData = new FormData();
-      uploadFormData.append("image", imageFile);
+      if (imageFile instanceof File && imageFile.size > 0) {
+        const uploadFormData = new FormData();
+        uploadFormData.append("image", imageFile);
 
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: uploadFormData,
-      });
+        const response = await fetch("/api/upload", {
+          method: "POST",
+          body: uploadFormData,
+        });
 
-      const result = await response.json();
+        const result = await response.json();
 
-      if (!response.ok) {
-        throw new Error(result.error || "Image upload failed");
+        if (!response.ok) {
+          throw new Error(result.error || "Image upload failed");
+        }
+
+        imageUrl = result.imageUrl as string;
       }
 
-      imageUrl = result.imageUrl as string;
-    }
+      const menu = {
+        name: String(data.get("name") ?? "").trim(),
+        category: String(data.get("category") ?? MENU_CATEGORIES[0]),
+        price: Number(data.get("price")),
+        description: String(data.get("description") ?? "").trim(),
+        available: data.get("available") === "available",
+        status: String(data.get("status") ?? ""),
+        vendor: {
+          id: String(data.get("vendorId") ?? ""),
+          name: String(data.get("vendorName") ?? ""),
+          image: String(data.get("vendorImage") ?? ""),
+        },
+        image: imageUrl,
+      };
 
-    const menu = {
-      name: String(data.get("name") ?? "").trim(),
-      category: String(data.get("category") ?? MENU_CATEGORIES[0]),
-      price: Number(data.get("price")),
-      description: String(data.get("description") ?? "").trim(),
-      available: data.get("available") === "available",
-      status: String(data.get("status") ?? ""),
-      vendor: {
-        id: String(data.get("vendorId") ?? ""),
-        name: String(data.get("vendorName") ?? ""),
-        image: String(data.get("vendorImage") ?? ""),
-      },
-      image: imageUrl,
-    };
+      const { data: tokenData } = await authClient.token();
+      const token = tokenData?.token;
 
-    const { data: tokenData } = await authClient.token();
-    const token = tokenData?.token;
+      if (!menu.name || Number.isNaN(menu.price)) return;
 
-    if (!menu.name || Number.isNaN(menu.price)) return;
-    
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/menus`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify(menu),
-    });
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/menus`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(menu),
+      });
 
-    const result = await res.json();
-    if (!res.ok) {
-      toast.error(result.message || "Failed to add menu. Please try again.", {
+      const result = await res.json();
+      if (!res.ok) {
+        toast.error(result.message || "Failed to add menu. Please try again.", {
+          position: "bottom-right",
+          autoClose: 4000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "light",
+          transition: Bounce,
+        });
+        return;
+      }
+
+      toast.success("Your menu added successfully wait for admin aproveal", {
         position: "bottom-right",
         autoClose: 4000,
         hideProgressBar: false,
@@ -127,21 +146,12 @@ export function MenuFormModal({
         theme: "light",
         transition: Bounce,
       });
-      return;
+      onClose();
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      router.refresh();
+    } finally {
+      setIsSubmitting(false);
     }
-
-    toast.success("Your menu added successfully wait for admin aproveal", {
-      position: "bottom-right",
-      autoClose: 4000,
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: true,
-      draggable: true,
-      theme: "light",
-      transition: Bounce,
-    });
-    onClose();
-    router.refresh();
   };
 
   return (
@@ -327,9 +337,23 @@ export function MenuFormModal({
             >
               Cancel
             </button>
-            <button className="btn btn-primary" type="submit">
-              <UtensilsCrossed size={16} />
-              Submit
+            <button
+              aria-busy={isSubmitting}
+              className="btn btn-primary"
+              disabled={isSubmitting}
+              type="submit"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 aria-hidden="true" className="animate-spin" size={16} />
+                  Submitting...
+                </>
+              ) : (
+                <>
+                  <UtensilsCrossed size={16} />
+                  Submit
+                </>
+              )}
             </button>
           </div>
         </form>
