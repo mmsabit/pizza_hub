@@ -17,11 +17,7 @@ import Link from "next/link";
 import { useMemo, useState, type ReactNode } from "react";
 
 import type { PizzaType } from "@/app/type/type";
-import {
-  Reveal,
-  Stagger,
-  StaggerItem,
-} from "@/components/animation/motion-primitives";
+import { Reveal } from "@/components/animation/motion-primitives";
 
 const PLACEHOLDER_IMAGE = "/images/placeholder.png";
 
@@ -36,6 +32,9 @@ const formatPrice = (price: PizzaType["price"]) => {
 
   return `৳${value.toLocaleString("en-US", { maximumFractionDigits: 2 })}`;
 };
+
+const normalizeCategory = (category?: string | null) =>
+  (category?.trim() || "Uncategorised").toLowerCase();
 
 const SORTS = [
   { key: "default", label: "Kitchen order" },
@@ -93,14 +92,21 @@ export function MenuBrowser({ items }: { items: PizzaType[] }) {
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   const categories = useMemo(() => {
-    const seen = new Map<string, number>();
+    const seen = new Map<string, { label: string; count: number }>();
 
     for (const item of items) {
-      const key = item.category || "Uncategorised";
-      seen.set(key, (seen.get(key) ?? 0) + 1);
+      const label = item.category?.trim() || "Uncategorised";
+      const key = normalizeCategory(label);
+      const existing = seen.get(key);
+
+      if (existing) {
+        existing.count += 1;
+      } else {
+        seen.set(key, { label, count: 1 });
+      }
     }
 
-    return [...seen.entries()].map(([label, count]) => ({ label, count }));
+    return [...seen.values()];
   }, [items]);
 
   const priceBounds = useMemo(() => {
@@ -127,7 +133,10 @@ export function MenuBrowser({ items }: { items: PizzaType[] }) {
     const needle = query.trim().toLowerCase();
 
     const filtered = items.filter((item) => {
-      if (category !== "all" && (item.category || "Uncategorised") !== category) {
+      if (
+        category !== "all" &&
+        normalizeCategory(item.category) !== normalizeCategory(category)
+      ) {
         return false;
       }
 
@@ -427,13 +436,9 @@ export function MenuBrowser({ items }: { items: PizzaType[] }) {
               ) : null}
             </div>
           ) : (
-            <Stagger
-              as="ul"
-              className="grid gap-space-md sm:grid-cols-2 xl:grid-cols-3"
-              stagger={0.06}
-            >
+            <ul className="grid gap-space-md sm:grid-cols-2 xl:grid-cols-3">
               {visibleItems.map((item) => (
-                <StaggerItem as="li" className="h-full" key={item._id}>
+                <li className="h-full" key={item._id}>
                   <Link
                     className="group flex h-full flex-col overflow-hidden rounded-3xl border border-surface-container-high bg-surface-container-lowest shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary-container/40 hover:shadow-xl"
                     href={`/menu/${item._id}`}
@@ -514,9 +519,9 @@ export function MenuBrowser({ items }: { items: PizzaType[] }) {
                       </div>
                     </div>
                   </Link>
-                </StaggerItem>
+                </li>
               ))}
-            </Stagger>
+            </ul>
           )}
         </section>
       </div>
